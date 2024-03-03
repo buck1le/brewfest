@@ -4,6 +4,8 @@ import HomeScreen from './screens/home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { styles } from './styles';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,7 +13,7 @@ const LogoTitle = (
   { navigation }: any
 ) => {
   return (
-    <Image style={{ width: 60, height: 60, overflow: 'visible' }}
+    <Image style={styles.headerImage}
       source={require('./assets/WWBFKatyWhite-01-768x874.png')}
     />
   );
@@ -19,16 +21,7 @@ const LogoTitle = (
 
 const TabTarBackground = () => {
   return (
-    <View style={{
-      backgroundColor: '#fff',
-      height: 85,
-      width: '100%',
-      position: 'absolute',
-      bottom: 0,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      overflow: 'hidden'
-    }} />
+    <View style={styles.tabBackground} />
   );
 }
 
@@ -39,13 +32,10 @@ const App = () => {
         screenOptions={{
           headerStyle: {
             backgroundColor: '#f1b863',
-            shadowOffset: { height: 0, width: 0 },
           },
           headerTintColor: '#f1b863',
-          headerLeftContainerStyle: {
-            paddingLeft: 20,
-            paddingTop: 20,
-          },
+          headerShadowVisible: false,
+          headerLeftContainerStyle: styles.leftHeader,
           tabBarActiveTintColor: '#f1b863',
           tabBarStyle: {
             backgroundColor: '#f1b863',
@@ -57,45 +47,48 @@ const App = () => {
           },
         }}>
         <Tab.Screen
-          name="Home"
+          name="Schedule" 
           component={HomeScreen}
           options={({ navigation }) => ({
             headerLeft: () => <LogoTitle navigation={navigation} />,
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
+                name={focused ? 'calendar' : 'calendar-outline'}
                 size={size}
                 color={color}
               />
             ),
+            tabBarLabelStyle: styles.tabLabel,
           })}
         />
         <Tab.Screen
-          name="Something"
+          name="Map"
           component={HomeScreen}
           options={({ navigation }) => ({
             headerLeft: () => <LogoTitle navigation={navigation} />,
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
+                name={focused ? 'map' : 'map-outline'}
                 size={size}
                 color={color}
               />
             ),
+            tabBarLabelStyle: styles.tabLabel,
           })}
         />
         <Tab.Screen
-          name="Hello"
+          name="Vendors"
           component={HomeScreen}
           options={({ navigation }) => ({
             headerLeft: () => <LogoTitle navigation={navigation} />,
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
+                name={focused ? 'list' : 'list-outline'}
                 size={size}
                 color={color}
               />
             ),
+            tabBarLabelStyle: styles.tabLabel,
           })}
         />
       </Tab.Navigator>
