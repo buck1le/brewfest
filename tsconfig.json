@@ -5,7 +5,8 @@
     "paths": {
       "components/*": ["components/*"],
       "screens/*": ["screens/*"],
-      "common/*": ["common/*"]
+      "common/*": ["common/*"],
+      "assets/*": ["assets/*"]
     }
   }
 }
