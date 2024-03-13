@@ -6,7 +6,8 @@
       "components/*": ["components/*"],
       "screens/*": ["screens/*"],
       "common/*": ["common/*"],
-      "assets/*": ["assets/*"]
+      "assets/*": ["assets/*"],
+      "global_styles": ["styles.ts"]
     }
   }
 }

@@ -1,18 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 import { styles } from './styles';
-import { Button } from 'react-native';
+import { Button } from 'tamagui';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text >Welcome to React Native Web!</Text>
-      <StatusBar style="auto" />
-      <Button
-        title="Go to Schedule"
-        onPress={() => navigation.navigate('Main')}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text >Welcome to React Native Web!</Text>
+        <StatusBar style="auto" />
+        <Button
+          onPress={() => navigation.navigate('Main')}
+        >
+          Hello there
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }
 
