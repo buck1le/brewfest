@@ -1,24 +1,18 @@
 import {StyleSheet} from 'react-native';
-import {colors} from 'global_styles';
+import {Platform} from 'react-native';
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.primary,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerImage: {
-    width: 50,
-    height: 50,
-    marginLeft: 10,
-  },
-  leftHeader: {
-    marginLeft: 10,
+  button: {
+    margin: 1,
+    padding: 1,
+    ...Platform.select({
+      ios: {
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+    }),
   },
 });
-

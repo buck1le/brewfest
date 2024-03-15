@@ -1,9 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, Text, View } from 'react-native';
 import { styles } from './styles';
-import { Button } from 'tamagui';
+import Button from "common/button";
 
-const Home = ({ navigation }) => {
+interface HomeProps {
+  navigation: any;
+}
+
+const Home = ({ navigation }: HomeProps) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -12,7 +16,9 @@ const Home = ({ navigation }) => {
         <Button
           onPress={() => navigation.navigate('Main')}
         >
-          Hello there
+          <Text>
+            Hello there
+          </Text>
         </Button>
       </View>
     </SafeAreaView>
