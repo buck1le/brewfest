@@ -7,6 +7,7 @@ import Home from 'screens/home';
 import { useNavigation } from '@react-navigation/native';
 import { styles, colors } from './styles';
 import TouchableImage from 'common/touchable-image';
+import { ClerkProvider } from "@clerk/clerk-expo";
 
 const Stack = createStackNavigator();
 
@@ -22,25 +23,29 @@ const LogoTitle = () => {
   );
 }
 
+const clerkPublishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{
-          headerLeft: () => <LogoTitle />,
-          headerStyle: {
-            backgroundColor: colors.primary,
-          },
-          headerTintColor: colors.primary,
-          headerShadowVisible: false,
-          headerLeftContainerStyle: styles.leftHeader,
-        }}
-      >
-        <Stack.Screen name="Main" component={MainTabNavigator} />
-        <Stack.Screen name="Home" component={Home} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ClerkProvider publishableKey={clerkPublishableKey}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerLeft: () => <LogoTitle />,
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+            headerTintColor: colors.primary,
+            headerShadowVisible: false,
+            headerLeftContainerStyle: styles.leftHeader,
+          }}
+        >
+          <Stack.Screen name="Main" component={MainTabNavigator} />
+          <Stack.Screen name="Home" component={Home} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ClerkProvider>
   );
 }
 
