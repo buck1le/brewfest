@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "ts:check": "tsc"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^0.20.10",
@@ -15,11 +16,14 @@
     "@react-navigation/native": "^6.1.12",
     "@react-navigation/native-stack": "^6.9.20",
     "@react-navigation/stack": "^6.3.25",
-    "expo": "^50.0.11",
+    "expo": "^51.0.2",
+    "expo-application": "^5.9.1",
+    "expo-auth-session": "^5.5.2",
     "expo-haptics": "~12.8.1",
     "expo-status-bar": "~1.11.1",
     "jotai": "^2.6.5",
     "react": "18.2.0",
+    "react-dom": "^18.3.1",
     "react-native": "0.73.4",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-reanimated": "^3.7.2",
