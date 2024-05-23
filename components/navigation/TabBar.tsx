@@ -1,9 +1,26 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 
-export default function MyTabBar({ state, descriptors, navigation }) {
+import {
+  NavigationHelpers,
+  TabNavigationState,
+  ParamListBase,
+  Descriptor,
+} from '@react-navigation/native';
+
+interface MyTabBarProps {
+  state: TabNavigationState<ParamListBase>;
+  descriptors: {
+    [key: string]: Descriptor<any, any, any>
+  };
+  navigation: NavigationHelpers<ParamListBase>;
+}
+
+export default function MyTabBar({ state, descriptors, navigation }: MyTabBarProps) {
   return (
     <View style={{ flexDirection: 'row' }}>
       {state.routes.map((route, index) => {
+        console.log(route);
+        console.log(index);
         const { options } = descriptors[route.key];
         const label =
           options.tabBarLabel !== undefined

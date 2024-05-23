@@ -5,17 +5,32 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import MyTabBar from '@/components/navigation/TabBar';
-import { BlurView } from 'expo-blur';
+import { styles, colors } from './styles';
+import { View } from 'react-native';
+
+const TabBarBackground = () => {
+  return (
+    <View style={styles.tabBackground}/>
+  )
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  return (
-    <Tabs
-      tabBar={props => <MyTabBar {...props} />}
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
+      return (
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: colors.primary,
+          tabBarStyle: {
+            backgroundColor: colors.primary,
+          },
+          tabBarBackground() {
+            return (
+              <TabBarBackground />
+            );
+          },
+        }}
+      >
       <Tabs.Screen
         name="schedule"
         options={{
