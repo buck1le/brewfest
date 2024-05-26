@@ -1,10 +1,13 @@
-import { View } from 'react-native';
-import HomeScreen from 'screens/home';
+import { TouchableWithoutFeedback, View } from 'react-native';
 import Schedule from 'screens/schedule';
+import Map from 'screens/map';
+import Vendors from 'screens/vendors';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { styles, colors } from './styles';
+import * as Haptics from 'expo-haptics';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -21,11 +24,18 @@ const MainTabNavigator = () => {
         tabBarStyle: {
           backgroundColor: colors.primary,
         },
-        tabBarBackground() {
-          return (
-            <TabTarBackground />
-          );
-        },
+        tabBarBackground: TabTarBackground,
+        headerShown: false,
+        tabBarButton: ({ onPress, ...props }) => (
+          <TouchableWithoutFeedback
+            onPress={(e) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+              onPress?.(e);
+            }}
+          >
+            <View {...props} />
+          </TouchableWithoutFeedback>
+        ),
       }}>
       <Tab.Screen
         name="Schedule"
@@ -43,7 +53,7 @@ const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="Map"
-        component={HomeScreen}
+        component={Map}
         options={() => ({
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -57,7 +67,7 @@ const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="Vendors"
-        component={HomeScreen}
+        component={Vendors}
         options={() => ({
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons

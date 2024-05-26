@@ -7,6 +7,7 @@ import Home from 'screens/home';
 import { useNavigation } from '@react-navigation/native';
 import { styles, colors } from './styles';
 import TouchableImage from 'common/touchable-image';
+import * as Haptics from 'expo-haptics';
 
 const Stack = createStackNavigator();
 
@@ -15,14 +16,15 @@ const LogoTitle = () => {
 
   return (
     <TouchableImage
-      onPress={() => navigation.navigate('Home')}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        navigation.navigate('Home')}
+      }
       image={require('assets/WWBFKatyWhite-01-768x874.png')}
       style={styles.headerImage}
     />
   );
 }
-
-const clerkPublishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 const App = () => {
   return (
