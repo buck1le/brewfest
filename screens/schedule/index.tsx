@@ -1,5 +1,5 @@
-import React from 'react';
-import { FlatList, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Item } from 'components/schedule';
 import { styles } from './styles';
@@ -7,7 +7,7 @@ import { ScheduleItem } from 'components/schedule/types';
 
 
 const mockData = [
-  { id: '1', title: 'Opening Ceremony', time: '10:00 AM', description: 'Some really long description about the event and why you should come to it' },
+  { id: '1', title: 'Opening Ceremony', time: '7:00 AM', description: 'Some really long description about the event and why you should come to it' },
   { id: '2', title: 'Keynote Speech', time: '11:00 AM', description: 'Keynote address' },
   { id: '3', title: 'Lunch Break', time: '12:00 PM', description: 'Lunch is served' },
   { id: '4', title: 'Workshop: React Native', time: '1:00 PM', description: 'Hands-on workshop' },
@@ -47,14 +47,36 @@ const getCurrentItemIndex = (data: ScheduleItem[]) => {
 
 
 const Schedule = () => {
+  const [data, setData] = useState(mockData);
   const currentItemIndex = getCurrentItemIndex(mockData);
+
+  const fetchSchedule = async () => {
+    try {
+      const response = await fetch('https://8f12-71-221-77-104.ngrok-free.app/api/schedule', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      setData(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchSchedule();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Button title="Fetch Schedule" onPress={fetchSchedule} />
       <Text style={styles.header}>Schedule</Text>
       <View style={styles.eventList}>
         <FlatList
-          data={mockData}
+          data={data}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
             <Item item={item} isCurrent={index === currentItemIndex} />
