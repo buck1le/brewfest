@@ -4,6 +4,8 @@
     "strict": true,
     "paths": {
       "components/*": ["components/*"],
+      "types/*": ["types/*"],
+      "modals/*": ["modals/*"],
       "screens/*": ["screens/*"],
       "common/*": ["common/*"],
       "assets/*": ["assets/*"],

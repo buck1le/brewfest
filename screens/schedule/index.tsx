@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, Text, View } from 'react-native';
+import { Button, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Item } from 'components/schedule';
 import { styles } from './styles';
 import { ScheduleItem } from 'components/schedule/types';
+import { useNavigation } from '@react-navigation/native';
 
-
-const mockData = [
-  { id: '1', title: 'Opening Ceremony', time: '7:00 AM', description: 'Some really long description about the event and why you should come to it' },
-  { id: '2', title: 'Keynote Speech', time: '11:00 AM', description: 'Keynote address' },
-  { id: '3', title: 'Lunch Break', time: '12:00 PM', description: 'Lunch is served' },
-  { id: '4', title: 'Workshop: React Native', time: '1:00 PM', description: 'Hands-on workshop' },
-  { id: '5', title: 'Networking Event', time: '3:00 PM', description: 'Meet and greet' },
-  { id: '6', title: 'Closing Remarks', time: '5:00 PM', description: 'Summary and closure' },
-];
 
 const parseTime = (timeString: string) => {
   const [time, modifier] = timeString.split(' ');
@@ -47,12 +39,13 @@ const getCurrentItemIndex = (data: ScheduleItem[]) => {
 
 
 const Schedule = () => {
-  const [data, setData] = useState(mockData);
-  const currentItemIndex = getCurrentItemIndex(mockData);
+  const [data, setData] = useState<ScheduleItem[]>([]);
+  const currentItemIndex = getCurrentItemIndex([]);
+  const navigation = useNavigation();
 
   const fetchSchedule = async () => {
     try {
-      const response = await fetch('https://8f12-71-221-77-104.ngrok-free.app/api/schedule', {
+      const response = await fetch('https://4dae-71-221-110-22.ngrok-free.app/api/schedule', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -70,6 +63,11 @@ const Schedule = () => {
     fetchSchedule();
   }, []);
 
+  const handleItemPress = (item: ScheduleItem) => {
+    console.log('item', item);
+    navigation.navigate('ScheduleItem', { item });
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Button title="Fetch Schedule" onPress={fetchSchedule} />
@@ -77,9 +75,12 @@ const Schedule = () => {
       <View style={styles.eventList}>
         <FlatList
           data={data}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item, index }) => (
+          <TouchableOpacity 
+            onPress={() => handleItemPress(item)}>
             <Item item={item} isCurrent={index === currentItemIndex} />
+          </TouchableOpacity>
           )}
           contentContainerStyle={styles.listContainer}
           numColumns={1}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, Dimensions, View } from 'react-native';
 
 interface ItemProps {
   item: {
@@ -12,11 +12,11 @@ interface ItemProps {
 
 const Item = ({ item, isCurrent }: ItemProps) => {
   return (
-    <TouchableOpacity style={[styles.container, isCurrent && styles.currentContainer]}>
+    <View style={[styles.container, isCurrent && styles.currentContainer]}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.time}>{item.time}</Text>
       <Text style={styles.description}>{item.description}</Text>
-    </TouchableOpacity>
+    </View>
   );
 }
 
