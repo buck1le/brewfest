@@ -19,7 +19,7 @@ const LogoTitle = () => {
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
         navigation.navigate('Home')
-      }
+        }
       }
       image={require('assets/WWBFKatyWhite-01-768x874.png')}
       style={styles.headerImage}
@@ -49,6 +49,7 @@ const App = () => {
         </Stack.Group>
         <Stack.Group screenOptions={{
           presentation: 'card',
+          headerShadowVisible: false,
           headerStyle: {
             backgroundColor: colors.primary,
           },
