@@ -1,5 +1,4 @@
-import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, Dimensions, View } from 'react-native';
+import React from 'react'; import { Text, StyleSheet, View } from 'react-native';
 
 interface ItemProps {
   item: {
@@ -10,7 +9,7 @@ interface ItemProps {
   isCurrent?: boolean;
 }
 
-const Item = ({ item, isCurrent }: ItemProps) => {
+const ItemCard = ({ item, isCurrent }: ItemProps) => {
   return (
     <View style={[styles.container, isCurrent && styles.currentContainer]}>
       <Text style={styles.title}>{item.title}</Text>
@@ -37,8 +36,7 @@ const styles = StyleSheet.create({
     borderWidth: 2, // Border width for highlighting
   },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontWeight: 'bold',
   },
   time: {
     fontSize: 14,
@@ -50,5 +48,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Item;
+export default ItemCard;
 

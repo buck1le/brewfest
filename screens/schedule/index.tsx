@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Item } from 'components/schedule';
 import { styles } from './styles';
 import { ScheduleItem } from 'components/schedule/types';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native'; 
+import ItemCard from 'components/schedule/item/card/card';
 
 
 const parseTime = (timeString: string) => {
@@ -79,7 +79,7 @@ const Schedule = () => {
           renderItem={({ item, index }) => (
           <TouchableOpacity 
             onPress={() => handleItemPress(item)}>
-            <Item item={item} isCurrent={index === currentItemIndex} />
+            <ItemCard item={item} isCurrent={index === currentItemIndex} />
           </TouchableOpacity>
           )}
           contentContainerStyle={styles.listContainer}

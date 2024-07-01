@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 
 import MainTabNavigator from "components/tab-nav/tab-navigator";
 import TouchableImage from 'common/touchable-image';
-import Item from "modals/schedule/item";
+import Item from "screens/schedule/item";
 import Home from 'screens/home';
 import { styles, colors } from './styles';
 
@@ -43,15 +43,16 @@ const App = () => {
           headerLeftContainerStyle: styles.leftHeader,
         }}
         >
-          <Stack.Screen name="Main" component={MainTabNavigator} listeners={{
-          }} />
+          <Stack.Screen name="Main" component={MainTabNavigator} />
           <Stack.Screen name="Home" component={Home} />
         </Stack.Group>
         <Stack.Group screenOptions={{
           presentation: 'card',
           headerShadowVisible: false,
+          headerTitle: '',
+          headerBackTitle: 'Schedule',
           headerStyle: {
-            backgroundColor: colors.primary,
+            backgroundColor: colors.secondary,
           },
         }}>
           <Stack.Screen name="ScheduleItem" component={Item}
