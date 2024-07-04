@@ -1,7 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import { colors } from "global_styles";
-
-const screenHeight = Dimensions.get("window").height;
 
 export const styles = StyleSheet.create({
   screenContainer: {
@@ -31,9 +29,8 @@ export const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: screenHeight * 0.4,
-    marginBottom: 16,
-    borderRadius: 8,
+    height: 400,
+    shadowColor: "#000",
   },
   container: {
     flex: 1,

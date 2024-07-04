@@ -29,35 +29,33 @@ const ImageCarousel = ({ images }: ImagesProps) => {
   const ref = React.useRef<ICarouselInstance>(null);
 
   const baseOptions = {
-        vertical: false,
-        width: PAGE_WIDTH,
-        height: 400,
-      } as const; 
+    vertical: false,
+    width: PAGE_WIDTH,
+    height: 400,
+  } as const;
 
   return (
     <Carousel
       {...baseOptions}
       loop={true}
-      snapEnabled={true}
-      pagingEnabled={true}
+      autoPlay={true}
+      autoPlayInterval={3000}
       ref={ref}
       data={[...images ?? []]}
-      mode="parallax"
-      modeConfig={{
-        parallaxScrollingScale: 0.9,
-        parallaxScrollingOffset: 63,
+      style={{
+        flex: 1,
+        paddingBottom: 0,
       }}
+      modeConfig={{}}
       renderItem={({ index }) => (
-        <View style={{ flex: 1 }}>
-          <Image
-            source={{
-              uri: `${imagesBaseUrl}/${images?.[index].url}`,
-            }}
-            style={styles.image}
-          />
-        </View>
+        <Image
+          source={{
+            uri: `${imagesBaseUrl}/${images?.[index].url}`,
+          }}
+          style={styles.image}
+        />
       )}
-      >
+    >
     </Carousel>
   );
 };
@@ -69,7 +67,7 @@ const Item = ({ route }: ItemProps) => {
 
   const fetchScheduleItem = async () => {
     try {
-      const uri = `https://02d0-71-221-88-171.ngrok-free.app/api/schedule/${item.id}`;
+      const uri = `https://d02e-71-221-88-171.ngrok-free.app/api/schedule/${item.id}`;
 
       const response = await fetch(uri, {
         method: 'GET',
@@ -91,10 +89,10 @@ const Item = ({ route }: ItemProps) => {
 
   return (
     <SafeAreaProvider style={styles.screenContainer}>
-      <View style={styles.imageContainer}>
-        <ImageCarousel images={data?.scheduleImages} />
-      </View>
       <ScrollView>
+        <View style={styles.imageContainer}>
+          <ImageCarousel images={data?.scheduleImages} />
+        </View>
         <ItemDetails item={item} />
       </ScrollView>
     </SafeAreaProvider>

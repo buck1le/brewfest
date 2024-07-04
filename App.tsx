@@ -43,17 +43,22 @@ const App = () => {
           headerLeftContainerStyle: styles.leftHeader,
         }}
         >
-          <Stack.Screen name="Main" component={MainTabNavigator} />
           <Stack.Screen name="Home" component={Home} />
+        </Stack.Group>
+        <Stack.Group screenOptions={{
+          headerTransparent: true,
+          headerLeft: () => <LogoTitle />,
+          headerLeftContainerStyle: styles.leftHeader,
+          headerTitle: '',
+          }}>
+          <Stack.Screen name="Main" component={MainTabNavigator} />
         </Stack.Group>
         <Stack.Group screenOptions={{
           presentation: 'card',
           headerShadowVisible: false,
+          headerTransparent: true,
           headerTitle: '',
           headerBackTitle: 'Schedule',
-          headerStyle: {
-            backgroundColor: colors.secondary,
-          },
         }}>
           <Stack.Screen name="ScheduleItem" component={Item}
           />

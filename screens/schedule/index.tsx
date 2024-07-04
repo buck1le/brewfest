@@ -45,7 +45,7 @@ const Schedule = () => {
 
   const fetchSchedule = async () => {
     try {
-      const response = await fetch('https://02d0-71-221-88-171.ngrok-free.app/api/schedule', {
+      const response = await fetch('https://d02e-71-221-88-171.ngrok-free.app/api/schedule', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

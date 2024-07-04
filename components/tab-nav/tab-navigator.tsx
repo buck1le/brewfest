@@ -22,7 +22,7 @@ const MainTabNavigator = () => {
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarStyle: {
-          backgroundColor: colors.primary,
+          marginTop: -10
         },
         tabBarBackground: TabTarBackground,
         headerShown: false,
