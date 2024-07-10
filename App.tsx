@@ -8,11 +8,12 @@ import TouchableImage from 'common/touchable-image';
 import Item from "screens/schedule/item";
 import Home from 'screens/home';
 import { styles, colors } from './styles';
+import { MainNavigationProp, RootStackParamList } from "types/navigation";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 const LogoTitle = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<MainNavigationProp>();
 
   return (
     <TouchableImage

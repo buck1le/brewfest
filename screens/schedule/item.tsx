@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { ScheduleItem } from "components/schedule/types";
-import { RouteProp } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ScheduleItemResponse } from "types/api-responses";
-import { ScheduleImages } from "./types";
+import { ItemNavigationProp, ScheduleImages } from "./types";
 import { Image } from "expo-image";
 import { styles } from "./styles";
 import Carousel from "react-native-reanimated-carousel";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import { Dimensions } from "react-native";
 import ItemDetails from "components/schedule/item/details/details";
+import { ItemRouteProp } from "./types";
 
-type ItemRouteProp = RouteProp<{ params: { item: ScheduleItem } }, "params">;
-
-interface ItemProps {
-  route: ItemRouteProp;
-}
 
 interface ImagesProps {
   images: ScheduleImages[] | undefined;
@@ -60,14 +54,18 @@ const ImageCarousel = ({ images }: ImagesProps) => {
   );
 };
 
+interface ItemProps {
+  route: ItemRouteProp;
+  navigation: ItemNavigationProp;
+}
 
-const Item = ({ route }: ItemProps) => {
+const Item = ({ route, navigation }: ItemProps) => {
   const { item } = route.params;
   const [data, setData] = useState<ScheduleItemResponse>();
 
   const fetchScheduleItem = async () => {
     try {
-      const uri = `https://d02e-71-221-88-171.ngrok-free.app/api/schedule/${item.id}`;
+      const uri = `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/schedule/${item.id}`;
 
       const response = await fetch(uri, {
         method: 'GET',

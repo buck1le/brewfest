@@ -3,8 +3,8 @@ import { Button, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { ScheduleItem } from 'components/schedule/types';
-import { useNavigation } from '@react-navigation/native'; 
 import ItemCard from 'components/schedule/item/card/card';
+import { ScheduleNavigationProp } from './types';
 
 
 const parseTime = (timeString: string) => {
@@ -37,15 +37,17 @@ const getCurrentItemIndex = (data: ScheduleItem[]) => {
   });
 };
 
+interface ScheduleProps {
+  navigation: ScheduleNavigationProp;
+}
 
-const Schedule = () => {
+const Schedule = ( { navigation }: ScheduleProps ) => {
   const [data, setData] = useState<ScheduleItem[]>([]);
   const currentItemIndex = getCurrentItemIndex([]);
-  const navigation = useNavigation();
 
   const fetchSchedule = async () => {
     try {
-      const response = await fetch('https://d02e-71-221-88-171.ngrok-free.app/api/schedule', {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/schedule`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +66,6 @@ const Schedule = () => {
   }, []);
 
   const handleItemPress = (item: ScheduleItem) => {
-    console.log('item', item);
     navigation.navigate('ScheduleItem', { item });
   }
 

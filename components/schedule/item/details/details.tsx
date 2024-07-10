@@ -1,16 +1,10 @@
-
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, Dimensions, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { styles } from './styles';
+import { ScheduleItem } from 'components/schedule/types';
 
 interface ItemProps {
-  item: {
-    title: string;
-    time: string;
-    startDate: string;
-    endDate: string;
-    description: string;
-  };
+  item: ScheduleItem
 }
 
 const formatDate = (dateTime: string) => {
@@ -23,8 +17,8 @@ const ItemDetails = ({ item }: ItemProps) => {
   const formattedEndDate = formatDate(item.endDate);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{item.title}</Text>
+    <View>
+      <Text>{item.title}</Text>
       <Text>Start: {formattedStartDate}</Text>
       <Text>End: {formattedEndDate}</Text>
       <Text style={styles.description}>{item.description}</Text>
