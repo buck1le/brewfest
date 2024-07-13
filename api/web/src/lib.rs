@@ -13,8 +13,6 @@ pub mod routers;
 pub mod presenters;
 mod config;
 
-use routers::events::{vendors, schedule};
-
 #[tokio::main]
 async fn start() -> anyhow::Result<()> {
     env::set_var("RUST_LOG", "debug");
@@ -43,9 +41,7 @@ async fn start() -> anyhow::Result<()> {
     let aws_s3_client = Arc::new(aws_s3_client);
 
     let routes_all = Router::new()
-        .merge(vendors::routes())
-        .merge(schedule::routes())
-        .merge(hello_world_router())
+        .merge(routers::routes())
         .layer(Extension(db)) //  make the database connection available to all routes
         .layer(Extension(aws_s3_client)); // make the S3 client available to all routes
     
