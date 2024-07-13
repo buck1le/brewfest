@@ -7,11 +7,13 @@ use migration::{Migrator, MigratorTrait, sea_orm::Database};
 use tracing_subscriber::EnvFilter;
 use std::sync::Arc;
 
-pub mod vendors;
-pub mod schedule;
 pub mod handlers;
 pub mod utils;
+pub mod routers;
+pub mod presenters;
 mod config;
+
+use routers::events::{vendors, schedule};
 
 #[tokio::main]
 async fn start() -> anyhow::Result<()> {

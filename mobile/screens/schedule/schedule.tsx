@@ -71,8 +71,6 @@ const Schedule = ( { navigation }: ScheduleProps ) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Button title="Fetch Schedule" onPress={fetchSchedule} />
-      <Text style={styles.header}>Schedule</Text>
       <View style={styles.eventList}>
         <FlatList
           data={data}

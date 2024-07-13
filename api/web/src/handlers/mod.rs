@@ -1,3 +1,2 @@
-pub mod vendor;
-pub mod schedule;
+pub mod events;
 pub mod response;

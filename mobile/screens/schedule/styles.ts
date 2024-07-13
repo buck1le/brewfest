@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { colors } from "global_styles";
 
 export const styles = StyleSheet.create({
@@ -45,6 +45,7 @@ export const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    paddingTop: Dimensions.get('screen').height * 0.1,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',

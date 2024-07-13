@@ -1,12 +1,14 @@
+pub mod image;
+
 use axum::extract::{Json, Path};
 use axum::http::StatusCode;
 use axum::{response::IntoResponse, Extension};
 
 use chrono::prelude::*;
-use entities::{prelude::*, *};
+use entities::{*};
 
 use serde::Deserialize;
-use serde_json::{json, to_string_pretty};
+use serde_json::json;
 
 use entities::schedule_images::Entity as ScheduleImages;
 use entities::schedule_items::Entity as ScheduleItems;
@@ -104,17 +106,11 @@ pub async fn create(
     let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
     let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
 
-    // Get the current date and time
-    let now = Utc::now();
-    let naive_datetime = now.naive_utc();
-
     let new_item = schedule_items::ActiveModel {
         title: Set(payload.title.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
         end_date: Set(end_date_time),
-        created_at: Set(naive_datetime),
-        updated_at: Set(naive_datetime),
         ..Default::default() // sets the other fields such as ID
     };
 

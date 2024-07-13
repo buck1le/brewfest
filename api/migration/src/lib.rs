@@ -7,6 +7,7 @@ mod m20240415_233255_create_accounts;
 mod m20240415_233815_add_reference_from_vendors_to_events;
 mod m20240603_203915_create_schedule_images;
 mod m20240704_151504_add_location_to_vendors;
+mod m20240713_154501_add_event_reference_to_schedule;
 
 pub struct Migrator;
 
@@ -23,6 +24,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240415_233815_add_reference_from_vendors_to_events::Migration),
             Box::new(m20240603_203915_create_schedule_images::Migration),
             Box::new(m20240704_151504_add_location_to_vendors::Migration),
+            Box::new(m20240713_154501_add_event_reference_to_schedule::Migration),
         ];
 
         println!("Running dev migrations");

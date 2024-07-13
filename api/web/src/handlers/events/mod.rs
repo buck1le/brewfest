@@ -1,2 +1,2 @@
-pub mod image;
 pub mod schedule;
+pub mod vendor;
