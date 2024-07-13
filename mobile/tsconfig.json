@@ -1,0 +1,14 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "components/*": ["components/*"],
+      "types/*": ["types/*"],
+      "screens/*": ["screens/*"],
+      "common/*": ["common/*"],
+      "assets/*": ["assets/*"],
+      "global_styles": ["styles.ts"]
+    }
+  }
+}

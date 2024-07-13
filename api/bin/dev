@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Start the local postgres server
+
+check_docker_compose_installed() {
+  if ! [ -x "$(command -v docker-compose)" ]; then
+    echo 'Error: docker-compose is not installed.' >&2
+    exit 1
+  fi
+}
+
+check_docker_compose_installed
+
+if ! docker ps | grep -q postgres; then
+  docker-compose -f docker-compose.yml up -d --remove-orphans
+fi
+
+cargo run
+

@@ -1,0 +1,24 @@
+[package]
+name = "brew-fest-api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = [
+    ".",
+    "web",
+    "migration", 
+    "entities",
+]
+
+[dependencies]
+serde = "1.0.203"
+serde_json = "1.0.117"
+web-server = { path = "web" }
+
+[dev-dependencies]
+# -- Quick dev
+httpc-test = "0.1.1"
+anyhow = "1"

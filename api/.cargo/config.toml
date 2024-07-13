@@ -1,0 +1,4 @@
+# Cargo config file
+
+[env]
+RUST_LOG="brew_fest_api=debug"

@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+# rust
+api/target/
+
 # Expo
 .expo/
 dist/
