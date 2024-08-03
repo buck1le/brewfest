@@ -1,5 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDate;
 use serde::Deserialize;
 use std::sync::Arc;
 
@@ -11,7 +11,7 @@ pub mod vendor;
 
 #[derive(Deserialize)]
 pub struct EventCreateRequest {
-    title: String,
+    name: String,
     description: String,
     start_date: String,
     end_date: String,
@@ -19,14 +19,9 @@ pub struct EventCreateRequest {
 
 fn parse_date(
     date_str: &str,
-    hour: u32,
-    minute: u32,
-    second: u32,
-) -> Result<NaiveDateTime, (StatusCode, String)> {
-    let date = NaiveDate::parse_from_str(date_str, "%Y-%m-%d")
-        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))?;
-    date.and_hms_opt(hour, minute, second)
-        .ok_or((StatusCode::BAD_REQUEST, "Invalid date".to_string()))
+) -> Result<NaiveDate, (StatusCode, String)> {
+    NaiveDate::parse_from_str(date_str, "%Y-%m-%d")
+        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))
 }
 
 pub async fn create(
@@ -35,18 +30,17 @@ pub async fn create(
 ) -> impl IntoResponse {
     let database_connection = &*db;
 
-    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
-    let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
+    let start_date_time = parse_date(&payload.start_date)?;
+    let end_date_time = parse_date(&payload.end_date)?;
 
-    let new_item = schedule_items::ActiveModel {
-        title: Set(payload.title.clone()),
+    let new_item = events::ActiveModel {
+        name: Set(payload.name.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
         end_date: Set(end_date_time),
         ..Default::default() // sets the other fields such as ID
     };
 
-    // Insert the new item into the database and handle potential errors
     match new_item.insert(database_connection).await {
         Ok(inserted_item) => Ok(Json(inserted_item)),
         Err(e) => Err((

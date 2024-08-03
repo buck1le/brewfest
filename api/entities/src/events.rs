@@ -11,8 +11,8 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: String,
-    pub start_date: chrono::NaiveDateTime,
-    pub end_date: chrono::NaiveDateTime,
+    pub start_date: chrono::NaiveDate,
+    pub end_date: chrono::NaiveDate,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
