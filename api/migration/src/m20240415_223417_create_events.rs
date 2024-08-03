@@ -6,8 +6,6 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let db = manager.get_connection();
-
         manager
             .create_table(
                 Table::create()
@@ -22,21 +20,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Events::Name).string().not_null())
                     .col(ColumnDef::new(Events::Description).string().not_null())
+                    .col(ColumnDef::new(Events::StartDate).date().not_null())
+                    .col(ColumnDef::new(Events::EndDate).date().not_null())
                     .to_owned(),
             )
-            .await?;
-
-        let table_name = Events::Table.to_string();
-
-        let add_column_sql = format!(
-            "ALTER TABLE {} ADD COLUMN event_date_range daterange;",
-            table_name
-        );
-
-        db.execute_unprepared(&add_column_sql)
-        .await?;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
@@ -52,4 +40,6 @@ enum Events {
     Id,
     Name,
     Description,
+    StartDate,
+    EndDate,
 }

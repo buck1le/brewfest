@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres
+    container_name: postgres-brewfest
     ports:
       - "5432:5432"
     environment:

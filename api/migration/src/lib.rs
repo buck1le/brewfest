@@ -29,7 +29,6 @@ impl MigratorTrait for Migrator {
 
         println!("Running dev migrations");
         // Migrations for development database here
-        base_migrations.push(Box::new(seeds::events::Migration));
         base_migrations.push(Box::new(seeds::accounts::Migration));
 
         base_migrations
