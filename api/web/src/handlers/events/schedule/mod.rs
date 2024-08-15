@@ -97,20 +97,37 @@ fn parse_date(
         .ok_or((StatusCode::BAD_REQUEST, "Invalid date".to_string()))
 }
 
+async fn load_event(event_id: i32, db: &DatabaseConnection) -> Result<Option<events::Model>, (StatusCode, String)> {
+    events::Entity::find_by_id(event_id)
+        .one(db)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database query error: {}", e)))
+}
+
 pub async fn create(
     Extension(db): Extension<Arc<DatabaseConnection>>,
+    Path(event_id): Path<i32>,
     Json(payload): Json<ScheduleCreateRequest>,
 ) -> impl IntoResponse {
     let database_connection = &*db;
+    
+    let event = load_event(event_id, &db).await?;
 
-    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
-    let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
+    if event.is_none() {
+        return Err((
+                StatusCode::NOT_FOUND,
+                "Event not found".to_string()
+        ));
+    }
+
+    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?; let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
 
     let new_item = schedule_items::ActiveModel {
         title: Set(payload.title.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
         end_date: Set(end_date_time),
+        event_id: Set(event_id),
         ..Default::default() // sets the other fields such as ID
     };
 
