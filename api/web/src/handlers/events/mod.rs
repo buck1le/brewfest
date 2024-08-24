@@ -6,6 +6,8 @@ use std::sync::Arc;
 use entities::{*};
 use entities::sea_orm::*;
 
+use crate::presenters::events::index::Presenter as IndexPresenter;
+
 pub mod schedule;
 pub mod vendor;
 
@@ -60,5 +62,5 @@ pub async fn index(
         .await
         .unwrap();
 
-    Json(events)
+    IndexPresenter::new(events).render()
 }

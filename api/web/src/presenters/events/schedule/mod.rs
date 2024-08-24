@@ -1,6 +1,6 @@
 use serde_json::{json, Value};
 
-pub mod presenter;
+pub mod index;
 
 pub struct Partial {
     schedule_item: entities::schedule_items::Model,
@@ -21,6 +21,14 @@ impl Partial {
             "created_at": self.schedule_item.created_at,
             "updated_at": self.schedule_item.updated_at,
             "event_id": self.schedule_item.event_id,
+            "resources": {
+                "images": {
+                    "href": format!("events/{}/schedule_items/{}/images", 
+                        self.schedule_item.event_id,
+                        self.schedule_item.id
+                        ),
+                },
+            }
         })
     }
 }

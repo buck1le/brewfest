@@ -18,7 +18,7 @@ use entities::sea_orm::*;
 use std::sync::Arc;
 
 use crate::handlers::response::Response;
-use crate::presenters::events::schedule::presenter::Presenter as SchedulePresenter;
+use crate::presenters::events::schedule::index::Presenter as SchedulePresenter;
 
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
