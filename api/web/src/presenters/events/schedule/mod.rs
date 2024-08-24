@@ -23,7 +23,7 @@ impl Partial {
             "event_id": self.schedule_item.event_id,
             "resources": {
                 "images": {
-                    "href": format!("events/{}/schedule_items/{}/images", 
+                    "href": format!("/events/{}/schedule_items/{}/images",
                         self.schedule_item.event_id,
                         self.schedule_item.id
                         ),
