@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use axum::{response::IntoResponse, Extension};
 
 use chrono::prelude::*;
-use entities::{*};
+use entities::*;
 
 use serde::Deserialize;
 use serde_json::json;
@@ -18,16 +18,29 @@ use entities::sea_orm::*;
 use std::sync::Arc;
 
 use crate::handlers::response::Response;
+use crate::presenters::events::schedule::presenter::Presenter as SchedulePresenter;
 
-pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl IntoResponse {
+pub async fn index(
+    Extension(db): Extension<Arc<DatabaseConnection>>,
+    Path(event_id): Path<i32>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    let schedule_items = schedule_items::Entity::find()
-        .all(database_connection)
-        .await
-        .unwrap();
+    let event = load_event(event_id, &db).await?;
 
-    Json(json!(schedule_items))
+    if let Some(event) = event {
+        let schedule_items = event
+            .find_related(ScheduleItems)
+            .all(database_connection)
+            .await;
+
+        match schedule_items {
+            Ok(schedule_items) => SchedulePresenter::new(schedule_items).render(),
+            Err(e) => Err((StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to fetch schedule items: {}", e))),
+        }
+    } else {
+        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
+    }
 }
 
 pub async fn show(
@@ -97,11 +110,19 @@ fn parse_date(
         .ok_or((StatusCode::BAD_REQUEST, "Invalid date".to_string()))
 }
 
-async fn load_event(event_id: i32, db: &DatabaseConnection) -> Result<Option<events::Model>, (StatusCode, String)> {
+async fn load_event(
+    event_id: i32,
+    db: &DatabaseConnection,
+) -> Result<Option<events::Model>, (StatusCode, String)> {
     events::Entity::find_by_id(event_id)
         .one(db)
         .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Database query error: {}", e)))
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Database query error: {}", e),
+            )
+        })
 }
 
 pub async fn create(
@@ -110,17 +131,15 @@ pub async fn create(
     Json(payload): Json<ScheduleCreateRequest>,
 ) -> impl IntoResponse {
     let database_connection = &*db;
-    
+
     let event = load_event(event_id, &db).await?;
 
     if event.is_none() {
-        return Err((
-                StatusCode::NOT_FOUND,
-                "Event not found".to_string()
-        ));
+        return Err((StatusCode::NOT_FOUND, "Event not found".to_string()));
     }
 
-    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?; let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
+    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
+    let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
 
     let new_item = schedule_items::ActiveModel {
         title: Set(payload.title.clone()),
