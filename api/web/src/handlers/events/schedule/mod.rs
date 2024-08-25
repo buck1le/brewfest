@@ -19,6 +19,7 @@ use std::sync::Arc;
 
 use crate::handlers::response::Response;
 use crate::presenters::events::schedule::index::Presenter as SchedulePresenter;
+use crate::presenters::events::schedule::Partial as SchedulePartial;
 
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
@@ -36,57 +37,48 @@ pub async fn index(
 
         match schedule_items {
             Ok(schedule_items) => SchedulePresenter::new(schedule_items).render(),
-            Err(e) => Err((StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to fetch schedule items: {}", e))),
+            Err(e) => Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to fetch schedule items: {}", e),
+            )),
         }
     } else {
         Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
     }
 }
 
+#[derive(Deserialize)]
+pub struct ShowParams {
+    event_id: i32,
+    schedule_item_id: i32,
+}
+
 pub async fn show(
     Extension(db): Extension<Arc<DatabaseConnection>>,
-    Path(id): Path<i32>,
-) -> impl IntoResponse {
+    Path(ShowParams {
+        event_id,
+        schedule_item_id,
+    }): Path<ShowParams>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    info!("Fetching schedule item with id: {}", id);
+    let event = load_event(event_id, &db).await.unwrap();
 
-    match ScheduleItems::find_by_id(id).one(database_connection).await {
-        Ok(Some(schedule_item)) => {
-            match schedule_item
-                .find_related(ScheduleImages)
-                .all(database_connection)
-                .await
-            {
-                Ok(schedule_images) => {
-                    println!("Schedule images: {:?}", schedule_images);
-                    let body = Json(json!({
-                            "scheduleItem": schedule_item,
-                            "scheduleImages": schedule_images
-                    }));
-                    Response::success(&body.to_string()).into_response()
-                }
-                Err(_e) => {
-                    let body = Json(json!({
-                        "error": "Failed to fetch schedule images"
+    if let Some(event) = event {
+        let item = event
+            .find_related(ScheduleItems)
+            .filter(schedule_items::Column::Id.eq(schedule_item_id))
+            .one(database_connection)
+            .await
+            .unwrap();
 
-                    }));
-                    Response::error(&body.to_string()).into_response()
-                }
-            }
+        if let Some(item) = item {
+            Ok(Json(SchedulePartial::new(item).render()).into_response())
+        } else {
+            Err((StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
         }
-        Ok(None) => {
-            let body = Json(json!({
-                "error": "Schedule item not found"
-            }));
-            Response::error(&body.to_string()).into_response()
-        }
-        Err(_e) => {
-            let body = Json(json!({
-                "error": "Failed to fetch schedule item"
-            }));
-            Response::error(&body.to_string()).into_response()
-        }
+    } else {
+        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
     }
 }
 
