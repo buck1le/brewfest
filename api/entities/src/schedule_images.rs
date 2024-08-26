@@ -2,7 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::sea_orm::*;
+use crate::{events, schedule_items, sea_orm::*};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "schedule_images")]
@@ -47,12 +47,24 @@ impl Entity {
 
     pub async fn create_schedule_image(
         db: &DatabaseConnection,
+        event_id: i32,
         schedule_item_id: i32,
         key: &str,
         text: &str,
     ) -> Result<(), DbErr> {
-        let schedule_image = Self::new_active_model(schedule_item_id, key, text);
-        Self::insert(schedule_image).exec(db).await?;
+        events::Entity::find_by_id(event_id)
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound(String::from("Event not found")))?
+            .find_related(schedule_items::Entity)
+            .filter(schedule_items::Column::Id.eq(schedule_item_id))
+            .one(db)
+            .await?
+            .ok_or(DbErr::RecordNotFound(String::from("Schedule item not found")))?;
+
+        let new_image = Self::new_active_model(schedule_item_id, key, text);
+
+        Self::insert(new_image).exec(db).await?;
         Ok(())
     }
 }

@@ -8,16 +8,12 @@ use chrono::prelude::*;
 use entities::*;
 
 use serde::Deserialize;
-use serde_json::json;
 
-use entities::schedule_images::Entity as ScheduleImages;
 use entities::schedule_items::Entity as ScheduleItems;
-use tracing::info;
 
 use entities::sea_orm::*;
 use std::sync::Arc;
 
-use crate::handlers::response::Response;
 use crate::presenters::events::schedule::index::Presenter as SchedulePresenter;
 use crate::presenters::events::schedule::Partial as SchedulePartial;
 

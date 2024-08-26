@@ -1,6 +1,7 @@
 use serde_json::{json, Value};
 
 pub mod index;
+pub mod images;
 
 pub struct Partial {
     schedule_item: entities::schedule_items::Model,

@@ -8,5 +8,5 @@ pub fn routes() -> Router {
         .route("/", post(schedule::create))
         .route("/:schedule_item_id", get(schedule::show))
         .route("/:schedule_item_id/images", post(image::create))
-        // .route("/api/schedule/:id", delete(schedule::delete))
+        .route("/:schedule_item_id/images", get(image::index))
 }
