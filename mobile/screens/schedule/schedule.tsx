@@ -47,7 +47,7 @@ const Schedule = ( { navigation }: ScheduleProps ) => {
 
   const fetchSchedule = async () => {
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/schedule`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/events/5/schedule`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
