@@ -1,4 +1,5 @@
 # Cargo config file
 
 [env]
-RUST_LOG="brew_fest_api=debug"
+RUST_LOG="DEBUG"
+DATABASE_URL="postgres://admin:password@localhost:5432/postgres"

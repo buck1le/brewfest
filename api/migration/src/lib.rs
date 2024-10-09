@@ -27,7 +27,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20240713_154501_add_event_reference_to_schedule::Migration),
         ];
 
-        println!("Running dev migrations");
         // Migrations for development database here
         base_migrations.push(Box::new(seeds::accounts::Migration));
 
