@@ -9,6 +9,11 @@ import Item from "screens/schedule/item";
 import Home from 'screens/home';
 import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
+import { server } from "./mocks/server";
+
+server.listen({
+  onUnhandledRequest: 'bypass',
+});
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -20,7 +25,7 @@ const LogoTitle = () => {
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
         navigation.navigate('Home')
-        }
+      }
       }
       image={require('assets/WWBFKatyWhite-01-768x874.png')}
       style={styles.headerImage}
@@ -30,12 +35,17 @@ const LogoTitle = () => {
 
 const App = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={{
+        colors: {
+          background: colors.primary,
+        },
+      }}
+    >
       <Stack.Navigator
         initialRouteName="Home"
       >
         <Stack.Group screenOptions={{
-          headerLeft: () => <LogoTitle />,
           headerStyle: {
             backgroundColor: colors.primary,
           },
@@ -51,7 +61,7 @@ const App = () => {
           headerLeft: () => <LogoTitle />,
           headerLeftContainerStyle: styles.leftHeader,
           headerTitle: '',
-          }}>
+        }}>
           <Stack.Screen name="Main" component={MainTabNavigator} />
         </Stack.Group>
         <Stack.Group screenOptions={{
