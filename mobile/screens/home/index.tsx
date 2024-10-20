@@ -1,14 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, Text, View } from 'react-native';
-import { styles } from './styles';
-import Button from "common/button";
+import { useAtomValue } from 'jotai';
+
 import TouchableImage from 'common/touchable-image';
+import { styles } from './styles';
+import { useEventsAtom } from './atoms';
 
 interface HomeProps {
   navigation: any;
 }
 
 const Home = ({ navigation }: HomeProps) => {
+  const eventsAtom = useEventsAtom('/events');
+  const events = useAtomValue(eventsAtom);
+
+  console.log(events);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>

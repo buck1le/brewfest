@@ -5,3 +5,7 @@ export interface ScheduleItemResponse {
   scheduleItem: ScheduleItem;
   scheduleImages: ScheduleImages[];
 }
+
+export interface EventsResponse {
+  id: number;
+}[];

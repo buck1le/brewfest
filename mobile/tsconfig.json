@@ -8,6 +8,7 @@
       "screens/*": ["screens/*"],
       "common/*": ["common/*"],
       "assets/*": ["assets/*"],
+      "lib/*": ["lib/*"],
       "global_styles": ["styles.ts"]
     }
   }
