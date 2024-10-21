@@ -37,6 +37,23 @@ async fn load_event(
         })
 }
 
+
+impl From<&str> for FieldName {
+    fn from(name: &str) -> Self {
+        match name {
+            "name" => FieldName::Name,
+            "file" => FieldName::File,
+            _ => FieldName::Unknown,
+        }
+    }
+}
+
+enum FieldName {
+    Name,
+    File,
+    Unknown,
+}
+
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3Client>>,
     Extension(db): Extension<Arc<DatabaseConnection>>,
@@ -50,6 +67,15 @@ pub async fn create(
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
+        let field_name = FieldName::from(name.as_str());
+        
+        match field_name {
+            FieldName::Name => {
+                let text = field.text().await.unwrap();
+                info!("Text: {}", text);
+            }
+        }
+
         if let "file" = name.as_str() {
             let content_type = field.content_type().map(|ct| ct.to_string());
 
@@ -81,7 +107,9 @@ pub async fn create(
                 }
             };
 
-            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "").await {
+            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "")
+                .await
+            {
                 Ok(_) => info!("Successfully created the schedule image."),
                 Err(e) => {
                     return (
