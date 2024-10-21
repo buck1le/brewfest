@@ -6,6 +6,11 @@ export interface ScheduleItemResponse {
   scheduleImages: ScheduleImages[];
 }
 
-export interface EventsResponse {
+export type EventsResponse = {
   id: number;
+  name: string;
+  image: string;
+  description: string;
+  start_date: string;
+  end_date: string;
 }[];

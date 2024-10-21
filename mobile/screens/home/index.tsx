@@ -4,16 +4,29 @@ import { useAtomValue } from 'jotai';
 import TouchableImage from 'common/touchable-image';
 import { styles } from './styles';
 import { useEventsAtom } from './atoms';
+import { HOST } from 'lib/request';
 
 interface HomeProps {
   navigation: any;
 }
 
+const ROOT_RESOURCE = `${HOST}/events`;
+
 const Home = ({ navigation }: HomeProps) => {
-  const eventsAtom = useEventsAtom('/events');
+  const eventsAtom = useEventsAtom(ROOT_RESOURCE);
   const events = useAtomValue(eventsAtom);
 
   console.log(events);
+
+  if (events.loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <Text>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -40,24 +53,20 @@ const Home = ({ navigation }: HomeProps) => {
           marginTop: 50,
         }}
         >
-          <TouchableImage
-            onPress={() => navigation.navigate('Main')}
-            image={require('assets/WWBF-KATYImage.png')}
-            style={{
-              width: 200,
-              height: 200,
-              marginBottom: 10,
-            }}
-          />
-          <TouchableImage
-            onPress={() => navigation.navigate('Main')}
-            image={require('assets/WWBF-PflugervilleImage.png')}
-            style={{
-              width: 200,
-              height: 200,
-              marginBottom: 10,
-            }}
-          />
+          {events.data &&
+            events.data.map((event) => (
+              <TouchableImage
+                key={event.id}
+                onPress={() => navigation.navigate('Main')}
+                image={event.image}
+                style={{
+                  width: 200,
+                  height: 200,
+                  marginBottom: 10,
+                }}
+              />
+            ))
+          }
         </View>
       </View>
     </SafeAreaView>

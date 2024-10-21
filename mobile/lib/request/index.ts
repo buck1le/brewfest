@@ -1,8 +1,9 @@
 import { FetchResponse } from "./types";
 
-export const HOST = 'http://localhost:3000';
+export const HOST = (__DEV__) ?
+  'http://localhost:3000' : 'https://wwbf-api.herokuapp.com';
 
-type RequestFetchResponse<ApiResponse = unknown> = 
+type RequestFetchResponse<ApiResponse = unknown> =
   Omit<FetchResponse<ApiResponse>, 'loading'>;
 
 const headers = {
@@ -10,7 +11,7 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-const get = async <ApiResponse = unknown> (
+const get = async <ApiResponse = unknown>(
   resource: string,
 ): Promise<RequestFetchResponse<ApiResponse>> => {
   try {
