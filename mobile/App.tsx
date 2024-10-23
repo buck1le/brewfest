@@ -12,7 +12,7 @@ import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
 
 server.listen({
-  onUnhandledRequest: 'bypass',
+  onUnhandledRequest: 'error',
 });
 
 const Stack = createStackNavigator<RootStackParamList>();
