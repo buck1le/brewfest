@@ -10,15 +10,18 @@ import Home from 'screens/home';
 import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
+import { selectedEventAtom } from "lib/atoms";
+import { useAtomValue } from "jotai";
 
 server.listen({
-  onUnhandledRequest: 'error',
+  onUnhandledRequest: 'bypass',
 });
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const LogoTitle = () => {
   const navigation = useNavigation<MainNavigationProp>();
+  const selectedEvent = useAtomValue(selectedEventAtom);
 
   return (
     <TouchableImage
@@ -27,7 +30,7 @@ const LogoTitle = () => {
         navigation.navigate('Home')
       }
       }
-      image={require('assets/WWBFKatyWhite-01-768x874.png')}
+      image={selectedEvent?.image}
       style={styles.headerImage}
     />
   );

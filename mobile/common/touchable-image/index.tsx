@@ -7,9 +7,10 @@ interface TouchableImageProps {
 }
 
 const TouchableImage = ({ onPress, image, style }: TouchableImageProps) => {
+  console.log(image);
   return (
     <TouchableOpacity onPress={onPress}>
-      <Image source={image} style={style} />
+      <Image source={{ uri: image }} style={style} />
     </TouchableOpacity>
   );
 }

@@ -1,5 +1,4 @@
-import { HOST } from 'lib/request';
-import { BREW_FEST_IMAGE_HOST } from './images';
+import { HOST, BREW_FEST_IMAGE_HOST } from 'lib/request';
 import { http, HttpResponse } from 'msw';
 
 
@@ -18,7 +17,7 @@ export const handlers = [
       {
         id: 2,
         name: "Pflugerville",
-        image: `${BREW_FEST_IMAGE_HOST}/WkjWBF-PflugervilleImage.png`,
+        image: `${BREW_FEST_IMAGE_HOST}/WWBF-PflugervilleImage.png`,
         description: "The World Wide Beer Festival",
         start_date: "2022-01-01",
         end_date: "2022-01-02",

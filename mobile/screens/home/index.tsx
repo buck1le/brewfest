@@ -1,10 +1,12 @@
 import { SafeAreaView, Text, View } from 'react-native';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 import TouchableImage from 'common/touchable-image';
 import { styles } from './styles';
+import { selectedEventAtom } from 'lib/atoms';
 import { useEventsAtom } from './atoms';
 import { HOST } from 'lib/request';
+import { Event } from 'types/api-responses';
 
 interface HomeProps {
   navigation: any;
@@ -15,6 +17,7 @@ const ROOT_RESOURCE = `${HOST}/events`;
 const Home = ({ navigation }: HomeProps) => {
   const eventsAtom = useEventsAtom(ROOT_RESOURCE);
   const events = useAtomValue(eventsAtom);
+  const setSelectedEvent = useSetAtom(selectedEventAtom);
 
   console.log(events);
 
@@ -27,6 +30,11 @@ const Home = ({ navigation }: HomeProps) => {
       </SafeAreaView>
     );
   }
+
+  const handlePress = (event: Event) => {
+    setSelectedEvent(event);
+    navigation.navigate('Main');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -57,7 +65,7 @@ const Home = ({ navigation }: HomeProps) => {
             events.data.map((event) => (
               <TouchableImage
                 key={event.id}
-                onPress={() => navigation.navigate('Main')}
+                onPress={() => handlePress(event)}
                 image={event.image}
                 style={{
                   width: 200,
