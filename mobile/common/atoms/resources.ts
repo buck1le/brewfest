@@ -37,5 +37,5 @@ const createResourceAtom = <Response>(
 }
 
 export {
-  createResourceAtom,
+  createResourceAtom
 };

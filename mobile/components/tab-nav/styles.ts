@@ -13,12 +13,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     bottom: 0,
     position: 'absolute',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
     overflow: 'hidden',
-    shadowColor: colors.grey,
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.5, shadowRadius: 3,
     ...Platform.select({
       ios: {
         height: 85,

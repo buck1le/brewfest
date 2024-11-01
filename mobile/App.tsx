@@ -10,7 +10,7 @@ import Home from 'screens/home';
 import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
-import { selectedEventAtom } from "lib/atoms";
+import { selectedEventAtom } from "common/atoms";
 import { useAtomValue } from "jotai";
 
 server.listen({

@@ -3,7 +3,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 
 import TouchableImage from 'common/touchable-image';
 import { styles } from './styles';
-import { selectedEventAtom } from 'lib/atoms';
+import { selectedEventAtom } from 'common/atoms';
 import { useEventsAtom } from './atoms';
 import { HOST } from 'lib/request';
 import { Event } from 'types/api-responses';
