@@ -15,4 +15,5 @@ const TouchableImage = ({ onPress, image, style }: TouchableImageProps) => {
   );
 }
 
+
 export default TouchableImage;

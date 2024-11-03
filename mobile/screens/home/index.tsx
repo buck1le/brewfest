@@ -1,9 +1,9 @@
 import { SafeAreaView, Text, View } from 'react-native';
 import { useAtomValue, useSetAtom } from 'jotai';
 
-import TouchableImage from 'common/touchable-image';
+import TouchableImage from 'components/common/touchable-image';
 import { styles } from './styles';
-import { selectedEventAtom } from 'common/atoms';
+import { selectedEventAtom } from 'atoms/index';
 import { useEventsAtom } from './atoms';
 import { HOST } from 'lib/request';
 import { Event } from 'types/api-responses';

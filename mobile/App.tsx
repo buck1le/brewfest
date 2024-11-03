@@ -4,13 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import MainTabNavigator from "components/tab-nav/tab-navigator";
-import TouchableImage from 'common/touchable-image';
+import TouchableImage from 'components/common/touchable-image';
 import Item from "screens/schedule/item";
 import Home from 'screens/home';
 import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
-import { selectedEventAtom } from "common/atoms";
+import { selectedEventAtom } from "./atoms";
 import { useAtomValue } from "jotai";
 
 server.listen({

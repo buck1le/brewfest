@@ -38,6 +38,20 @@ const MainTabNavigator = () => {
         ),
       }}>
       <Tab.Screen
+        name="Vendors"
+        component={Vendors}
+        options={() => ({
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={focused ? 'list' : 'list-outline'}
+              size={size}
+              color={color}
+            />
+          ),
+          tabBarLabelStyle: styles.tabLabel,
+        })}
+      />
+      <Tab.Screen
         name="Schedule"
         component={Schedule}
         options={() => ({
@@ -58,20 +72,6 @@ const MainTabNavigator = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? 'map' : 'map-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-          tabBarLabelStyle: styles.tabLabel,
-        })}
-      />
-      <Tab.Screen
-        name="Vendors"
-        component={Vendors}
-        options={() => ({
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? 'list' : 'list-outline'}
               size={size}
               color={color}
             />

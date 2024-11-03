@@ -9,7 +9,8 @@
       "common/*": ["common/*"],
       "assets/*": ["assets/*"],
       "lib/*": ["lib/*"],
-      "global_styles": ["styles.ts"]
+      "global_styles": ["styles.ts"],
+      "atoms/*": ["atoms/*"]
     }
   }
 }

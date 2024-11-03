@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { createResourceAtom } from "common/atoms/resources";
+import { createResourceAtom } from "atoms/resources";
 import { EventsResponse } from "types/api-responses";
 
 
