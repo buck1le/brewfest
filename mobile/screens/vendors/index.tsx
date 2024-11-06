@@ -2,7 +2,9 @@ import { Text, View } from 'react-native';
 import { styles } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CateoryTileRow, Category } from 'components/common/category';
-import { TileColumn } from 'components/common/tiles';
+import { Tile, TileColumn } from 'components/common/tiles';
+import { useVendorsAtom } from './atoms';
+import { useAtomValue } from 'jotai';
 
 const categories: Category[] = [
   {
@@ -22,7 +24,14 @@ const categories: Category[] = [
   },
 ];
 
-const Vendors = () => {
+interface VendorsProps {
+  href: string;
+}
+
+const Vendors = ({ href }: VendorsProps) => {
+  const vendorsAtom = useVendorsAtom(href);
+  const vendors = useAtomValue(vendorsAtom);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>

@@ -1,46 +1,56 @@
-import { ScheduleItem } from "components/schedule/types";
-import { ScheduleImages } from "modals/schedule/types";
+// Generic Types
+export interface Image {
+  url: string;
+  alt: string;
+}
 
-export interface ScheduleItemResponse {
-  scheduleItem: ScheduleItem;
-  scheduleImages: ScheduleImages[];
+export interface Resource {
+  href: string;
+  auth: string | null;
+}
+
+// Entities
+export interface Vendor {
+  name: string;
+  description: string;
+  images: Image[];
 }
 
 export interface Event {
-  id: number;
   name: string;
-  image: string;
   description: string;
-  start_date: string;
-  end_date: string;
-  resources: {
-    vendors: string;
-    schedule: string;
+  images: Image[];
+}
+
+// Base Resource Types
+type BaseIndexResource<T extends string> = {
+  [K in T]: Resource;
+}
+
+// Entity-specific Resource Types
+type VendorResources = {
+  show: {
+    images: Image[];
   };
+  index: BaseIndexResource<'vendor'>;
 }
 
-export interface Vendor {
-  id: number;
-  name: string;
-  headerImage: string;
-  images: string[];
-  description: string;
-  resources: {
-    // Vendors URL
-    vendor: string;
-  }
+type EventResources = {
+  show: {
+    images: Image[];
+  };
+  index: BaseIndexResource<'event'>;
 }
 
-export interface BaseVendor {
-  id: number;
-  name: string;
-  headerImage: string;
-  description: string;
-  resources: {
-    // Vendors URL
-    vendor: string;
-  }
+// Generic Resource Container
+export type WithResources<TEntity, TResource> = TEntity & {
+  resources: TResource;
 }
 
-export type EventsResponse = Event[];
-export type VendorsResponse = BaseVendor[];
+// Entity-specific Types
+export type ShowVendor = WithResources<Vendor, VendorResources['show']>;
+export type ShowEvent = WithResources<Event, EventResources['show']>;
+
+// Array Types
+export type IndexVendors = Array<WithResources<Vendor[], BaseIndexResource<'vendor'>>>;
+export type IndexEvents = Array<WithResources<Event[], BaseIndexResource<'event'>>>;

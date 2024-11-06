@@ -19,8 +19,6 @@ const Home = ({ navigation }: HomeProps) => {
   const events = useAtomValue(eventsAtom);
   const setSelectedEvent = useSetAtom(selectedEventAtom);
 
-  console.log(events);
-
   if (events.loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
