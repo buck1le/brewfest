@@ -37,7 +37,7 @@ type VendorResources = {
 
 type EventResources = {
   show: {
-    images: Image[];
+    vendors: Resource;
   };
   index: BaseIndexResource<'event'>;
 }

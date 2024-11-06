@@ -1,9 +1,9 @@
 import { atom } from "jotai";
 
 import { createResourceAtom } from "./resources";
-import { EventResource } from "types/api-responses";
+import { ShowEvent } from "types/api-responses";
 
-const selectedEventAtom = atom<EventResource | null>(null);
+const selectedEventAtom = atom<ShowEvent | null>(null);
 
 export {
   createResourceAtom,

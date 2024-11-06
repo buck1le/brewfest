@@ -1,29 +1,35 @@
-import { styles } from './styles';
+import { Resource } from 'types/api-responses';
 
-import { View, Text, Image } from 'react-native';
 
-interface TileProps {
+interface BaseTileProps<T = Record<string, Resource>> {
   title: string;
   description: string;
   image: string;
+  resources: T
 }
 
-type TilesProps = {
-  tiles: TileProps[];
+interface TileProps<T extends BaseTileProps> {
+  item: T;
 }
 
-const Tile = ({ title, description, image }: TileProps) => {
+interface VendorTileProps extends BaseTileProps {
+  vendor: Resource;
+}
+
+
+
+const Tile = <T extends BaseTileProps>({ item, onPress }: TileProps<T>) => {
   return (
   );
 }
 
-const TileColumn = ({ tiles }: TilesProps) => {
+const TileColumn = <T extends BaseTileProps>({ data }: { data: T[] }) => {
   return (
     
   );
 }
 
-const TileGrid = ({ tiles }: TilesProps) => {
+const TileGrid = <T extends BaseTileProps>({ data }: { data: T[] }) => {
   return (
   );
 }
