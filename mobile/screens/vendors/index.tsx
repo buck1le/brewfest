@@ -6,6 +6,7 @@ import { Tile, TileColumn } from 'components/common/tiles';
 import { useVendorsAtom } from './atoms';
 import { useAtomValue } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
+import { Vendor } from 'types/api-responses';
 
 const categories: Category[] = [
   {
@@ -32,8 +33,12 @@ const Vendors = () => {
     return <Text>Please select an event</Text>
   }
 
+  console.log('Selected event', selectedEvent);
+
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
+
+  console.log('Vendors', vendors);
 
   if (vendors.loading) {
     return <Text>Loading...</Text>
@@ -47,15 +52,20 @@ const Vendors = () => {
     return <Text>No data</Text>
   }
 
+  const navigateToVendor = (vendor: Vendor) => {
+    console.log('Navigate to vendor', vendor);
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <CateoryTileRow categories={categories} />
         <View style={styles.content}>
-          <TileColumn data={vendors.data} />
+          <TileColumn data={vendors.data} onClick={navigateToVendor}/>
         </View>
       </View>
-    </SafeAreaView>);
+    </SafeAreaView>
+  )
 }
 
 export default Vendors;

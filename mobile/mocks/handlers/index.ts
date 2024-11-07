@@ -13,6 +13,11 @@ export const handlers = [
         description: "The World Wide Beer Festival",
         start_date: "2022-01-01",
         end_date: "2022-01-02",
+        resources: {
+          vendors: {
+            href: `${HOST}/events/2/vendors`,
+          },
+        },
       },
       {
         id: 2,
@@ -21,8 +26,17 @@ export const handlers = [
         description: "The World Wide Beer Festival",
         start_date: "2022-01-01",
         end_date: "2022-01-02",
+        resources: {
+          vendors: {
+            href: `${HOST}/events/2/vendors`,
+          },
+        },
       }
     ]
     );
+  }),
+  http.get(`${HOST}/events/2/vendors`, () => {
+    return HttpResponse.json([
+    ])
   }),
 ];

@@ -11,15 +11,15 @@ export interface Resource {
 
 // Entities
 export interface Vendor {
-  name: string;
+  title: string;
   description: string;
-  images: Image[];
+  image: Image[];
 }
 
 export interface Event {
   name: string;
   description: string;
-  images: Image[];
+  image: Image[];
 }
 
 // Base Resource Types
@@ -52,5 +52,5 @@ export type ShowVendor = WithResources<Vendor, VendorResources['show']>;
 export type ShowEvent = WithResources<Event, EventResources['show']>;
 
 // Array Types
-export type IndexVendors = Array<WithResources<Vendor[], BaseIndexResource<'vendor'>>>;
-export type IndexEvents = Array<WithResources<Event[], BaseIndexResource<'event'>>>;
+export type IndexVendors = Array<WithResources<Vendor, BaseIndexResource<'vendor'>>>;
+export type IndexEvents = Array<WithResources<Event, BaseIndexResource<'event'>>>;
