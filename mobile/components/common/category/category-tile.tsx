@@ -84,7 +84,8 @@ const CategoryTile = ({ category }: { category: Category }) => {
         {
           backgroundColor,
           transform: [{ scale }],
-          opacity
+          opacity,
+          marginBottom: 20,
         },
       ]}
     >
