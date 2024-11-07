@@ -1,5 +1,7 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { Image, Resource } from 'types/api-responses';
+
+import { styles } from "./styles";
 
 
 interface BaseTileProps {
@@ -15,8 +17,12 @@ interface TileProps<T extends BaseTileProps> {
 
 const Tile = <T extends BaseTileProps>({ item, onClick }: TileProps<T>) => {
   return (
-    <View>
-      <Text>{item.title}</Text>
+    <View style={styles.tileContainer}>
+      <Text style={{
+        fontSize: 20,
+        color: 'black',
+      }}
+        >{item.title}</Text>
     </View >
   );
 }
@@ -28,11 +34,11 @@ interface TilesProps<T extends BaseTileProps> {
 
 const TileColumn = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) => {
   return (
-    <View>
+    <ScrollView contentContainerStyle={styles.tilesColumContainer}>
       {data.map((item, index) => (
         <Tile key={index} item={item} onClick={onClick} />
       ))}
-    </View>
+    </ScrollView>
   );
 }
 
