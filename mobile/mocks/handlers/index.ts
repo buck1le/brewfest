@@ -37,6 +37,36 @@ export const handlers = [
   }),
   http.get(`${HOST}/events/2/vendors`, () => {
     return HttpResponse.json([
+      {
+        title: "Vendor 1",
+        description: "Vendor 1 description",
+        image: [
+          {
+            url: `${BREW_FEST_IMAGE_HOST}/vendor1.png`,
+            alt: "Vendor 1",
+          }
+        ],
+      },
+      {
+        title: "Vendor 1",
+        description: "Vendor 1 description",
+        image: [
+          {
+            url: `${BREW_FEST_IMAGE_HOST}/vendor1.png`,
+            alt: "Vendor 1",
+          }
+        ],
+      },
+      {
+        title: "Vendor 1",
+        description: "Vendor 1 description",
+        image: [
+          {
+            url: `${BREW_FEST_IMAGE_HOST}/vendor1.png`,
+            alt: "Vendor 1",
+          }
+        ],
+      }
     ])
   }),
 ];
