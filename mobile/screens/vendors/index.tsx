@@ -33,12 +33,8 @@ const Vendors = () => {
     return <Text>Please select an event</Text>
   }
 
-  console.log('Selected event', selectedEvent);
-
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
-
-  console.log('Vendors', vendors);
 
   if (vendors.loading) {
     return <Text>Loading...</Text>

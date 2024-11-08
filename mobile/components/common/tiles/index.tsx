@@ -1,5 +1,5 @@
-import { View, Text, ScrollView } from "react-native";
-import { Image, Resource } from 'types/api-responses';
+import { View, Text, ScrollView, Image } from "react-native";
+import { Image as ImageResource, Resource } from 'types/api-responses';
 
 import { styles } from "./styles";
 
@@ -7,7 +7,7 @@ import { styles } from "./styles";
 interface BaseTileProps {
   title: string;
   description: string;
-  image: Image[];
+  image: ImageResource;
 }
 
 interface TileProps<T extends BaseTileProps> {
@@ -18,11 +18,22 @@ interface TileProps<T extends BaseTileProps> {
 const Tile = <T extends BaseTileProps>({ item, onClick }: TileProps<T>) => {
   return (
     <View style={styles.tileContainer}>
-      <Text style={{
-        fontSize: 20,
-        color: 'black',
-      }}
-        >{item.title}</Text>
+      <Image
+        style={styles.vendorImage}
+        source={{ uri: item.image.url }} />
+      <View style={styles.textContainer}>
+        <Text style={{
+          fontSize: 18,
+          fontWeight: 'bold',
+        }}>
+          {item.title}
+        </Text>
+        <Text style={{
+          marginTop: 5,
+        }}>
+          {item.description}
+        </Text>
+      </View>
     </View >
   );
 }

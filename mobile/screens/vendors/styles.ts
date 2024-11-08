@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     marginTop: 80,
+    alignItems: 'center',
   },
   content: {
     flex: 1,
