@@ -15,14 +15,15 @@ type IconNames = keyof typeof Ionicons.glyphMap;
 export interface Category {
   name: string;
   icon: IconNames;
-  onPress: () => void;
+  query?: string;
 }
 
 type CategoryTileRowProps = {
   categories: Category[];
+  setCategory: (category: string | undefined) => void;
 };
 
-const CateoryTileRow = ({ categories }: CategoryTileRowProps) => {
+const CateoryTileRow = ({ categories, setCategory }: CategoryTileRowProps) => {
   return (
     <View style={{
       flexDirection: 'row',
@@ -34,6 +35,7 @@ const CateoryTileRow = ({ categories }: CategoryTileRowProps) => {
       }}>
         {categories.map((category, i) => (
           <CategoryTile
+            setCategory={setCategory}
             category={category}
             key={i}
           />
@@ -43,7 +45,12 @@ const CateoryTileRow = ({ categories }: CategoryTileRowProps) => {
   );
 }
 
-const CategoryTile = ({ category }: { category: Category }) => {
+interface CategoryTileProps {
+  category: Category;
+  setCategory: (category: string | undefined) => void;
+}
+
+const CategoryTile = ({ category, setCategory }: CategoryTileProps) => {
   const [scale] = useState(new Animated.Value(1));
   const [opacity] = useState(new Animated.Value(1));
 
@@ -107,7 +114,10 @@ const CategoryTile = ({ category }: { category: Category }) => {
   );
 
   return (
-    <Pressable onPress={() => null} onPressIn={handlePressIn} onPressOut={handlePressOut}>
+    <Pressable
+      onPress={() => setCategory(category.query)}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}>
       {content}
     </Pressable>
   );

@@ -1,7 +1,7 @@
 import { TouchableWithoutFeedback, View } from 'react-native';
 import Schedule from 'screens/schedule';
 import Map from 'screens/map';
-import Vendors from 'screens/vendors';
+import Vendors from 'screens/vendors/categories';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
