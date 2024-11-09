@@ -26,6 +26,11 @@ const categories: Category[] = [
   },
 ];
 
+
+const filterVedorByCategory = (vendors: Vendor[], category: string) => {
+  return vendors.filter(vendor => vendor.category.includes(category));
+}
+
 const Vendors = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
   const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
@@ -56,9 +61,16 @@ const Vendors = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <CateoryTileRow categories={categories} setCategory={setSelectedCategory}/>
+        <CateoryTileRow
+          categories={categories}
+          setCategory={setSelectedCategory}
+          selectedCategory={selectedCategory}
+        />
         <View style={styles.content}>
-          <TileColumn data={vendors.data} onClick={navigateToVendor} />
+          <TileColumn data={selectedCategory ?
+            filterVedorByCategory(vendors.data, selectedCategory)
+            : vendors.data
+          } onClick={navigateToVendor} />
         </View>
       </View>
     </SafeAreaView>

@@ -14,6 +14,7 @@ export interface Vendor {
   title: string;
   description: string;
   image: Image[];
+  category: string;
 }
 
 export interface Event {

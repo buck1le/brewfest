@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image } from "react-native";
-import { Image as ImageResource, Resource } from 'types/api-responses';
+import { Image as ImageResource } from 'types/api-responses';
 
 import { styles } from "./styles";
 

@@ -20,10 +20,15 @@ export interface Category {
 
 type CategoryTileRowProps = {
   categories: Category[];
+  selectedCategory?: string;
   setCategory: (category: string | undefined) => void;
 };
 
-const CateoryTileRow = ({ categories, setCategory }: CategoryTileRowProps) => {
+const CateoryTileRow = ({
+  categories,
+  selectedCategory,
+  setCategory
+}: CategoryTileRowProps) => {
   return (
     <View style={{
       flexDirection: 'row',
@@ -36,6 +41,7 @@ const CateoryTileRow = ({ categories, setCategory }: CategoryTileRowProps) => {
         {categories.map((category, i) => (
           <CategoryTile
             setCategory={setCategory}
+            selected={selectedCategory === category.query}
             category={category}
             key={i}
           />
@@ -47,17 +53,24 @@ const CateoryTileRow = ({ categories, setCategory }: CategoryTileRowProps) => {
 
 interface CategoryTileProps {
   category: Category;
+  selected: boolean;
   setCategory: (category: string | undefined) => void;
 }
 
-const CategoryTile = ({ category, setCategory }: CategoryTileProps) => {
+const CategoryTile = ({
+  category,
+  selected,
+  setCategory
+}: CategoryTileProps) => {
   const [scale] = useState(new Animated.Value(1));
   const [opacity] = useState(new Animated.Value(1));
 
-  const backgroundColor = scale.interpolate({
-    inputRange: [0.98, 1],
-    outputRange: ['rgb(210, 230, 255)', 'white'],
-  });
+  const backgroundColor = selected ?
+    'lightblue' :
+    scale.interpolate({
+      inputRange: [0.98, 1],
+      outputRange: ['rgb(210, 230, 255)', 'white'],
+    });
 
   const animateScale = (newScale: number) => {
     Animated.spring(scale, {
@@ -112,6 +125,8 @@ const CategoryTile = ({ category, setCategory }: CategoryTileProps) => {
       </View>
     </Animated.View>
   );
+
+  console.log("setCategory", setCategory);
 
   return (
     <Pressable
