@@ -1,12 +1,14 @@
 import { Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { styles } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CateoryTileRow, Category } from 'components/common/category';
-import { selectedCategoryAtom, useVendorsAtom } from './atoms';
-import { useAtom, useAtomValue } from 'jotai';
+import { categoryAtom, selectedCategoryAtom, useVendorsAtom, writeCategoryAtom } from './atoms';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
+import { useEffect, useState } from 'react';
 
 const categories: Category[] = [
   {
@@ -33,7 +35,10 @@ const filterVedorByCategory = (vendors: Vendor[], category: string) => {
 
 const Vendors = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
-  const [selectedCategory, setSelectedCategory] = useAtom(selectedCategoryAtom);
+  const selectedCategory = useAtomValue(categoryAtom);
+  const setCategoryAtom = useSetAtom(writeCategoryAtom);
+
+  const [imagesLoading, setImagesLoading] = useState(true);
 
   if (!selectedEvent) {
     return <Text>Please select an event</Text>
@@ -63,14 +68,16 @@ const Vendors = () => {
       <View style={styles.container}>
         <CateoryTileRow
           categories={categories}
-          setCategory={setSelectedCategory}
+          setCategory={setCategoryAtom}
           selectedCategory={selectedCategory}
         />
         <View style={styles.content}>
-          <TileColumn data={selectedCategory ?
-            filterVedorByCategory(vendors.data, selectedCategory)
-            : vendors.data
-          } onClick={navigateToVendor} />
+          <TileColumn
+            data={selectedCategory ?
+              filterVedorByCategory(vendors.data, selectedCategory)
+              : vendors.data
+            }
+            onClick={navigateToVendor} />
         </View>
       </View>
     </SafeAreaView>

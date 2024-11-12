@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, Image } from "react-native";
-import { Image as ImageResource } from 'types/api-responses';
+import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { Image } from "expo-image";
+import { Image as ImageResource, Vendor } from 'types/api-responses';
 
 import { styles } from "./styles";
+import { useEffect, useState } from "react";
 
 
 interface BaseTileProps {
@@ -44,6 +46,33 @@ interface TilesProps<T extends BaseTileProps> {
 }
 
 const TileColumn = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) => {
+  const [imagesLoading, setImagesLoading] = useState(false);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      setImagesLoading(true);
+
+      try {
+        await Image.prefetch(data.map(item => item.image.url));
+      } finally {
+        setImagesLoading(false);
+      }
+    }
+    loadImages();
+
+    return () => {
+      setImagesLoading(false);
+    }
+  }, []);
+
+  if (imagesLoading) {
+    return (
+      <View style={styles.tilesColumContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.tilesColumContainer}>
       {data.map((item, index) => (
