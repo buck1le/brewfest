@@ -1,14 +1,13 @@
 import { Text, View } from 'react-native';
-import { Image } from 'expo-image';
 import { styles } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CateoryTileRow, Category } from 'components/common/category';
-import { categoryAtom, selectedCategoryAtom, useVendorsAtom, writeCategoryAtom } from './atoms';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { categoryAtom, useVendorsAtom, writeCategoryAtom } from './atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const categories: Category[] = [
   {
@@ -38,13 +37,11 @@ const Vendors = () => {
   const selectedCategory = useAtomValue(categoryAtom);
   const setCategoryAtom = useSetAtom(writeCategoryAtom);
 
-  const [imagesLoading, setImagesLoading] = useState(true);
-
   if (!selectedEvent) {
     return <Text>Please select an event</Text>
   }
 
-  const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href, selectedCategory);
+  const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
   if (vendors.loading) {
