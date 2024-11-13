@@ -7,7 +7,6 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
-import { useState } from 'react';
 
 const categories: Category[] = [
   {
