@@ -67,10 +67,7 @@ const CategoryTile = ({
 
   const backgroundColor = selected ?
     'lightblue' :
-    scale.interpolate({
-      inputRange: [0.98, 1],
-      outputRange: ['rgb(210, 230, 255)', 'white'],
-    });
+    'white';
 
   const animateScale = (newScale: number) => {
     Animated.spring(scale, {
