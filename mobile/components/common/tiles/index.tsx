@@ -14,12 +14,22 @@ interface BaseTileProps {
 
 interface TileProps<T extends BaseTileProps> {
   item: T;
+  heiglight?: boolean;
+  children?: React.ReactNode;
   onClick: (arg: T) => void;
 }
 
-const Tile = <T extends BaseTileProps>({ item, onClick }: TileProps<T>) => {
+const Tile = <T extends BaseTileProps>({
+  item,
+  heiglight,
+  onClick,
+  children
+}: TileProps<T>) => {
   return (
-    <View style={styles.tileContainer}>
+    <View style={[
+      styles.tileContainer,
+      heiglight && styles.tileContainerHightlight
+    ]}>
       <Image
         style={styles.vendorImage}
         source={{ uri: item.image.url }} />
@@ -35,6 +45,7 @@ const Tile = <T extends BaseTileProps>({ item, onClick }: TileProps<T>) => {
         }}>
           {item.description}
         </Text>
+        {children}
       </View>
     </View >
   );
@@ -42,10 +53,15 @@ const Tile = <T extends BaseTileProps>({ item, onClick }: TileProps<T>) => {
 
 interface TilesProps<T extends BaseTileProps> {
   data: T[];
+  hightlightIndex?: number;
   onClick: (arg: T) => void;
 }
 
-const TileColumn = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) => {
+const TileColumn = <T extends BaseTileProps>({
+  data,
+  hightlightIndex,
+  onClick
+}: TilesProps<T>) => {
   const [imagesLoading, setImagesLoading] = useState(false);
 
   useEffect(() => {
@@ -76,7 +92,10 @@ const TileColumn = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) =
   return (
     <ScrollView contentContainerStyle={styles.tilesColumContainer}>
       {data.map((item, index) => (
-        <Tile key={index} item={item} onClick={onClick} />
+        <Tile key={index} item={item} onClick={onClick} heiglight={
+          index === hightlightIndex
+        }
+        />
       ))}
     </ScrollView>
   );

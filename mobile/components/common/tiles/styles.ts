@@ -14,6 +14,10 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 4,
   },
+  tileContainerHightlight: {
+    borderWidth: 2,
+    borderColor: 'red',
+  },
   vendorImage: {
     height: 130,
     width: 200,
