@@ -34,5 +34,6 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     padding: 10,
+    flexShrink: 1,
   },
 });
