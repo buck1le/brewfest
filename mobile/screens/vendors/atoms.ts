@@ -1,4 +1,4 @@
-import { createResourceAtom, createResourceWithCategoryAtom } from "atoms/resources";
+import { createResourceAtom } from "atoms/resources";
 import { atom } from "jotai";
 import { useMemo } from "react";
 import { IndexVendors } from "types/api-responses";

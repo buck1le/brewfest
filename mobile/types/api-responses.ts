@@ -23,6 +23,18 @@ export interface Event {
   image: Image[];
 }
 
+export interface ScheduleItem {
+  id: number;
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  createdAt: string;
+  updatedAt: string;
+  eventId: number;
+  image: Image;
+}
+
 // Base Resource Types
 type BaseIndexResource<T extends string> = {
   [K in T]: Resource;
@@ -39,6 +51,7 @@ type VendorResources = {
 type EventResources = {
   show: {
     vendors: Resource;
+    schedule: Resource;
   };
   index: BaseIndexResource<'event'>;
 }
@@ -54,4 +67,5 @@ export type ShowEvent = WithResources<Event, EventResources['show']>;
 
 // Array Types
 export type IndexVendors = Array<WithResources<Vendor, BaseIndexResource<'vendor'>>>;
+export type IndexSchedule = Array<WithResources<ScheduleItem, BaseIndexResource<'schedule'>>>;
 export type IndexEvents = Array<WithResources<Event, BaseIndexResource<'event'>>>;
