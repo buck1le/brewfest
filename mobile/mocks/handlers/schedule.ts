@@ -28,7 +28,7 @@ export const scheduleHandlers = [
         updatedAt: "2022-01-01T00:00:00",
         eventId: 2,
         image: {
-          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_2.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Event 1",
         }
       },

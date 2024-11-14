@@ -17,6 +17,9 @@ export const handlers = [
           vendors: {
             href: `${HOST}/events/2/vendors`,
           },
+          schedule: {
+            href: `${HOST}/events/2/schedule`,
+          },
         },
       },
       {
@@ -29,6 +32,9 @@ export const handlers = [
         resources: {
           vendors: {
             href: `${HOST}/events/2/vendors`,
+          },
+          schedule: {
+            href: `${HOST}/events/2/schedule`,
           },
         },
       }

@@ -8,6 +8,7 @@ import { ScheduleNavigationProp } from './types';
 import { useAtomValue } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
 import { useScheduleAtom } from './atoms';
+import { TileColumn } from 'components/common/tiles';
 
 
 const parseTime = (timeString: string) => {
@@ -44,7 +45,7 @@ interface ScheduleProps {
   navigation: ScheduleNavigationProp;
 }
 
-const Schedule = ( { navigation }: ScheduleProps ) => {
+const Schedule = ({ navigation }: ScheduleProps) => {
   const selectedEvent = useAtomValue(selectedEventAtom);
 
   if (!selectedEvent) {
@@ -69,17 +70,8 @@ const Schedule = ( { navigation }: ScheduleProps ) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.eventList}>
-        <FlatList
-          data={schedule}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item, index }) => (
-          <TouchableOpacity 
-            onPress={() => handleItemPress(item)}>
-            <ItemCard item={item} isCurrent={index === currentItemIndex} />
-          </TouchableOpacity>
-          )}
-          contentContainerStyle={styles.listContainer}
-          numColumns={1}
+        <TileColumn
+          data={schedule.data}
         />
       </View>
     </SafeAreaView>
