@@ -10,7 +10,7 @@ export const vendorHandlers = [
         category: "drinks",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       },
@@ -20,7 +20,7 @@ export const vendorHandlers = [
         category: "food",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       },
@@ -30,7 +30,7 @@ export const vendorHandlers = [
         category: "shop",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       }
@@ -44,7 +44,7 @@ export const vendorHandlers = [
         category: "shop",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       }
@@ -58,7 +58,7 @@ export const vendorHandlers = [
         category: "shop",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       }
@@ -72,7 +72,7 @@ export const vendorHandlers = [
         category: "drinks",
         image:
         {
-          url: `${BREW_FEST_IMAGE_HOST}/vendor_1.png`,
+          url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Vendor 1",
         }
       },

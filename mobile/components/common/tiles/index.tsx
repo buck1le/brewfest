@@ -1,9 +1,11 @@
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { Image as ImageResource, Vendor } from 'types/api-responses';
+import { Skeleton } from "moti/skeleton";
 
-import { styles } from "./styles";
+import { borderRadius, styles } from "./styles";
 import { useEffect, useState } from "react";
+import { MotiView } from "moti";
 
 
 interface BaseTileProps {
@@ -51,6 +53,49 @@ const Tile = <T extends BaseTileProps>({
   );
 }
 
+const TileSkeleton = () => {
+  return (
+    <View style={styles.tileContainer}>
+      <Skeleton.Group show={true}>
+        {/* Image skeleton */}
+        <Skeleton
+          width={200}
+          height={130}
+          radius={borderRadius}
+          colorMode="light"
+        />
+
+        <MotiView style={styles.textContainer}>
+          <Skeleton
+            width={120}
+            height={20}
+            radius={4}
+            colorMode="light"
+          />
+
+          <View style={{
+            marginTop: 8,
+            gap: 4,
+          }}>
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+          </View>
+        </MotiView>
+      </Skeleton.Group>
+    </View>
+  );
+};
+
 interface TilesProps<T extends BaseTileProps> {
   data: T[];
   hightlightIndex?: number;
@@ -83,9 +128,11 @@ const TileColumn = <T extends BaseTileProps>({
 
   if (imagesLoading) {
     return (
-      <View style={styles.tilesColumContainer}>
-        <ActivityIndicator size="large" />
-      </View>
+      <ScrollView contentContainerStyle={styles.tilesColumContainer}>
+        {[1, 2, 3].map(index => (
+          <TileSkeleton key={index} />
+        ))}
+      </ScrollView>
     );
   }
 
@@ -113,6 +160,7 @@ const TileGrid = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) => 
 
 export {
   Tile,
+  TileSkeleton,
   TileColumn,
   TileGrid,
 };

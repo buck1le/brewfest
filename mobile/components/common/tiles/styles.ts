@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-const borderRadius = 6;
+export const borderRadius = 6;
 
 export const styles = StyleSheet.create({
   tileContainer: {
