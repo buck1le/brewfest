@@ -11,10 +11,15 @@ export interface Resource {
 
 // Entities
 export interface Vendor {
+  id: number;
   title: string;
   description: string;
   image: Image[];
   category: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface Event {

@@ -1,6 +1,6 @@
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { Image } from "expo-image";
-import { Image as ImageResource, Vendor } from 'types/api-responses';
+import { Image as ImageResource } from 'types/api-responses';
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
@@ -16,25 +16,27 @@ interface BaseTileProps {
 
 interface TileProps<T extends BaseTileProps> {
   item: T;
-  heiglight?: boolean;
+  highlight?: boolean;
   children?: React.ReactNode;
   onClick: (arg: T) => void;
 }
 
 const Tile = <T extends BaseTileProps>({
   item,
-  heiglight,
+  highlight,
   onClick,
   children
 }: TileProps<T>) => {
   return (
     <View style={[
       styles.tileContainer,
-      heiglight && styles.tileContainerHightlight
-    ]}>
+      highlight && styles.tileContainerHightlight
+    ]}
+    >
       <Image
         style={styles.vendorImage}
-        source={{ uri: item.image.url }} />
+        source={{ uri: item.image.url }}
+      />
       <View style={styles.textContainer}>
         <Text style={{
           fontSize: 18,
@@ -57,7 +59,6 @@ const TileSkeleton = () => {
   return (
     <View style={styles.tileContainer}>
       <Skeleton.Group show={true}>
-        {/* Image skeleton */}
         <Skeleton
           width={200}
           height={130}
@@ -128,23 +129,30 @@ const TileColumn = <T extends BaseTileProps>({
 
   if (imagesLoading) {
     return (
-      <ScrollView contentContainerStyle={styles.tilesColumContainer}>
-        {[1, 2, 3].map(index => (
-          <TileSkeleton key={index} />
-        ))}
-      </ScrollView>
+      <SafeAreaView>
+        <ScrollView contentContainerStyle={styles.tilesColumContainer}>
+          {[1, 2, 3].map(index => (
+            <TileSkeleton key={index} />
+          ))}
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.tilesColumContainer}>
-      {data.map((item, index) => (
-        <Tile key={index} item={item} onClick={onClick} heiglight={
-          index === hightlightIndex
-        }
-        />
-      ))}
-    </ScrollView>
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={styles.tilesColumContainer}>
+        {data.map((item, index) => (
+          <Tile
+            key={index}
+            item={item}
+            onClick={onClick}
+            highlight={index === hightlightIndex
+            }
+          />
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
