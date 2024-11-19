@@ -12,6 +12,8 @@ import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
 import { selectedEventAtom } from "./atoms";
 import { useAtomValue } from "jotai";
+import { modalVisableAtom } from "./atoms";
+import { View } from "react-native";
 
 server.listen({
   onUnhandledRequest: 'bypass',
@@ -37,50 +39,67 @@ const LogoTitle = () => {
 }
 
 const App = () => {
+  const modalVisable = useAtomValue(modalVisableAtom);
+
   return (
-    <NavigationContainer
-      theme={{
-        colors: {
-          background: colors.primary,
-        },
-      }}
-    >
-      <Stack.Navigator
-        initialRouteName="Home"
-      >
-        <Stack.Group screenOptions={{
-          headerStyle: {
-            backgroundColor: colors.primary,
+    <>
+      <NavigationContainer
+        theme={{
+          colors: {
+            background: colors.primary,
           },
-          headerTintColor: colors.primary,
-          headerShadowVisible: false,
-          headerLeftContainerStyle: styles.leftHeader,
         }}
+      >
+        <Stack.Navigator
+          initialRouteName="Home"
         >
-          <Stack.Screen name="Home" component={Home} />
-        </Stack.Group>
-        <Stack.Group screenOptions={{
-          headerTransparent: true,
-          headerLeft: () => <LogoTitle />,
-          headerLeftContainerStyle: styles.leftHeader,
-          headerTitle: '',
-        }}>
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-        </Stack.Group>
-        <Stack.Group screenOptions={{
-          presentation: 'card',
-          headerShadowVisible: false,
-          headerTransparent: true,
-          headerTitle: '',
-          headerBackTitle: 'Schedule',
-        }}>
-          <Stack.Screen name="ScheduleItem" component={Item}
-          />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Group screenOptions={{
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+            headerTintColor: colors.primary,
+            headerShadowVisible: false,
+            headerLeftContainerStyle: styles.leftHeader,
+          }}
+          >
+            <Stack.Screen name="Home" component={Home} />
+          </Stack.Group>
+          <Stack.Group screenOptions={{
+            headerTransparent: true,
+            headerLeft: () => <LogoTitle />,
+            headerLeftContainerStyle: styles.leftHeader,
+            headerTitle: '',
+          }}>
+            <Stack.Screen name="Main" component={MainTabNavigator} />
+          </Stack.Group>
+          <Stack.Group screenOptions={{
+            presentation: 'card',
+            headerShadowVisible: false,
+            headerTransparent: true,
+            headerTitle: '',
+            headerBackTitle: 'Schedule',
+          }}>
+            <Stack.Screen name="ScheduleItem" component={Item}
+            />
+          </Stack.Group>
+        </Stack.Navigator>
+      </NavigationContainer>
+      {modalVisable && <Overlay />}
+    </>
   );
 }
+
+const Overlay = () => (
+  <View style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1000,
+  }} />
+);
 
 export default App;
 

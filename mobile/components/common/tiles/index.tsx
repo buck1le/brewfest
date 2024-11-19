@@ -1,14 +1,17 @@
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
+import { View, Text, ScrollView, SafeAreaView, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { Image as ImageResource } from 'types/api-responses';
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
+import { modalVisableAtom } from 'atoms/index';
 import { useEffect, useState } from "react";
 import { MotiView } from "moti";
+import TileModal from "./modal";
+import { useAtom } from "jotai";
 
 
-interface BaseTileProps {
+export interface BaseTileProps {
   title: string;
   description: string;
   image: ImageResource;
@@ -18,7 +21,7 @@ interface TileProps<T extends BaseTileProps> {
   item: T;
   highlight?: boolean;
   children?: React.ReactNode;
-  onClick: (arg: T) => void;
+  onClick: (item: T) => void;
 }
 
 const Tile = <T extends BaseTileProps>({
@@ -28,11 +31,10 @@ const Tile = <T extends BaseTileProps>({
   children
 }: TileProps<T>) => {
   return (
-    <View style={[
-      styles.tileContainer,
-      highlight && styles.tileContainerHightlight
-    ]}
-    >
+    <Pressable
+      style={[styles.tileContainer,
+      highlight && styles.tileContainerHightlight]}
+      onPress={() => onClick(item)}>
       <Image
         style={styles.vendorImage}
         source={{ uri: item.image.url }}
@@ -51,7 +53,7 @@ const Tile = <T extends BaseTileProps>({
         </Text>
         {children}
       </View>
-    </View >
+    </Pressable>
   );
 }
 
@@ -100,15 +102,17 @@ const TileSkeleton = () => {
 interface TilesProps<T extends BaseTileProps> {
   data: T[];
   hightlightIndex?: number;
-  onClick: (arg: T) => void;
 }
+
+type NullableItem<T extends BaseTileProps> = T | null;
 
 const TileColumn = <T extends BaseTileProps>({
   data,
   hightlightIndex,
-  onClick
 }: TilesProps<T>) => {
   const [imagesLoading, setImagesLoading] = useState(false);
+  const [modelVisible, setModalVisible] = useAtom(modalVisableAtom);
+  const [selectedItem, setSelectedItem] = useState<NullableItem<T>>(null);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -127,6 +131,11 @@ const TileColumn = <T extends BaseTileProps>({
     }
   }, []);
 
+  const openModal = (item: T) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  }
+
   if (imagesLoading) {
     return (
       <SafeAreaView>
@@ -142,25 +151,33 @@ const TileColumn = <T extends BaseTileProps>({
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={styles.tilesColumContainer}>
-        {data.map((item, index) => (
-          <Tile
-            key={index}
-            item={item}
-            onClick={onClick}
-            highlight={index === hightlightIndex
-            }
-          />
-        ))}
+        <TileModal
+          animationType="fade"
+          transparent={true}
+          visable={modelVisible && selectedItem !== null}
+          onRequestClose={() => setModalVisible(false)}
+          item={selectedItem}
+        >
+          {data.map((item, index) => (
+            <Tile
+              key={index}
+              item={item}
+              onClick={openModal}
+              highlight={index === hightlightIndex
+              }
+            />
+          ))}
+        </TileModal>
       </ScrollView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
-const TileGrid = <T extends BaseTileProps>({ data, onClick }: TilesProps<T>) => {
+const TileGrid = <T extends BaseTileProps>({ data }: TilesProps<T>) => {
   return (
     <View>
       {data.map((item, index) => (
-        <Tile key={index} item={item} onClick={onClick} />
+        <Tile key={index} item={item} />
       ))}
     </View>
   );
