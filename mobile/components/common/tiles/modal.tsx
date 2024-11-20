@@ -4,7 +4,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { BaseTileProps } from '.';
 
 import { styles } from './modal-styles';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { modalVisableAtom } from 'atoms/index';
 
 interface TileModalProps<T extends BaseTileProps> {
@@ -28,26 +28,25 @@ const TileModal = <T extends BaseTileProps>({
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView>
+      <SafeAreaView style={styles.centeredView}>
         <Modal
           visible={visable}
           animationType={animationType}
           style={styles.modal}
           transparent={transparent}
           statusBarTranslucent
-          onShow={() => {
-            console.log('modal shown')
-            setModalVisable(true)
-          }}
+          onShow={() => setModalVisable(true)}
         >
-          <View style={styles.modalView}>
-            <View style={styles.dragIndicator} />
-            <Text style={styles.modalText}>{item?.title}</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={onRequestClose}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={styles.dragIndicator} />
+              <Text style={styles.modalText}>{item?.title}</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={onRequestClose}>
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
           </View>
         </Modal>
         <View style={{

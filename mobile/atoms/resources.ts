@@ -1,5 +1,7 @@
 import { atom } from "jotai";
 import request from "lib/request";
+import { Image as ImageResource } from "types/api-responses";
+import { Image } from "expo-image";
 
 import { FetchResponse } from "lib/request/types";
 
@@ -77,7 +79,33 @@ const createResourceWithCategoryAtom = <Response>(
   return resourceAtom;
 }
 
+const createPrefetchedImagesAtom = <Response>(
+  images: ImageResource[] | undefined
+) => {
+  const innerAtom = atom<FetchResponse<Response>>({ loading: false });
+  const resourceAtom = atom(
+    (get) => get(innerAtom),
+    async (_, set) => {
+      set(innerAtom, { loading: true });
+
+      try {
+        if (!images) return
+        await Image.prefetch(images.map(item => item.url));
+      } finally {
+        set(innerAtom, { loading: false });
+      }
+    }
+  );
+  resourceAtom.onMount = (set) => {
+    set();
+  };
+
+  return resourceAtom;
+}
+
+
 export {
   createResourceAtom,
-  createResourceWithCategoryAtom
+  createResourceWithCategoryAtom,
+  createPrefetchedImagesAtom
 };

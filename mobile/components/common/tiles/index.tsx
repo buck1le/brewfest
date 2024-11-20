@@ -8,13 +8,17 @@ import { modalVisableAtom } from 'atoms/index';
 import { useEffect, useState } from "react";
 import { MotiView } from "moti";
 import TileModal from "./modal";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import { useImagesAtom } from "./atoms";
 
 
 export interface BaseTileProps {
   title: string;
   description: string;
   image: ImageResource;
+  resources: {
+    images: ImageResource[];
+  };
 }
 
 interface TileProps<T extends BaseTileProps> {
@@ -110,33 +114,18 @@ const TileColumn = <T extends BaseTileProps>({
   data,
   hightlightIndex,
 }: TilesProps<T>) => {
-  const [imagesLoading, setImagesLoading] = useState(false);
   const [modelVisible, setModalVisible] = useAtom(modalVisableAtom);
   const [selectedItem, setSelectedItem] = useState<NullableItem<T>>(null);
 
-  useEffect(() => {
-    const loadImages = async () => {
-      setImagesLoading(true);
-
-      try {
-        await Image.prefetch(data.map(item => item.image.url));
-      } finally {
-        setImagesLoading(false);
-      }
-    }
-    loadImages();
-
-    return () => {
-      setImagesLoading(false);
-    }
-  }, []);
+  const imagesAtom = useImagesAtom(data.map(item => item.image));
+  const images = useAtomValue(imagesAtom);
 
   const openModal = (item: T) => {
     setSelectedItem(item);
     setModalVisible(true);
   }
 
-  if (imagesLoading) {
+  if (images.loading) {
     return (
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.tilesColumContainer}>
@@ -152,7 +141,7 @@ const TileColumn = <T extends BaseTileProps>({
     <SafeAreaView>
       <ScrollView contentContainerStyle={styles.tilesColumContainer}>
         <TileModal
-          animationType="fade"
+          animationType="slide"
           transparent={true}
           visable={modelVisible && selectedItem !== null}
           onRequestClose={() => setModalVisible(false)}
