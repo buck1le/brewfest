@@ -5,7 +5,7 @@ import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
 import { modalVisableAtom } from 'atoms/index';
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MotiView } from "moti";
 import TileModal from "./modal";
 import { useAtom, useAtomValue } from "jotai";
@@ -117,7 +117,11 @@ const TileColumn = <T extends BaseTileProps>({
   const [modelVisible, setModalVisible] = useAtom(modalVisableAtom);
   const [selectedItem, setSelectedItem] = useState<NullableItem<T>>(null);
 
-  const imagesAtom = useImagesAtom(data.map(item => item.image));
+  const imageUrls = useMemo(() => data.map(item => item.image.url), [
+    data.map(item => item.image.url).join(',')
+  ]);
+
+  const imagesAtom = useImagesAtom(imageUrls);
   const images = useAtomValue(imagesAtom);
 
   const openModal = (item: T) => {
