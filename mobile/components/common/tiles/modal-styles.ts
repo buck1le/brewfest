@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+const viewHeight = Dimensions.get('window').height;
 
 export const styles = StyleSheet.create({
   modal: {
@@ -11,20 +13,15 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
+    width: '100%',
+    height: viewHeight * 0.8,
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 35,
+    padding: 20,
+    paddingTop: 10,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
-    width: '100%',
   },
   dragIndicator: {
     width: 40,
@@ -47,6 +44,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
+    flex: 1,
     marginBottom: 15,
     textAlign: 'center',
   },

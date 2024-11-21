@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, Pressable, Modal, Dimensions } from 'react-native';
+import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { BaseTileProps } from '.';
 
@@ -9,7 +10,13 @@ import { modalVisableAtom } from 'atoms/index';
 import { useImagesAtom } from './atoms';
 import { Image } from 'expo-image';
 import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
-import { useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  runOnJS
+} from 'react-native-reanimated';
 
 interface TileModalProps<T extends BaseTileProps> {
   item: T | null;
@@ -32,23 +39,39 @@ const TileModal = <T extends BaseTileProps>({
 }: TileModalProps<T>) => {
   const setModalVisable = useSetAtom(modalVisableAtom);
   const ref = useRef<ICarouselInstance>(null);
-  const progress = useSharedValue<number>(0);
-
   const imageUrls = item?.resources.images.map(image => image.url);
-
   const imagesAtom = useImagesAtom(imageUrls);
   const images = useAtomValue(imagesAtom);
+  const translateY = useSharedValue(0);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
-  const onPressPagination = (index: number) => {
-    ref.current?.scrollTo({
-      /**
-       * Calculate the difference between the current index and the target index
-       * to ensure that the carousel scrolls to the nearest index
-       */
-      count: index - progress.value,
-      animated: true,
-    });
-  };
+  useEffect(() => {
+    if (visable) {
+      translateY.value = 0;
+    }
+  }, [visable]);
+
+  const panGestureHandler = useAnimatedGestureHandler({
+    onStart: () => {
+      translateY.value = 0;
+    },
+    onActive: (event) => {
+      if (event.translationY > 0) {
+        translateY.value = event.translationY;
+      }
+    },
+    onEnd: (event) => {
+      if (event.translationY > 100) {
+        runOnJS(onRequestClose)();
+      } else {
+        translateY.value = withSpring(0);
+      }
+    },
+  });
 
   if (images.loading) {
     console.log('Loading images');
@@ -66,42 +89,43 @@ const TileModal = <T extends BaseTileProps>({
           statusBarTranslucent
           onShow={() => setModalVisable(true)}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={styles.dragIndicator} />
-              <Text style={styles.modalText}>{item?.title}</Text>
-              <Carousel
-                ref={ref}
-                width={width}
-                height={width / 2}
-                data={item?.resources.images}
-                loop
-                renderItem={({ item }) => (
-                  <View
-                    style={{
-                      flex: 1,
-                      borderWidth: 1,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item.url }}
-                      style={{
-                        width: width,
-                        height: width / 2,
-                      }}
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={styles.centeredView}>
+              <PanGestureHandler onGestureEvent={panGestureHandler}>
+                <Animated.View style={[styles.modalView, animatedStyle]}>
+                  <View style={styles.modalView}>
+                    <View style={styles.dragIndicator} />
+                    <Carousel
+                      ref={ref}
+                      width={width}
+                      height={width / 2}
+                      data={item?.resources.images}
+                      loop
+                      autoPlay
+                      autoPlayInterval={3000}
+                      renderItem={({ item }) => (
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Image
+                            source={{ uri: item.url }}
+                            style={{
+                              width: width,
+                              height: width / 2,
+                            }}
+                          />
+                        </View>
+                      )}
                     />
+                    <Text style={styles.modalText}>{item?.title}</Text>
                   </View>
-                )}
-              />
-
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={onRequestClose}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
+                </Animated.View>
+              </PanGestureHandler>
             </View>
-          </View>
+          </GestureHandlerRootView>
         </Modal>
         <View style={{
           gap: 10,
