@@ -33,7 +33,6 @@ export const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2,
   },
   buttonClose: {
     backgroundColor: '#2196F3',
@@ -48,8 +47,4 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-  absoluteFill: {
-  }
-
-
 });

@@ -126,7 +126,7 @@ const TileColumn = <T extends BaseTileProps>({
 
   const openModal = (item: T) => {
     setSelectedItem(item);
-    setModalVisible(true);
+    setModalVisible(!modelVisible);
   }
 
   if (images.loading) {

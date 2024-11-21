@@ -93,35 +93,36 @@ const TileModal = <T extends BaseTileProps>({
             <View style={styles.centeredView}>
               <PanGestureHandler onGestureEvent={panGestureHandler}>
                 <Animated.View style={[styles.modalView, animatedStyle]}>
-                  <View style={styles.modalView}>
-                    <View style={styles.dragIndicator} />
-                    <Carousel
-                      ref={ref}
-                      width={width}
-                      height={width / 2}
-                      data={item?.resources.images}
-                      loop
-                      autoPlay
-                      autoPlayInterval={3000}
-                      renderItem={({ item }) => (
-                        <View
+                  <View style={styles.dragIndicator} />
+                  <Carousel
+                    ref={ref}
+                    width={width}
+                    style={{
+                      backgroundColor: 'red',
+                    }}
+                    height={width / 2}
+                    data={item?.resources.images}
+                    loop
+                    autoPlay
+                    autoPlayInterval={3000}
+                    renderItem={({ item }) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          flex: 1,
+                        }}
+                      >
+                        <Image
+                          source={{ uri: item.url }}
                           style={{
-                            flex: 1,
-                            justifyContent: "center",
+                            width: width,
+                            height: width / 2,
                           }}
-                        >
-                          <Image
-                            source={{ uri: item.url }}
-                            style={{
-                              width: width,
-                              height: width / 2,
-                            }}
-                          />
-                        </View>
-                      )}
-                    />
-                    <Text style={styles.modalText}>{item?.title}</Text>
-                  </View>
+                        />
+                      </View>
+                    )}
+                  />
+                  <Text style={styles.modalText}>{item?.title}</Text>
                 </Animated.View>
               </PanGestureHandler>
             </View>
