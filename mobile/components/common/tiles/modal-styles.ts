@@ -1,6 +1,7 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const viewHeight = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 
 export const styles = StyleSheet.create({
   modal: {
@@ -48,9 +49,9 @@ export const styles = StyleSheet.create({
   },
   carouselContainer: {
     alignItems: 'center',
-    marginBottom: 10,
     width: '100%',
     height: 200,
+    marginBottom: width > 393 ? 30 : 0,
   },
   copyContainer: {
     width: '100%',
