@@ -5,6 +5,7 @@ export const vendorHandlers = [
   http.get(`${HOST}/events/2/vendors`, () => {
     return HttpResponse.json([
       {
+        id: 1,
         title: "Martin House",
         description: "Vendor 1 description",
         category: "drinks",
@@ -23,10 +24,14 @@ export const vendorHandlers = [
               url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
               alt: "Vendor 1",
             }
-          ]
+          ],
+          inventory: {
+            href: `${HOST}/events/2/vendors/1/inventory`
+          }
         }
       },
       {
+        id: 2,
         title: "P-Terry's",
         description: "Vendor 1 description",
         category: "food",
@@ -45,10 +50,14 @@ export const vendorHandlers = [
               url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
               alt: "Vendor 1",
             }
-          ]
+          ],
+          inventory: {
+            href: `${HOST}/events/2/vendors/1/inventory`
+          }
         }
       },
       {
+        id: 3,
         title: "A Shop",
         description: "Vendor 1 description",
         category: "shop",
@@ -67,7 +76,10 @@ export const vendorHandlers = [
               url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
               alt: "Vendor 1",
             }
-          ]
+          ],
+          inventory: {
+            href: `${HOST}/events/2/vendors/1/inventory`
+          }
         }
       }
     ])
