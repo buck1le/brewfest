@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Pressable, Modal, Dimensions } from 'react-native';
+import { View, Text, Pressable, Modal, Dimensions, ScrollView } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { BaseTileProps } from '.';
@@ -94,35 +94,42 @@ const TileModal = <T extends BaseTileProps>({
               <PanGestureHandler onGestureEvent={panGestureHandler}>
                 <Animated.View style={[styles.modalView, animatedStyle]}>
                   <View style={styles.dragIndicator} />
-                  <Carousel
-                    ref={ref}
-                    width={width}
-                    style={{
-                      backgroundColor: 'red',
-                    }}
-                    height={width / 2}
-                    data={item?.resources.images}
-                    loop
-                    autoPlay
-                    autoPlayInterval={3000}
-                    renderItem={({ item }) => (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          flex: 1,
-                        }}
-                      >
-                        <Image
-                          source={{ uri: item.url }}
+                  <View style={styles.carouselContainer}>
+                    <Carousel
+                      ref={ref}
+                      width={width}
+                      height={width / 2}
+                      data={item?.resources.images}
+                      loop
+                      autoPlay
+                      autoPlayInterval={3000}
+                      renderItem={({ item }) => (
+                        <View
                           style={{
-                            width: width,
-                            height: width / 2,
+                            justifyContent: "center",
+                            flex: 1,
                           }}
-                        />
-                      </View>
-                    )}
-                  />
-                  <Text style={styles.modalText}>{item?.title}</Text>
+                        >
+                          <Image
+                            source={{ uri: item.url }}
+                            style={{
+                              width: width,
+                              height: width / 2,
+                            }}
+                          />
+                        </View>
+                      )}
+                    />
+                  </View>
+                  <ScrollView
+                    style={{
+                      flexShrink: 0,
+                      width: '100%',
+                    }}
+                  >
+                    <Text style={styles.itemTitle}>{item?.title}</Text>
+                    <Text>{item?.description}</Text>
+                  </ScrollView>
                 </Animated.View>
               </PanGestureHandler>
             </View>

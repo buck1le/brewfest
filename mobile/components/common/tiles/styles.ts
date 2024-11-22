@@ -26,7 +26,6 @@ export const styles = StyleSheet.create({
     borderBottomLeftRadius: borderRadius,
   },
   tilesColumContainer: {
-    flexDirection: 'column',
     marginTop: 30,
     alignItems: 'center',
     justifyContent: 'center',

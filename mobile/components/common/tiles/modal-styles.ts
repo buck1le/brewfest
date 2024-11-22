@@ -43,8 +43,23 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    flex: 1,
     marginBottom: 15,
     textAlign: 'center',
+  },
+  carouselContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+    width: '100%',
+    height: 200,
+  },
+  copyContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  itemTitle: {
+    alignSelf: 'flex-start',
+    fontSize: 38,
+    marginBottom: 10,
+    fontWeight: 'bold',
   },
 });
