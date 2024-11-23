@@ -14,6 +14,7 @@ export interface Vendor {
   id: number;
   title: string;
   description: string;
+  operatingOutOf: string;
   image: Image;
   category: string;
   location: {

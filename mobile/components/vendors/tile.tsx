@@ -30,9 +30,35 @@ const VendorTile = ({
         }}>
           {item.title}
         </Text>
+        <OperatingOutOfChip operatingOutOf={item.operatingOutOf} />
       </View>
     </Pressable>
   );
 }
+
+const OperatingOutOfChip = ({ operatingOutOf }: { operatingOutOf: string }) => {
+  return (
+    <View style={{
+      backgroundColor: 'lightgrey',
+      padding: 5,
+      borderRadius: 10,
+      marginTop: 5,
+      maxWidth: 100,
+      minWidth: '90%',
+      alignItems: 'center',
+      alignSelf: 'flex-start',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+    }}>
+      <Text style={{
+        fontSize: 12,
+      }}>
+        {operatingOutOf}
+      </Text>
+    </View>
+  );
+}
+  
 
 export default VendorTile;
