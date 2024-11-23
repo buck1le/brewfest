@@ -7,8 +7,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     borderRadius: borderRadius,
-    width: '100%',
-    maxWidth: 350,
+    minWidth: '95%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -16,6 +15,7 @@ export const styles = StyleSheet.create({
   },
   tileContainerHightlight: {
     borderWidth: 2,
+    width: '100%',
     borderColor: 'red',
   },
   vendorImage: {

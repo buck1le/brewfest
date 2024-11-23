@@ -1,16 +1,11 @@
-import { View, Text, ScrollView, SafeAreaView, Pressable } from "react-native";
-import { Image } from "expo-image";
-import { Image as ImageResource, Resource } from 'types/api-responses';
+import { View, ScrollView, SafeAreaView } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
 import { modalVisableAtom } from 'atoms/index';
-import { useMemo, useState } from "react";
 import { MotiView } from "moti";
 import TileModal from "./modal";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useImagesAtom } from "./atoms";
-
+import { useAtom } from "jotai";
 
 const TileSkeleton = () => {
   return (
