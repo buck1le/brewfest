@@ -63,5 +63,13 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
   },
+  textContainer: {
+    width: '100%',
+    padding: 10,
+  },
+  inventoryListContainer: {
+    width: '100%',
+    padding: 20,
+  },
 });
 

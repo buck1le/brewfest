@@ -8,6 +8,8 @@ import { View, Text, Image, ScrollView, Dimensions } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRef } from "react";
 import { styles } from "./modal-styles";
+import { useInventoryAtom } from "components/common/tiles/atoms";
+import { useAtomValue } from "jotai";
 
 const width = Dimensions.get("window").width;
 
@@ -49,12 +51,33 @@ const VendorModal = ({ item }: VendorModalProps) => {
           width: '100%',
         }}
       >
-        <Text style={styles.itemTitle}>{item?.title}</Text>
-        <Text>{item?.description}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.itemTitle}>{item?.title}</Text>
+          <Text>{item?.description}</Text>
+        </View>
+        <View style={styles.inventoryListContainer}>
+          <InventoryList vendor={item} />
+        </View>
       </ScrollView>
     </>
 
   )
+}
+
+const InventoryList = ({ vendor }: { vendor: Vendor }) => {
+  const inventoryAtom = useInventoryAtom(vendor.resources.inventory.href);
+  const inventory = useAtomValue(inventoryAtom);
+
+  return (
+    <View>
+      {inventory.data?.map((item) => (
+        <View key={item.id}>
+          <Text>{item.title}</Text>
+          <Text>{item.description}</Text>
+        </View>
+      ))}
+    </View>
+  );
 }
 
 export default VendorModal;

@@ -59,6 +59,6 @@ const OperatingOutOfChip = ({ operatingOutOf }: { operatingOutOf: string }) => {
     </View>
   );
 }
-  
+
 
 export default VendorTile;
