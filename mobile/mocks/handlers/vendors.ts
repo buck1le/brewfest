@@ -7,9 +7,10 @@ export const vendorHandlers = [
       {
         id: 1,
         title: "Martin House",
-        description: "Vendor 1 description",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.",
         category: "drinks",
-        location: {
+        operatingOutOf: "Austin, TX",
+        eventLocation: {
           latitude: 30.524491,
           longitude: -97.543057,
         },
@@ -33,7 +34,7 @@ export const vendorHandlers = [
       {
         id: 2,
         title: "P-Terry's",
-        description: "Vendor 1 description",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.",
         category: "food",
         location: {
           latitude: 30.524170,

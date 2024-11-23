@@ -1,15 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Pressable, Modal, Dimensions, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Modal } from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { BaseTileProps } from '.';
 
 import { styles } from './modal-styles';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { modalVisableAtom } from 'atoms/index';
-import { useImagesAtom } from './atoms';
-import { Image } from 'expo-image';
-import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
@@ -18,30 +14,25 @@ import Animated, {
   runOnJS
 } from 'react-native-reanimated';
 
-interface TileModalProps<T extends BaseTileProps> {
+interface TileModalProps<T extends object> {
   item: T | null;
   visable: boolean;
   animationType: 'slide' | 'fade' | 'none';
   transparent: boolean;
-  onRequestClose: () => void;
   children: React.ReactNode;
+  RenderItem: React.ComponentType<{ item: T }>;
+  onRequestClose: () => void;
 }
 
-const width = Dimensions.get("window").width;
-
-const TileModal = <T extends BaseTileProps>({
+const TileModal = <T extends object>({
   item,
   visable,
   animationType,
+  RenderItem,
   transparent,
   children,
   onRequestClose,
 }: TileModalProps<T>) => {
-  const setModalVisable = useSetAtom(modalVisableAtom);
-  const ref = useRef<ICarouselInstance>(null);
-  const imageUrls = item?.resources.images.map(image => image.url);
-  const imagesAtom = useImagesAtom(imageUrls);
-  const images = useAtomValue(imagesAtom);
   const translateY = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -73,11 +64,6 @@ const TileModal = <T extends BaseTileProps>({
     },
   });
 
-  if (images.loading) {
-    console.log('Loading images');
-    return <Text>Loading...</Text>
-  }
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
@@ -87,49 +73,13 @@ const TileModal = <T extends BaseTileProps>({
           style={styles.modal}
           transparent={transparent}
           statusBarTranslucent
-          onShow={() => setModalVisable(true)}
         >
           <GestureHandlerRootView style={{ flex: 1 }}>
             <View style={styles.centeredView}>
               <PanGestureHandler onGestureEvent={panGestureHandler}>
                 <Animated.View style={[styles.modalView, animatedStyle]}>
                   <View style={styles.dragIndicator} />
-                  <View style={styles.carouselContainer}>
-                    <Carousel
-                      ref={ref}
-                      width={width}
-                      height={width / 2}
-                      data={item?.resources.images}
-                      loop
-                      autoPlay
-                      autoPlayInterval={3000}
-                      renderItem={({ item }) => (
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            flex: 1,
-                          }}
-                        >
-                          <Image
-                            source={{ uri: item.url }}
-                            style={{
-                              width: width,
-                              height: width / 2,
-                            }}
-                          />
-                        </View>
-                      )}
-                    />
-                  </View>
-                  <ScrollView
-                    style={{
-                      flexShrink: 0,
-                      width: '100%',
-                    }}
-                  >
-                    <Text style={styles.itemTitle}>{item?.title}</Text>
-                    <Text>{item?.description}</Text>
-                  </ScrollView>
+                  {item && <RenderItem item={item} />}
                 </Animated.View>
               </PanGestureHandler>
             </View>
@@ -146,3 +96,48 @@ const TileModal = <T extends BaseTileProps>({
 };
 
 export default TileModal;
+//
+//<View style={styles.carouselContainer}>
+//  <Carousel
+//    ref={ref}
+//    width={width}
+//    height={width / 2}
+//    data={item?.resources.images}
+//    loop
+//    autoPlay
+//    autoPlayInterval={3000}
+//    renderItem={({ item }) => (
+//      <View
+//        style={{
+//          justifyContent: "center",
+//          flex: 1,
+//        }}
+//      >
+//        <Image
+//          source={{ uri: item.url }}
+//          style={{
+//            width: width,
+//            height: width / 2,
+//          }}
+//        />
+//      </View>
+//    )}
+//  />
+//</View>
+//<ScrollView
+//  style={{
+//    flexShrink: 0,
+//    width: '100%',
+//  }}
+//>
+//  <View>
+//    <Text style={styles.itemTitle}>{item?.title}</Text>
+//    <Text>{item?.description}</Text>
+//  </View>
+//  {item?.resources.inventory && (
+//    <View>
+//      <InventoryGrid inventoryResource={item?.resources.inventory} />
+//    </View>
+//  )}
+//  <View>
+                  //  </View>

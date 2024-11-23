@@ -14,18 +14,34 @@ export interface Vendor {
   id: number;
   title: string;
   description: string;
-  image: Image[];
+  image: Image;
   category: string;
   location: {
     latitude: number;
     longitude: number;
   };
+  resources: {
+    images: Image[];
+    inventory: Resource;
+  };
+}
+
+export interface InventoryItem {
+  id: number;
+  title: string;
+  image: Image;
+  category: string;
+  description: string;
 }
 
 export interface Event {
   name: string;
   description: string;
   image: Image[];
+  resources: {
+    vendors: Resource;
+    schedule: Resource;
+  };
 }
 
 export interface ScheduleItem {
@@ -38,39 +54,7 @@ export interface ScheduleItem {
   updatedAt: string;
   eventId: number;
   image: Image;
-}
-
-// Base Resource Types
-type BaseIndexResource<T extends string> = {
-  [K in T]: Resource;
-}
-
-// Entity-specific Resource Types
-type VendorResources = {
-  show: {
+  resources: {
     images: Image[];
   };
-  index: BaseIndexResource<'vendor'>;
 }
-
-type EventResources = {
-  show: {
-    vendors: Resource;
-    schedule: Resource;
-  };
-  index: BaseIndexResource<'event'>;
-}
-
-// Generic Resource Container
-export type WithResources<TEntity, TResource> = TEntity & {
-  resources: TResource;
-}
-
-// Entity-specific Types
-export type ShowVendor = WithResources<Vendor, VendorResources['show']>;
-export type ShowEvent = WithResources<Event, EventResources['show']>;
-
-// Array Types
-export type IndexVendors = Array<WithResources<Vendor, BaseIndexResource<'vendor'>>>;
-export type IndexSchedule = Array<WithResources<ScheduleItem, BaseIndexResource<'schedule'>>>;
-export type IndexEvents = Array<WithResources<Event, BaseIndexResource<'event'>>>;

@@ -1,12 +1,12 @@
 import { createResourceAtom } from "atoms/resources";
 import { atom } from "jotai";
 import { useMemo } from "react";
-import { IndexVendors } from "types/api-responses";
+import { Vendor } from "types/api-responses";
 
 export const useVendorsAtom = (
   href: string,
 ) =>
-  useMemo(() => createResourceAtom<IndexVendors>(href), [href]);
+  useMemo(() => createResourceAtom<Vendor[]>(href), [href]);
 
 export const categoryAtom = atom<string | undefined>(undefined);
 

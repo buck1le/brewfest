@@ -4,9 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CateoryTileRow, Category } from 'components/common/category';
 import { categoryAtom, useVendorsAtom, writeCategoryAtom } from './atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { selectedEventAtom } from 'atoms/index';
+import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
+import { VendorModal, VendorTile } from 'components/vendors';
+import { useImagesAtom } from 'components/common/atoms';
+import { useState } from 'react';
 
 const categories: Category[] = [
   {
@@ -43,9 +46,12 @@ const Vendors = () => {
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
-  if (vendors.loading) {
-    return <Text>Loading...</Text>
-  }
+  const imageUrls = vendors.data?.map(vendor => vendor.image.url);
+  const imagesAtom = useImagesAtom(imageUrls);
+  const images = useAtomValue(imagesAtom);
+  const setModalVisable = useSetAtom(modalVisableAtom);
+
+  const [selectedItem, setSelectedItem] = useState<Vendor | null>(null);
 
   if (vendors.error) {
     return <Text>Error: {vendors.error}</Text>
@@ -53,10 +59,6 @@ const Vendors = () => {
 
   if (!vendors.data) {
     return <Text>No data</Text>
-  }
-
-  const navigateToVendor = (vendor: Vendor) => {
-    console.log('Navigate to vendor', vendor);
   }
 
   return (
@@ -73,7 +75,23 @@ const Vendors = () => {
               filterVedorByCategory(vendors.data, selectedCategory)
               : vendors.data
             }
-            onClick={navigateToVendor} />
+            RenderModalComponent={({ item }: { item: Vendor }) => (
+              <VendorModal item={item} />
+            )}
+            RenderTileComponent={({ item }: { item: Vendor }) => (
+              <VendorTile
+                key={item.id}
+                item={item}
+                onPress={() => {
+                  setSelectedItem(item);
+                  setModalVisable(true);
+                  }
+                }
+              />
+            )}
+            selectedItem={selectedItem}
+            tileLoading={vendors.loading || images.loading}
+          />
         </View>
       </View>
     </SafeAreaView>
