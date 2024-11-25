@@ -79,20 +79,6 @@ const MainTabNavigator = () => {
           tabBarLabelStyle: styles.tabLabel,
         })}
       />
-      <Tab.Screen
-        name="Store"
-        component={Vendors}
-        options={() => ({
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? 'storefront' : 'storefront-outline'}
-              size={size}
-              color={color}
-            />
-          ),
-          tabBarLabelStyle: styles.tabLabel,
-        })}
-      />
     </Tab.Navigator>
   );
 }
