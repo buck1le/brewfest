@@ -70,6 +70,21 @@ export const styles = StyleSheet.create({
   inventoryListContainer: {
     width: '100%',
     padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inventoryTilesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+  },
+  inventoryTile: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inventoryTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 

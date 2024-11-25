@@ -1,17 +1,18 @@
 import { Vendor } from "types/api-responses";
 
-interface VendorModalProps {
-  item: Vendor;
-}
-
-import { View, Text, Image, ScrollView, Dimensions } from "react-native";
+import { View, Text, ScrollView, Dimensions, FlatList } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRef } from "react";
 import { styles } from "./modal-styles";
 import { useInventoryAtom } from "components/common/tiles/atoms";
 import { useAtomValue } from "jotai";
+import { Image } from "expo-image";
 
 const width = Dimensions.get("window").width;
+
+interface VendorModalProps {
+  item: Vendor;
+}
 
 const VendorModal = ({ item }: VendorModalProps) => {
   const ref = useRef<ICarouselInstance>(null);
@@ -68,15 +69,47 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
   const inventoryAtom = useInventoryAtom(vendor.resources.inventory.href);
   const inventory = useAtomValue(inventoryAtom);
 
+  const numColumns = 3;
+
   return (
-    <View>
-      {inventory.data?.map((item) => (
-        <View key={item.id}>
-          <Text>{item.title}</Text>
-          <Text>{item.description}</Text>
+    <FlatList
+      scrollEnabled={false}
+      numColumns={numColumns}
+      contentContainerStyle={{
+        padding: 10,
+        gap: 15,
+        marginBottom: 300,
+      }}
+      columnWrapperStyle={{
+        gap: 15,
+      }}
+      data={inventory.data}
+      renderItem={({ item }) => (
+        <View
+          key={item.id}
+          style={styles.inventoryTile}
+        >
+          <Image source={{ uri: item.image.url }} style={{
+            width: 100,
+            height: 100,
+            aspectRatio: 1,
+          }}
+          />
+          <Text style={styles.inventoryTitle}>{item.title}</Text>
+          <View style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+            padding: 5,
+            borderRadius: 8,
+            marginTop: 5,
+            alignItems: 'center',
+            minWidth: 50,
+          }}
+          >
+            <Text>{item.type}</Text>
+          </View>
         </View>
-      ))}
-    </View>
+      )}
+    />
   );
 }
 

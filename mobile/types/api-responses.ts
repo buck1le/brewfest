@@ -30,9 +30,8 @@ export interface Vendor {
 export interface InventoryItem {
   id: number;
   title: string;
+  type: string;
   image: Image;
-  category: string;
-  description: string;
 }
 
 export interface Event {
