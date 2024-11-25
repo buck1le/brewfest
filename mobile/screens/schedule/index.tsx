@@ -3,38 +3,14 @@ import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
 import { ScheduleItem } from 'types/api-responses';
-import { ScheduleNavigationProp } from './types';
-import { useAtomValue } from 'jotai';
-import { selectedEventAtom } from 'atoms/index';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useScheduleAtom } from './atoms';
 import { TileColumn } from 'components/common/tiles';
 import { useImagesAtom } from 'components/common/atoms';
 import { ScheduleTile } from 'components/schedule-items';
+import ScheduleModal from 'components/schedule-items/modal';
 
-const parseTime = (timeString: string): number => {
-  return new Date(timeString).getTime();
-};
-
-const getCurrentItemIndex = (data: ScheduleItem[]): number => {
-  const currentTime = new Date().getTime();
-
-  const parsedData = data.map((item, index) => {
-    const startTime = parseTime(item.startTime);
-    const nextStartTime = data[index + 1]
-      ? parseTime(data[index + 1].startTime)
-      : Infinity;
-
-    return { startTime, nextStartTime };
-  });
-
-  return parsedData.findIndex(({ startTime, nextStartTime }) => {
-    return currentTime >= startTime && currentTime < nextStartTime;
-  });
-};
-
-interface ScheduleProps {
-  navigation: ScheduleNavigationProp;
-}
 
 const Schedule = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
@@ -47,7 +23,7 @@ const Schedule = () => {
   const schedule_items = useAtomValue(scheduleAtom);
 
   const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
-  const [modalVisable, setModalVisable] = useState(false);
+  const setModalVisable = useSetAtom(modalVisableAtom);
 
   const imagesAtom = useImagesAtom(schedule_items.data?.map(item => item.image.url));
   const images = useAtomValue(imagesAtom);
@@ -63,11 +39,11 @@ const Schedule = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.eventList}>
-        <View style={styles.content}>
+        <View style={{ flex: 1 }}>
           <TileColumn
             data={schedule_items.data}
             RenderModalComponent={({ item }: { item: ScheduleItem }) => (
-              <ScheduleItemModal item={item} />
+              <ScheduleModal item={item} />
             )}
             RenderTileComponent={({ item }: { item: ScheduleItem }) => (
               <ScheduleTile

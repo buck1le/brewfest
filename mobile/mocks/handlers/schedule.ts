@@ -16,6 +16,14 @@ export const scheduleHandlers = [
         image: {
           url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Event 1",
+        },
+        resources: {
+          images: [
+            {
+              url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
+              alt: "Vendor 1",
+            }
+          ],
         }
       },
       {
@@ -30,6 +38,14 @@ export const scheduleHandlers = [
         image: {
           url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
           alt: "Event 1",
+        },
+        resources: {
+          images: [
+            {
+              url: `${BREW_FEST_IMAGE_HOST}/schedule_item_1.png`,
+              alt: "Vendor 1",
+            }
+          ],
         }
       },
     ])
