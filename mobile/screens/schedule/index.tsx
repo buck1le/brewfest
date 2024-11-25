@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from './styles';
@@ -8,6 +8,8 @@ import { useAtomValue } from 'jotai';
 import { selectedEventAtom } from 'atoms/index';
 import { useScheduleAtom } from './atoms';
 import { TileColumn } from 'components/common/tiles';
+import { useImagesAtom } from 'components/common/atoms';
+import { ScheduleTile } from 'components/schedule-items';
 
 const parseTime = (timeString: string): number => {
   return new Date(timeString).getTime();
@@ -34,49 +36,55 @@ interface ScheduleProps {
   navigation: ScheduleNavigationProp;
 }
 
-const Schedule = ({ navigation }: ScheduleProps) => {
+const Schedule = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
-  const [, setTick] = useState(0); // Add this line
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTick(prev => prev + 1); // This will trigger a re-render every second
-    }, 1000);
-
-    return () => clearInterval(timer); // Cleanup on unmount
-  }, []);
 
   if (!selectedEvent) {
     return <Text>Please select an event</Text>
   }
 
   const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
-  const schedule = useAtomValue(scheduleAtom);
+  const schedule_items = useAtomValue(scheduleAtom);
 
-  const handleItemPress = (item: ScheduleItem) => {
-    navigation.navigate('ScheduleItem', { item });
-  }
+  const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
+  const [modalVisable, setModalVisable] = useState(false);
 
-  if (schedule.loading) {
+  const imagesAtom = useImagesAtom(schedule_items.data?.map(item => item.image.url));
+  const images = useAtomValue(imagesAtom);
+
+  if (schedule_items.loading) {
     return <Text>Loading...</Text>
   }
 
-  if (!schedule.data) {
+  if (!schedule_items.data) {
     return <Text>No data</Text>
   }
-
-  const hightlightIndex = getCurrentItemIndex(schedule.data);
-
-  console.log('hightlightIndex', hightlightIndex);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.eventList}>
-        <TileColumn
-          data={schedule.data}
-          onClick={handleItemPress}
-          hightlightIndex={hightlightIndex}
-        />
+        <View style={styles.content}>
+          <TileColumn
+            data={schedule_items.data}
+            RenderModalComponent={({ item }: { item: ScheduleItem }) => (
+              <ScheduleItemModal item={item} />
+            )}
+            RenderTileComponent={({ item }: { item: ScheduleItem }) => (
+              <ScheduleTile
+                key={item.id}
+                item={item}
+                onPress={() => {
+                  setSelectedItem(item);
+                  setModalVisable(true);
+                }
+                }
+              />
+            )}
+            selectedItem={selectedItem}
+            tileLoading={schedule_items.loading || images.loading}
+          />
+        </View>
+
       </View>
     </SafeAreaView>
   );

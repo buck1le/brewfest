@@ -3,6 +3,7 @@ import { StyleSheet, Platform } from 'react-native';
 export const colors = {
   primary: '#f1b863',
   secondary: '#fff',
+  blue: '#345384',
   grey: '#f5f5f5',
 };
 

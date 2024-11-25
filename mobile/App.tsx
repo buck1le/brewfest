@@ -5,7 +5,6 @@ import * as Haptics from 'expo-haptics';
 
 import MainTabNavigator from "components/tab-nav/tab-navigator";
 import TouchableImage from 'components/common/touchable-image';
-import Item from "screens/schedule/item";
 import Home from 'screens/home';
 import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
@@ -71,16 +70,6 @@ const App = () => {
             headerTitle: '',
           }}>
             <Stack.Screen name="Main" component={MainTabNavigator} />
-          </Stack.Group>
-          <Stack.Group screenOptions={{
-            presentation: 'card',
-            headerShadowVisible: false,
-            headerTransparent: true,
-            headerTitle: '',
-            headerBackTitle: 'Schedule',
-          }}>
-            <Stack.Screen name="ScheduleItem" component={Item}
-            />
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
