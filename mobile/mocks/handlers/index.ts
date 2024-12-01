@@ -11,6 +11,12 @@ export const handlers = [
         // Real data will point to remote image
         image: `${BREW_FEST_IMAGE_HOST}/WWBF-KATYImage.png`,
         description: "The World Wide Beer Festival",
+        coordinate: {
+          latitude: 30.524491,
+          longitude: -97.543057,
+          latitudeDelta: 0.0910,
+          longitudeDelta: 0.0300,
+        },
         start_date: "2022-01-01",
         end_date: "2022-01-02",
         resources: {
@@ -28,6 +34,12 @@ export const handlers = [
         image: `${BREW_FEST_IMAGE_HOST}/WWBF-PflugervilleImage.png`,
         description: "The World Wide Beer Festival",
         start_date: "2022-01-01",
+        coordinate: {
+          latitude: 30.524491,
+          longitude: -97.543057,
+          latitudeDelta: 0.0910,
+          longitudeDelta: 0.0300,
+        },
         end_date: "2022-01-02",
         resources: {
           vendors: {

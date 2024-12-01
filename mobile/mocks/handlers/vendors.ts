@@ -10,7 +10,7 @@ export const vendorHandlers = [
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.",
         category: "drinks",
         operatingOutOf: "Austin, TX",
-        eventLocation: {
+        coordinate: {
           latitude: 30.524491,
           longitude: -97.543057,
         },
@@ -37,7 +37,7 @@ export const vendorHandlers = [
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim  veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea  commodo consequat. Duis aute irure dolor in reprehenderit in voluptate  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint  occaecat cupidatat non proident, sunt in culpa qui officia deserunt  mollit anim id est laborum.",
         category: "food",
         operatingOutOf: "Dallas, TX",
-        location: {
+        coordinate: {
           latitude: 30.524170,
           longitude: -97.541963,
         },
@@ -64,7 +64,7 @@ export const vendorHandlers = [
         description: "Vendor 1 description",
         operatingOutOf: "Houston, TX",
         category: "shop",
-        location: {
+        coordinate: {
           latitude: 30.522951,
           longitude: -97.544419,
         },

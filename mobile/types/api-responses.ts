@@ -17,7 +17,7 @@ export interface Vendor {
   operatingOutOf: string;
   image: Image;
   category: string;
-  location: {
+  coordinate: {
     latitude: number;
     longitude: number;
   };
@@ -38,6 +38,12 @@ export interface Event {
   name: string;
   description: string;
   image: Image[];
+  coordinate: {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+  };
   resources: {
     vendors: Resource;
     schedule: Resource;

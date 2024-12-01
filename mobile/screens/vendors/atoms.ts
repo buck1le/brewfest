@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Vendor } from "types/api-responses";
 
 export const useVendorsAtom = (
-  href: string,
+  href: string | undefined,
 ) =>
   useMemo(() => createResourceAtom<Vendor[]>(href), [href]);
 
