@@ -3,14 +3,14 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "components/*": ["components/*"],
-      "types/*": ["types/*"],
-      "screens/*": ["screens/*"],
-      "common/*": ["common/*"],
-      "assets/*": ["assets/*"],
-      "lib/*": ["lib/*"],
-      "global_styles": ["styles.ts"],
-      "atoms/*": ["atoms/*"]
+      "components/*": ["./components/*"],
+      "types/*": ["./types/*"],
+      "screens/*": ["./screens/*"],
+      "common/*": ["./common/*"],
+      "assets/*": ["./assets/*"],
+      "lib/*": ["./lib/*"],
+      "global_styles": ["./styles.ts"],
+      "atoms/*": ["./atoms/*"]
     }
   }
 }

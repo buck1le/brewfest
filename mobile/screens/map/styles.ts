@@ -1,10 +1,14 @@
 import { StyleSheet, Dimensions, Platform } from "react-native";
 import { colors } from "global_styles";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
+
 export const screenHeight = Dimensions.get('window').height;
 export const CARD_HEIGHT = 220;
+export const SCROLL_ZOOM_LEVEL = 0.006;
 export const CARD_WIDTH = width * 0.8;
+export const ANIMATINO_DURATION = 350;
+export const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 export const styles = StyleSheet.create({
   container: {
@@ -92,6 +96,7 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     position: "absolute",
+    flexDirection: "row",
     bottom: 0,
     left: 0,
     right: 0,
@@ -110,7 +115,6 @@ export const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowRadius: 5,
     shadowOpacity: 0.3,
-    shadowOffset: { x: 2, y: -2 },
     height: CARD_HEIGHT,
     width: CARD_WIDTH,
     overflow: "hidden",

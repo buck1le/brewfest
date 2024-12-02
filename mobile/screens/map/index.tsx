@@ -1,7 +1,6 @@
-import { Animated, Dimensions, Platform, Text, View } from 'react-native';
+import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Callout, MapMarker, Marker } from 'react-native-maps';
-import { styles, CARD_WIDTH } from './styles';
+import MapView, { MapMarker, Marker } from 'react-native-maps';
 import { useAtomValue } from 'jotai';
 import { Image } from 'expo-image';
 import { selectedEventAtom } from 'atoms/index';
@@ -9,12 +8,14 @@ import { useVendorsAtom } from 'screens/vendors/atoms';
 import { useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 
-const { width } = Dimensions.get("window");
-
-const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
-const SCROLL_ZOOM_LEVEL = 0.01;
-const ANIMATINO_DURATION = 350;
-
+import {
+  styles,
+  CARD_WIDTH,
+  ANIMATINO_DURATION,
+  SCROLL_ZOOM_LEVEL,
+  SPACING_FOR_CARD_INSET
+} from './styles';
+import { colors } from 'global_styles';
 
 const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
@@ -41,7 +42,7 @@ const Map = () => {
     ],
     {
       useNativeDriver: true,
-      listener: (event) => {
+      listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollX = event.nativeEvent.contentOffset.x;
         const index = Math.floor((scrollX + CARD_WIDTH / 2) / CARD_WIDTH);
 
@@ -64,7 +65,9 @@ const Map = () => {
     }
   );
 
-  const onMarkerPress = (mapEventData) => {
+  const onMarkerPress = (mapEventData: any) => {
+    console.log(typeof mapEventData)
+
     const markerID = mapEventData._targetInst.return.key;
 
     let x = (markerID * CARD_WIDTH) + (markerID * 20);
@@ -88,7 +91,12 @@ const Map = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
       <MapView style={styles.map}
         showsMyLocationButton={false}
         loadingEnabled={true}
@@ -113,7 +121,6 @@ const Map = () => {
               }}
               onPress={(e) => onMarkerPress(e)}
               pinColor={selectedMarker === i ? 'red' : 'blue'}
-              flat={true}
             >
             </Marker>
           )
@@ -123,7 +130,6 @@ const Map = () => {
         horizontal
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
-        height={50}
         style={styles.chipsScrollView}
         contentInset={{ // iOS only
           top: 0,
@@ -140,6 +146,7 @@ const Map = () => {
         ref={_scrollView}
         horizontal
         pagingEnabled
+        scrollEnabled={false}
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + 20}
@@ -161,7 +168,7 @@ const Map = () => {
             <Image
               source={marker.image.url}
               style={styles.cardImage}
-              resizeMode="cover"
+              contentFit='cover'
             />
             <View style={styles.textContent}>
               <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
