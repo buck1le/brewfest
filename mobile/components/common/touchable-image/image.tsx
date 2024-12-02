@@ -9,7 +9,11 @@ interface TouchableImageProps {
 const TouchableImage = ({ onPress, image, style }: TouchableImageProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Image source={{ uri: image }} style={style} />
+      <Image
+        source={{ uri: image }}
+        style={style} 
+        resizeMode='contain'
+        />
     </TouchableOpacity>
   );
 }

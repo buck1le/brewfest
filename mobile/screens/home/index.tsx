@@ -37,22 +37,6 @@ const Home = ({ navigation }: HomeProps) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 10,
-          }}
-        >
-          Welcome to the WWBF
-        </Text>
-        <Text
-          style={{
-            fontSize: 18,
-          }}
-        >
-          Please select a location
-        </Text>
         <View style={{
           flexDirection: 'column',
           gap: 50,
@@ -66,8 +50,8 @@ const Home = ({ navigation }: HomeProps) => {
                 onPress={() => handlePress(event)}
                 image={event.image}
                 style={{
-                  width: 200,
-                  height: 200,
+                  width: 300,
+                  height: 300,
                   marginBottom: 10,
                 }}
               />

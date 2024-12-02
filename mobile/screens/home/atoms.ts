@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 import { createResourceAtom } from "atoms/resources";
-import { EventsResponse } from "types/api-responses";
+import { Event } from "types/api-responses";
 
 
 export const useEventsAtom = (href: string) =>
-  useMemo(() => createResourceAtom<EventsResponse>(href), [href]);
+  useMemo(() => createResourceAtom<Event[]>(href), [href]);

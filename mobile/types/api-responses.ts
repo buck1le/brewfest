@@ -35,6 +35,7 @@ export interface InventoryItem {
 }
 
 export interface Event {
+  id: number;
   name: string;
   description: string;
   image: Image[];
