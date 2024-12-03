@@ -6,7 +6,7 @@ use std::sync::Arc;
 use entities::{*};
 use entities::sea_orm::*;
 
-use crate::presenters::events::index::Presenter as IndexPresenter;
+use crate::presenters::events::Presenter as IndexPresenter;
 
 pub mod schedule;
 pub mod vendor;

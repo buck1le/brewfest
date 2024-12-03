@@ -14,7 +14,7 @@ use entities::schedule_items::Entity as ScheduleItems;
 use entities::sea_orm::*;
 use std::sync::Arc;
 
-use crate::presenters::events::schedule::index::Presenter as SchedulePresenter;
+use crate::presenters::events::schedule::Presenter as SchedulePresenter;
 use crate::presenters::events::schedule::Partial as SchedulePartial;
 
 pub async fn index(
