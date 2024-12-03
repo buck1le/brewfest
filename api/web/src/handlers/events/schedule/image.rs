@@ -120,13 +120,23 @@ pub async fn create(
         }
     }
 
-    // Create the record in the database
-    match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "").await {
-        Ok(_) => info!("Successfully created the schedule image."),
-        Err(e) => {
+    match (image_name, s3_key) {
+        (Some(image_name), Some(s3_key)) => {
+            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, &image_name).await {
+                Ok(_) => info!("Successfully created the schedule image."),
+                Err(e) => {
+                    return (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Failed to create the schedule image: {}", e),
+                    )
+                        .into_response()
+                }
+            }
+        }
+        _ => {
             return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to create the schedule image: {}", e),
+                StatusCode::BAD_REQUEST,
+                "Name and file fields are required".to_string(),
             )
                 .into_response()
         }
