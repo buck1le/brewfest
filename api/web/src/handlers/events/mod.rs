@@ -6,12 +6,13 @@ use std::sync::Arc;
 use entities::{*};
 use entities::sea_orm::*;
 
-use crate::presenters::events::Presenter as IndexPresenter;
+use crate::presenters::events::{Partial, Presenter as IndexPresenter};
 
 pub mod schedule;
 pub mod vendor;
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct EventCreateRequest {
     name: String,
     description: String,
@@ -44,7 +45,7 @@ pub async fn create(
     };
 
     match new_item.insert(database_connection).await {
-        Ok(inserted_item) => Ok(Json(inserted_item)),
+        Ok(inserted_item) => Ok(Json(Partial::new(inserted_item).render())),
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to insert item: {}", e),

@@ -11,7 +11,7 @@ impl MigrationTrait for Migration {
             .alter_table(
                 sea_query::Table::alter()
                     .table(Events::Table)
-                    .add_column(ColumnDef::new(Events::Image).string().not_null())
+                    .add_column(ColumnDef::new(Events::Image).string())
                     .to_owned(),
             )
             .await

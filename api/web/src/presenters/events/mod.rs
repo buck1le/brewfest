@@ -1,12 +1,38 @@
+use serde::Serialize;
 use serde_json::{json, Value};
 
-pub mod schedule;
 pub mod presenter;
+pub mod schedule;
 
 pub use presenter::Presenter;
 
 pub struct Partial {
     event: entities::events::Model,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct EventResponse {
+    id: i32,
+    name: String,
+    description: String,
+    start_date: String,
+    end_date: String,
+    image: Option<String>,
+    resources: Resources,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Resources {
+    schedule_items: ResourceLink,
+    image: ResourceLink,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ResourceLink {
+    href: String,
 }
 
 impl Partial {
@@ -15,17 +41,23 @@ impl Partial {
     }
 
     pub fn render(&self) -> Value {
-        json!({
-            "id": self.event.id,
-            "name": self.event.name,
-            "description": self.event.description,
-            "start_date": self.event.start_date,
-            "end_date": self.event.end_date,
-            "resources": {
-                "schedule_items": {
-                    "href": format!("/events/{}/schedule_items", self.event.id),
+        let response = EventResponse {
+            id: self.event.id,
+            name: self.event.name.clone(),
+            description: self.event.description.clone(),
+            start_date: self.event.start_date.to_string(),
+            end_date: self.event.end_date.to_string(),
+            image: self.event.image.as_ref().map(|image| image.to_string()),
+            resources: Resources {
+                schedule_items: ResourceLink {
+                    href: format!("/events/{}/schedule_items", self.event.id),
                 },
-            }
-        })
+                image: ResourceLink {
+                    href: format!("/events/{}/image", self.event.id),
+                },
+            },
+        };
+
+        serde_json::to_value(response).unwrap()
     }
 }

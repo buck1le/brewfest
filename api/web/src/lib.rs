@@ -1,4 +1,3 @@
-use std::env;
 use axum::{routing::get, Extension, Router};
 use tokio::net::TcpListener;
 use tracing::info;
@@ -34,6 +33,9 @@ async fn start() -> anyhow::Result<()> {
 
     println!("DATABASE_URL: {}", config.url);
     let db = Database::connect(&config.url).await?;
+
+    println!("Connected to database with url: {}", config.url);
+
     Migrator::up(&db, None).await?;
 
     info!("Database migration complete");

@@ -29,4 +29,25 @@ impl MigrationTrait for Migration {
 
         Ok(())
     }
+
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let db = manager.get_connection();
+
+        let events_delete_sql = r#"
+            DELETE FROM accounts
+            WHERE name = $1
+        "#;
+
+        let values = vec![sea_orm::Value::String(Some(Box::new("Account Name".to_owned())))];
+
+        let stmt = sea_orm::Statement::from_sql_and_values(
+            sea_orm::DatabaseBackend::Postgres,
+            events_delete_sql,
+            values,
+        );
+
+        let _ = db.execute(stmt).await?;
+
+        Ok(())
+    }
 }
