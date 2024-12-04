@@ -6,8 +6,8 @@ pub mod schedule;
 
 pub use presenter::Presenter;
 
-pub struct Partial {
-    event: entities::events::Model,
+pub struct Partial<'a> {
+    event: &'a entities::events::Model,
 }
 
 #[derive(Serialize)]
@@ -35,8 +35,8 @@ struct ResourceLink {
     href: String,
 }
 
-impl Partial {
-    pub fn new(event: entities::events::Model) -> Self {
+impl<'a> Partial<'a> {
+    pub fn new(event: &'a entities::events::Model) -> Self {
         Self { event }
     }
 

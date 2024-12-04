@@ -45,7 +45,7 @@ pub async fn create(
     };
 
     match new_item.insert(database_connection).await {
-        Ok(inserted_item) => Ok(Json(Partial::new(inserted_item).render())),
+        Ok(inserted_item) => Ok(Json(Partial::new(&inserted_item).render())),
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to insert item: {}", e),
