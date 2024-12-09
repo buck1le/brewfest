@@ -10,6 +10,8 @@ pub mod handlers;
 pub mod utils;
 pub mod routers;
 pub mod presenters;
+pub mod common;
+
 mod config;
 
 #[tokio::main]

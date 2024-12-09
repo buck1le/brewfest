@@ -9,6 +9,8 @@ mod m20240603_203915_create_schedule_images;
 mod m20240704_151504_add_location_to_vendors;
 mod m20240713_154501_add_event_reference_to_schedule;
 mod m20241020_233000_add_image_to_events;
+mod m20241209_205735_add_category_to_vendor;
+mod m20241209_211320_add_image_to_vendors;
 
 pub struct Migrator;
 
@@ -26,7 +28,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20240603_203915_create_schedule_images::Migration),
             Box::new(m20240704_151504_add_location_to_vendors::Migration),
             Box::new(m20240713_154501_add_event_reference_to_schedule::Migration),
-            Box::new(m20241020_233000_add_image_to_events::Migration)
+            Box::new(m20241020_233000_add_image_to_events::Migration),
+            Box::new(m20241209_205735_add_category_to_vendor::Migration),
+            Box::new(m20241209_211320_add_image_to_vendors::Migration),
         ];
 
         // Migrations for development database here

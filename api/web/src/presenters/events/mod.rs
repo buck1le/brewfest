@@ -1,8 +1,9 @@
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::Value;
 
 pub mod presenter;
 pub mod schedule;
+pub mod vendors;
 
 pub use presenter::Presenter;
 
@@ -26,6 +27,7 @@ struct EventResponse {
 #[serde(rename_all = "camelCase")]
 struct Resources {
     schedule_items: ResourceLink,
+    vendors: ResourceLink,
     image: ResourceLink,
 }
 
@@ -55,6 +57,9 @@ impl<'a> Partial<'a> {
                 image: ResourceLink {
                     href: format!("/events/{}/image", self.event.id),
                 },
+                vendors: ResourceLink {
+                    href: format!("/events/{}/vendors", self.event.id),
+                }
             },
         };
 

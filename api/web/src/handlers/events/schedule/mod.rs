@@ -14,6 +14,7 @@ use entities::schedule_items::Entity as ScheduleItems;
 use entities::sea_orm::*;
 use std::sync::Arc;
 
+use crate::common::events::load_event;
 use crate::presenters::events::schedule::Presenter as SchedulePresenter;
 use crate::presenters::events::schedule::Partial as SchedulePartial;
 
@@ -32,7 +33,7 @@ pub async fn index(
             .await;
 
         match schedule_items {
-            Ok(schedule_items) => SchedulePresenter::new(schedule_items).render(),
+            Ok(schedule_items) => SchedulePresenter::new(&schedule_items).render(),
             Err(e) => Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("Failed to fetch schedule items: {}", e),
@@ -96,21 +97,6 @@ fn parse_date(
         .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))?;
     date.and_hms_opt(hour, minute, second)
         .ok_or((StatusCode::BAD_REQUEST, "Invalid date".to_string()))
-}
-
-async fn load_event(
-    event_id: i32,
-    db: &DatabaseConnection,
-) -> Result<Option<events::Model>, (StatusCode, String)> {
-    events::Entity::find_by_id(event_id)
-        .one(db)
-        .await
-        .map_err(|e| {
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Database query error: {}", e),
-            )
-        })
 }
 
 pub async fn create(

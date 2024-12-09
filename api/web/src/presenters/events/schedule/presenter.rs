@@ -3,12 +3,12 @@ use serde_json::Value;
 
 use crate::presenters::events::schedule::Partial as SchedulePartial;
 
-pub struct Presenter {
-    schedule_items: Vec<entities::schedule_items::Model>,
+pub struct Presenter <'a> {
+    schedule_items: &'a Vec<entities::schedule_items::Model>,
 }
 
-impl Presenter {
-    pub fn new(schedule_items: Vec<entities::schedule_items::Model>) -> Self {
+impl <'a> Presenter <'a> {
+    pub fn new(schedule_items: &'a Vec<entities::schedule_items::Model>) -> Self {
         Self { schedule_items }
     }
 

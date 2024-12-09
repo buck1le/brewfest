@@ -1,23 +1,23 @@
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde_json::Value;
 
-use crate::presenters::events::Partial as EventsPartial;
+use crate::presenters::events::vendors::Partial as VendorPartial;
 
-pub struct Presenter {
-    events: Vec<entities::events::Model>,
+pub struct Presenter<'a> {
+    vendors: &'a Vec<entities::vendors::Model>,
 }
 
-impl Presenter {
-    pub fn new(events: Vec<entities::events::Model>) -> Self {
-        Self { events }
+impl <'a> Presenter <'a> {
+    pub fn new(vendors: &'a Vec<entities::vendors::Model>) -> Self {
+        Self { vendors }
     }
 
     pub fn render(&self) -> Result<impl IntoResponse, (StatusCode, String)> {
         let item_json: Vec<Value> = self
-            .events
+            .vendors
             .iter()
             .map(|item| {
-                EventsPartial::new(item).render()
+                VendorPartial::new(item).render()
             })
             .collect();
 
