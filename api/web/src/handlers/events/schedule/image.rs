@@ -12,7 +12,7 @@ use tracing::info;
 use uuid::Uuid;
 
 use crate::handlers::response::Response;
-use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
+use crate::presenters::events::schedule::images::index::Presenter as ImagePresenter;
 use crate::utils::s3_uploader::S3Uploader;
 
 use entities::{events, schedule_items, sea_orm::*};
@@ -35,23 +35,6 @@ async fn load_event(
         })
 }
 
-impl From<&str> for FieldName {
-    fn from(name: &str) -> Self {
-        match name {
-            "name" => FieldName::Name,
-            "file" => FieldName::File,
-            _ => FieldName::Unknown,
-        }
-    }
-}
-
-#[derive(Clone)]
-enum FieldName {
-    Name,
-    File,
-    Unknown,
-}
-
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3Client>>,
     Extension(db): Extension<Arc<DatabaseConnection>>,
@@ -63,66 +46,40 @@ pub async fn create(
 
     let aws_s3_client = S3Uploader::new(aws_s3_client, bucket_name, folder_name);
 
-    let mut image_name: Option<String> = None;
-    let mut s3_key: Option<String> = None;
-
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
-        let field_name = FieldName::from(name.as_str());
+        if let "file" = name.as_str() {
+            let content_type = field.content_type().map(|ct| ct.to_string());
 
-        match field_name {
-            FieldName::Name => {
-                image_name = match field.text().await {
-                    Ok(name) => Some(name),
-                    Err(e) => {
-                        return (
-                            StatusCode::BAD_REQUEST,
-                            format!("Failed to read the name field: {}", e),
-                        )
-                            .into_response()
-                    }
-                };
-            }
-            FieldName::File => {
-                let content_type = field.content_type().map(|ct| ct.to_string());
+            let file_extension = match content_type {
+                Some(content_type) => content_type.split('/').last().unwrap().to_string(),
+                None => {
+                    return (StatusCode::BAD_REQUEST, "Failed to get the file extension")
+                        .into_response()
+                }
+            };
 
-                let file_extension = match content_type {
-                    Some(content_type) => content_type.split('/').last().unwrap().to_string(),
-                    None => {
-                        return (StatusCode::BAD_REQUEST, "Failed to get the file extension")
-                            .into_response()
-                    }
-                };
+            let object_name = format!("{}.{}", Uuid::new_v4(), file_extension);
 
-                let object_name = format!("{}.{}", Uuid::new_v4(), file_extension);
+            let file_data = match field.bytes().await {
+                Ok(data) => data.to_vec(),
+                Err(e) => {
+                    return (
+                        StatusCode::BAD_REQUEST,
+                        format!("Failed to read file data: {}", e),
+                    )
+                        .into_response()
+                }
+            };
 
-                let file_data = match field.bytes().await {
-                    Ok(data) => data.to_vec(),
-                    Err(e) => {
-                        return (
-                            StatusCode::BAD_REQUEST,
-                            format!("Failed to read file data: {}", e),
-                        )
-                            .into_response()
-                    }
-                };
+            let s3_key = match aws_s3_client.upload(file_data, &object_name).await {
+                Ok(key) => key,
+                Err((status, message)) => {
+                    return (status, message).into_response();
+                }
+            };
 
-                s3_key = match aws_s3_client.upload(file_data, &object_name).await {
-                    Ok(key) => Some(key),
-                    Err((status, message)) => {
-                        return (status, message).into_response();
-                    }
-                };
-            }
-            FieldName::Unknown => {
-                return (StatusCode::BAD_REQUEST, "Unknown field name".to_string()).into_response()
-            }
-        }
-    }
-
-    match (image_name, s3_key) {
-        (Some(image_name), Some(s3_key)) => {
-            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, &image_name).await {
+            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "").await {
                 Ok(_) => info!("Successfully created the schedule image."),
                 Err(e) => {
                     return (
@@ -133,15 +90,7 @@ pub async fn create(
                 }
             }
         }
-        _ => {
-            return (
-                StatusCode::BAD_REQUEST,
-                "Name and file fields are required".to_string(),
-            )
-                .into_response()
-        }
     }
-
     Response::success("Successfully uploaded the image").into_response()
 }
 
@@ -151,7 +100,7 @@ pub async fn index(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    let event = load_event(event_id, database_connection).await?;
+    let event = load_event(event_id, &db).await?;
 
     if let Some(event) = event {
         let item = event
