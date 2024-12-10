@@ -16,7 +16,7 @@ impl <'a> Presenter <'a> {
         let item_json: Vec<Value> = self
             .schedule_items
             .iter()
-            .map(|item| SchedulePartial::new(item.clone()).render())
+            .map(|item| SchedulePartial::new(item).render())
             .collect();
 
         Ok(Json(item_json).into_response())

@@ -24,7 +24,7 @@ pub async fn index(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    let event = load_event(event_id, &db).await?;
+    let event = load_event(event_id, database_connection).await?;
 
     if let Some(event) = event {
         let schedule_items = event
@@ -70,7 +70,7 @@ pub async fn show(
             .unwrap();
 
         if let Some(item) = item {
-            Ok(Json(SchedulePartial::new(item).render()).into_response())
+            Ok(Json(SchedulePartial::new(&item).render()).into_response())
         } else {
             Err((StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
         }
@@ -80,6 +80,7 @@ pub async fn show(
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ScheduleCreateRequest {
     title: String,
     description: String,
@@ -106,7 +107,7 @@ pub async fn create(
 ) -> impl IntoResponse {
     let database_connection = &*db;
 
-    let event = load_event(event_id, &db).await?;
+    let event = load_event(event_id, database_connection).await?;
 
     if event.is_none() {
         return Err((StatusCode::NOT_FOUND, "Event not found".to_string()));
@@ -126,7 +127,7 @@ pub async fn create(
 
     // Insert the new item into the database and handle potential errors
     match new_item.insert(database_connection).await {
-        Ok(inserted_item) => Ok(Json(inserted_item)),
+        Ok(inserted_item) => Ok(Json(SchedulePartial::new(&inserted_item).render())),
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to insert item: {}", e),
