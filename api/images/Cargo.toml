@@ -4,3 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+aws-config = "1.5.10"
+aws-sdk-s3 = "1.65.0"
+tracing = "0.1.41"
+uuid = "1.11.0"
+aws-smithy-runtime = "1.7.4"
+mockall = "0.13.1"
+
+[dev-dependencies]
