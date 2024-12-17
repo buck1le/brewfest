@@ -1,10 +1,12 @@
 use axum::{routing::get, Extension, Router};
 use tokio::net::TcpListener;
-use tracing::info;
+use tracing::{debug, info};
 use dotenvy::dotenv;
 use migration::{Migrator, MigratorTrait, sea_orm::Database};
 use tracing_subscriber::EnvFilter;
 use std::sync::Arc;
+
+use images::S3;
 
 pub mod handlers;
 pub mod utils;
@@ -22,33 +24,23 @@ async fn start() -> anyhow::Result<()> {
         .with_env_filter(EnvFilter::from_default_env())
         .init();
 
-    info!("->> {:<12} {}", "Starting", "SERVER");
-
     dotenv().expect("Failed to load .env file");
     
-    let aws_config = aws_config::from_env().region("us-east-2").load().await;
-    let aws_s3_client = aws_sdk_s3::Client::new(&aws_config);
-
-    info!("->> {:<12} {}", "Starting", "DATABASE MIGRATION");
-
+    let s3 = S3::new().await?;
     let config = config::DatabaseConfig::new();
-
-    println!("DATABASE_URL: {}", config.url);
     let db = Database::connect(&config.url).await?;
-
-    println!("Connected to database with url: {}", config.url);
+    debug!("Connected to database with url: {}", config.url);
 
     Migrator::up(&db, None).await?;
-
     info!("Database migration complete");
 
     let db = Arc::new(db);
-    let aws_s3_client = Arc::new(aws_s3_client);
+    let aws_s3_client = Arc::new(s3);
 
     let routes_all = Router::new()
         .merge(routers::routes())
-        .layer(Extension(db)) //  make the database connection available to all routes
-        .layer(Extension(aws_s3_client)); // make the S3 client available to all routes
+        .layer(Extension(db))
+        .layer(Extension(aws_s3_client));
     
     let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
 

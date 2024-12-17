@@ -12,7 +12,7 @@ use tracing::info;
 use uuid::Uuid;
 
 use crate::handlers::response::Response;
-use crate::presenters::events::schedule::images::index::Presenter as ImagePresenter;
+use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
 use crate::utils::s3_uploader::S3Uploader;
 
 use entities::{events, schedule_items, sea_orm::*};

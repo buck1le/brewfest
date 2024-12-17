@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 migration = { path = "../migration" }
 entities = { path = "../entities" }
+images = { path = "../images" }
 
 axum = { version= "0.7.4", features = ["macros", "multipart"] }
 tower-http = { version = "0.5", features = ["fs"] }
