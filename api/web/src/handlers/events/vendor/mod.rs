@@ -8,7 +8,9 @@ use entities::sea_orm::*;
 use entities::vendors::Entity as Vendors;
 
 use crate::common::events::load_event;
-use crate::presenters::events::vendors::{Partial, Presenter as VendorPresenter};
+use crate::presenters::events::vendors::{Partial as VendorPartial, Presenter as VendorPresenter};
+
+pub mod image;
 
 pub struct Query;
 
@@ -90,10 +92,45 @@ pub async fn create(
 
     // Insert the new item into the database and handle potential errors
     match new_item.insert(database_connection).await {
-        Ok(inserted_item) => Ok(Json(Partial::new(&inserted_item).render())),
+        Ok(inserted_item) => Ok(Json(VendorPartial::new(&inserted_item).render())),
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to insert item: {}", e),
         )),
+    }
+}
+
+#[derive(Deserialize)]
+pub struct ShowParams {
+    event_id: i32,
+    vendor_id: i32,
+}
+
+pub async fn show(
+    Extension(db): Extension<Arc<DatabaseConnection>>,
+    Path(ShowParams {
+        event_id,
+        vendor_id,
+    }): Path<ShowParams>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    let database_connection = &*db;
+
+    let event = load_event(event_id, &db).await.unwrap();
+
+    if let Some(event) = event {
+        let item = event
+            .find_related(Vendors)
+            .filter(vendors::Column::Id.eq(vendor_id))
+            .one(database_connection)
+            .await
+            .unwrap();
+
+        if let Some(item) = item {
+            Ok(Json(VendorPartial::new(&item).render()).into_response())
+        } else {
+            Err((StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
+        }
+    } else {
+        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
     }
 }

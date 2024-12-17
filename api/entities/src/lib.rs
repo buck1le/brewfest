@@ -9,3 +9,4 @@ pub mod events;
 pub mod schedule_items;
 pub mod schedule_images;
 pub mod vendors;
+pub mod vendor_images;

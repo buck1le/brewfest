@@ -2,6 +2,7 @@ use serde::Serialize;
 use serde_json::Value;
 
 pub mod presenter;
+pub mod images;
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {

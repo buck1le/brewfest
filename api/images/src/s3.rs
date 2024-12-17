@@ -8,7 +8,7 @@ use aws_sdk_s3::{
 use std::error::Error;
 use std::fmt;
 use std::sync::Arc;
-use tracing::{debug, info};
+use tracing::info;
 use std::pin::Pin;
 
 #[cfg(test)]

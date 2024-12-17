@@ -10,28 +10,14 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
+use crate::common::events::load_event;
 use crate::handlers::response::Response;
 use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
 
-use entities::{events, schedule_items, sea_orm::*};
+use entities::{schedule_items, sea_orm::*};
 
 use entities::schedule_images::Entity as ScheduleImages;
 use entities::schedule_items::Entity as ScheduleItems;
-
-async fn load_event(
-    event_id: i32,
-    db: &DatabaseConnection,
-) -> Result<Option<events::Model>, (StatusCode, String)> {
-    events::Entity::find_by_id(event_id)
-        .one(db)
-        .await
-        .map_err(|e| {
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Database query error: {}", e),
-            )
-        })
-}
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,
