@@ -8,7 +8,7 @@ use aws_sdk_s3::{
 use std::error::Error;
 use std::fmt;
 use std::sync::Arc;
-use tracing::debug;
+use tracing::{debug, info};
 use std::pin::Pin;
 
 #[cfg(test)]
@@ -40,12 +40,16 @@ pub async fn upload(
     object_name: &str,
     s3: &impl S3Interface,
 ) -> Result<String, UploadError> {
+    info!("Uploading image");
+
     if file_data.is_empty() {
         return Err(UploadError::EmptyFileData);
     }
 
     let body = ByteStream::from(file_data);
     let s3_key = format!("{}/{}", s3.folder_name(), object_name);
+
+    info!("Uploading image to S3");
 
     s3.upload_object(&s3_key, body)
         .await
@@ -106,7 +110,7 @@ impl S3Interface for S3 {
         key: &str,
         body: ByteStream,
     ) -> Result<PutObjectOutput, SdkError<PutObjectError>> {
-        debug!("Uploading object with key: {}", key);
+        info!("Uploading object with key: {}", key);
 
         self.client
             .put_object()

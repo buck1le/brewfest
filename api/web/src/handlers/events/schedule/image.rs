@@ -1,4 +1,3 @@
-use aws_sdk_s3::Client as S3Client;
 use axum::http::StatusCode;
 use axum::{
     extract::{Multipart, Path},
@@ -6,14 +5,13 @@ use axum::{
     Extension,
 };
 use entities::schedule_images::Entity as ScheduleImage;
-use std::env;
+use images::{upload, S3};
 use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
 use crate::handlers::response::Response;
 use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
-use crate::utils::s3_uploader::S3Uploader;
 
 use entities::{events, schedule_items, sea_orm::*};
 
@@ -36,16 +34,11 @@ async fn load_event(
 }
 
 pub async fn create(
-    Extension(aws_s3_client): Extension<Arc<S3Client>>,
+    Extension(aws_s3_client): Extension<Arc<S3>>,
     Extension(db): Extension<Arc<DatabaseConnection>>,
     Path((event_id, schedule_item_id)): Path<(i32, i32)>,
     mut multipart: Multipart,
 ) -> impl IntoResponse {
-    let bucket_name = env::var("BUCKET_NAME").expect("BUCKET_NAME must be set");
-    let folder_name = env::var("FOLDER_NAME").expect("FOLDER_NAME must be set");
-
-    let aws_s3_client = S3Uploader::new(aws_s3_client, bucket_name, folder_name);
-
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
         if let "file" = name.as_str() {
@@ -72,14 +65,23 @@ pub async fn create(
                 }
             };
 
-            let s3_key = match aws_s3_client.upload(file_data, &object_name).await {
+
+            let s3_key = match upload(file_data, &object_name, &*aws_s3_client).await {
                 Ok(key) => key,
-                Err((status, message)) => {
-                    return (status, message).into_response();
+                Err(e) => {
+                    return (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Failed to upload the image: {}", e),
+                    )
+                        .into_response()
                 }
             };
 
-            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "").await {
+            info!("Successfully uploaded the image to S3 with key: {}", s3_key);
+
+            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "")
+                .await
+            {
                 Ok(_) => info!("Successfully created the schedule image."),
                 Err(e) => {
                     return (
@@ -89,8 +91,11 @@ pub async fn create(
                         .into_response()
                 }
             }
+        } else {
+            return (StatusCode::BAD_REQUEST, "Invalid field name").into_response();
         }
     }
+
     Response::success("Successfully uploaded the image").into_response()
 }
 
