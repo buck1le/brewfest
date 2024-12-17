@@ -28,17 +28,7 @@ pub async fn create(
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
         if let "file" = name.as_str() {
-            let content_type = field.content_type().map(|ct| ct.to_string());
-
-            let file_extension = match content_type {
-                Some(content_type) => content_type.split('/').last().unwrap().to_string(),
-                None => {
-                    return (StatusCode::BAD_REQUEST, "Failed to get the file extension")
-                        .into_response()
-                }
-            };
-
-            let object_name = format!("{}.{}", Uuid::new_v4(), file_extension);
+            let object_name = Uuid::new_v4().to_string();
 
             let file_data = match field.bytes().await {
                 Ok(data) => data.to_vec(),

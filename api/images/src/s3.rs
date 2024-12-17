@@ -10,6 +10,8 @@ use std::fmt;
 use std::sync::Arc;
 use tracing::info;
 use std::pin::Pin;
+use image::{ImageFormat, ImageReader};
+use std::io::Cursor;
 
 #[cfg(test)]
 use mockall::automock;
@@ -46,8 +48,27 @@ pub async fn upload(
         return Err(UploadError::EmptyFileData);
     }
 
-    let body = ByteStream::from(file_data);
-    let s3_key = format!("{}/{}", s3.folder_name(), object_name);
+    let max_image_width = std::env::var("MAX_IMAGE_WIDTH")
+        .map(|s| s.parse().unwrap())
+        .unwrap_or(800);
+
+    let max_image_height = std::env::var("MAX_IMAGE_HEIGHT")
+        .map(|s| s.parse().unwrap())
+        .unwrap_or(600);
+
+    let image = ImageReader::new(Cursor::new(&file_data))
+        .with_guessed_format()
+        .expect("Failed to guess image format")
+        .decode()
+        .expect("Failed to decode image");
+
+    let resized_image = image.resize(max_image_width, max_image_height, image::imageops::FilterType::Lanczos3);
+    let mut buffer = Vec::new();
+    resized_image.write_to(&mut Cursor::new(&mut buffer), ImageFormat::Jpeg).expect("Failed to write resized image");
+
+
+    let body = ByteStream::from(buffer);
+    let s3_key = format!("{}/{}.{}", s3.folder_name(), object_name, "jpg");
 
     info!("Uploading image to S3");
 
