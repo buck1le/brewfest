@@ -22,3 +22,4 @@ web-server = { path = "web" }
 # -- Quick dev
 httpc-test = "0.1.1"
 anyhow = "1"
+reqwest = "0.12.9"

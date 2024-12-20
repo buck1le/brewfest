@@ -3,8 +3,8 @@ use chrono::NaiveDate;
 use serde::Deserialize;
 use std::sync::Arc;
 
-use entities::{*};
 use entities::sea_orm::*;
+use entities::*;
 
 use crate::presenters::events::{Partial, Presenter as IndexPresenter};
 
@@ -20,9 +20,7 @@ pub struct EventCreateRequest {
     end_date: String,
 }
 
-fn parse_date(
-    date_str: &str,
-) -> Result<NaiveDate, (StatusCode, String)> {
+fn parse_date(date_str: &str) -> Result<NaiveDate, (StatusCode, String)> {
     NaiveDate::parse_from_str(date_str, "%Y-%m-%d")
         .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))
 }
@@ -53,9 +51,7 @@ pub async fn create(
     }
 }
 
-pub async fn index(
-    Extension(db): Extension<Arc<DatabaseConnection>>,
-) -> impl IntoResponse {
+pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl IntoResponse {
     let database_connection = &*db;
 
     let events = events::Entity::find()
