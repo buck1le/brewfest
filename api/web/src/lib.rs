@@ -1,4 +1,4 @@
-use axum::{routing::get, Extension, Router};
+use axum::{Extension, Router};
 use dotenvy::dotenv;
 use migration::{sea_orm::Database, Migrator, MigratorTrait};
 use std::sync::Arc;
@@ -60,7 +60,13 @@ pub fn main() {
 #[cfg(test)]
 mod test {
     use super::*;
-    use entities::{events, sea_orm::{ConnectOptions, DatabaseConnection}};
+    use entities::sea_orm::*;
+    use entities::{
+        events,
+        sea_orm::{ConnectOptions, DatabaseConnection},
+    };
+    use presenters::events::vendors::Partial as VendorPartial;
+    use presenters::events::Partial as EventPartial;
     use std::{net::SocketAddr, time::Duration};
     use testcontainers::{core::IntoContainerPort, runners::AsyncRunner, ImageExt};
     use tokio::net::TcpListener;
@@ -142,13 +148,20 @@ mod test {
                 .await
                 .unwrap()
         }
+
+        pub async fn post(&self, path: &str, payload: &str) -> reqwest::Response {
+            self.client
+                .post(format!("http://{}{}", self.addr, path))
+                .body(payload.to_string())
+                .header("Content-Type", "application/json")
+                .send()
+                .await
+                .unwrap()
+        }
     }
 
     #[tokio::test]
-    async fn test_hello_world() {
-        use entities::sea_orm::*;
-
-
+    async fn test_get_events() {
         let app = TestApp::new().await;
 
         let new_event = events::ActiveModel {
@@ -158,12 +171,62 @@ mod test {
             end_date: Set("2021-01-01".parse().unwrap()),
             ..Default::default()
         };
-
-        new_event.insert(&*app.db_pool).await.unwrap();
+        let inserted_event = new_event.insert(&*app.db_pool).await.unwrap();
+        let expected_response =
+            serde_json::to_string(&vec![EventPartial::new(&inserted_event).render()]).unwrap();
 
         let res = app.get("/api/events").await;
 
         assert_eq!(res.status(), 200);
-        assert_eq!(res.text().await.unwrap(), "Hello, World!");
+        assert_eq!(res.text().await.unwrap(), expected_response);
+
+        // Clean up
+        inserted_event.delete(&*app.db_pool).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_create_event() {
+        let payload = r#"{ "name": "Hello, World!", "description": "Hello, World!", "startDate": "2021-01-01", "endDate": "2021-01-01" }"#;
+
+        let app = TestApp::new().await;
+
+        let res = app.post("/api/events", payload).await;
+
+        assert_eq!(res.status(), 200);
+    }
+
+    #[tokio::test]
+    async fn test_get_vendor() {
+        let app = TestApp::new().await;
+
+        let new_event = events::ActiveModel {
+            name: Set("Hello, World!".into()),
+            description: Set("Hello, World!".into()),
+            start_date: Set("2021-01-01".parse().unwrap()),
+            end_date: Set("2021-01-01".parse().unwrap()),
+            ..Default::default()
+        };
+        let inserted_event = new_event.insert(&*app.db_pool).await.unwrap();
+
+        let new_vendor = entities::vendors::ActiveModel {
+            name: Set("Hello, World!".into()),
+            email: Set("jloesch@example.com".into()),
+            phone: Set("123-456-7890".into()),
+            latitude: Set(0.0),
+            longitude: Set(0.0),
+            event_id: Set(inserted_event.id),
+            ..Default::default()
+        };
+
+        let inserted_vendor = new_vendor.insert(&*app.db_pool).await.unwrap();
+        let expected_response =
+            serde_json::to_string(&vec![VendorPartial::new(&inserted_vendor).render()]).unwrap();
+
+        let res = app
+            .get(&format!("/api/events/{}/vendors", inserted_event.id))
+            .await;
+
+        assert_eq!(res.status(), 200);
+        assert_eq!(res.text().await.unwrap(), expected_response);
     }
 }

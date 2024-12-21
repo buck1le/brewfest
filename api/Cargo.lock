@@ -5402,6 +5402,7 @@ dependencies = [
  "httpc-test",
  "images",
  "migration",
+ "once_cell",
  "reqwest",
  "serde",
  "serde_json",
