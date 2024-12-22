@@ -69,7 +69,7 @@ jobs:
 
     - name: Run tests
       working-directory: api
-      run: cargo test --verbose
+      run: cargo test --workspace --verbose
 
   # deploy-client-to-fly:
   #   runs-on: ubuntu-latest

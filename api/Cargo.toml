@@ -10,7 +10,8 @@ members = [
     ".",
     "web",
     "migration", 
-    "entities", "images",
+    "entities", 
+    "images",
 ]
 
 [dependencies]

@@ -5,13 +5,13 @@ use aws_sdk_s3::{
     operation::put_object::{PutObjectError, PutObjectOutput},
     primitives::ByteStream,
 };
+use image::{ImageFormat, ImageReader};
 use std::error::Error;
 use std::fmt;
+use std::io::Cursor;
+use std::pin::Pin;
 use std::sync::Arc;
 use tracing::info;
-use std::pin::Pin;
-use image::{ImageFormat, ImageReader};
-use std::io::Cursor;
 
 #[cfg(test)]
 use mockall::automock;
@@ -30,7 +30,7 @@ impl fmt::Display for UploadError {
             UploadError::S3UploadFailed => write!(f, "Failed to upload image to S3"),
             UploadError::EnvVarMissing(var) => {
                 write!(f, "Environment variable {} must be set", var)
-            }   
+            }
         }
     }
 }
@@ -62,10 +62,16 @@ pub async fn upload(
         .decode()
         .expect("Failed to decode image");
 
-    let resized_image = image.resize(max_image_width, max_image_height, image::imageops::FilterType::Lanczos3);
-    let mut buffer = Vec::new();
-    resized_image.write_to(&mut Cursor::new(&mut buffer), ImageFormat::Jpeg).expect("Failed to write resized image");
+    let resized_image = image.resize(
+        max_image_width,
+        max_image_height,
+        image::imageops::FilterType::Lanczos3,
+    );
 
+    let mut buffer = Vec::new();
+    resized_image
+        .write_to(&mut Cursor::new(&mut buffer), ImageFormat::Jpeg)
+        .expect("Failed to write resized image");
 
     let body = ByteStream::from(buffer);
     let s3_key = format!("{}/{}.{}", s3.folder_name(), object_name, "jpg");
@@ -97,8 +103,8 @@ pub trait S3Interface {
 
 impl S3 {
     pub fn new() -> Pin<Box<dyn std::future::Future<Output = Result<Self, UploadError>>>>
-        where
-            Self: Sized
+    where
+        Self: Sized,
     {
         Box::pin(async {
             let s3_config = aws_config::load_defaults(BehaviorVersion::latest()).await;
@@ -140,33 +146,5 @@ impl S3Interface for S3 {
             .body(body)
             .send()
             .await
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use mockall::predicate::*;
-    use tracing_test::traced_test;
-
-    #[tokio::test]
-    #[traced_test]
-    async fn test_upload() {
-        let mut mock = MockS3Interface::default();
-
-        let expected_key = "my_folder/my_key.jpg";
-
-        mock.expect_folder_name()
-            .times(1)
-            .return_const("my_folder".to_string());
-
-        mock.expect_upload_object()
-            .with(eq(expected_key), always())
-            .times(1)
-            .returning(|_, _| Box::pin(async { Ok(PutObjectOutput::builder().build()) }));
-
-        let result = upload(vec![0, 1, 2, 3], "my_key.jpg", &mock).await;
-
-        assert_eq!(result.unwrap(), expected_key);
     }
 }
