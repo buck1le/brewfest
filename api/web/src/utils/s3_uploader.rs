@@ -4,10 +4,8 @@ use aws_sdk_s3::{
     operation::put_object::{PutObjectError, PutObjectOutput},
     primitives::ByteStream,
 };
-use uuid::Uuid;
 
 use axum::http::StatusCode;
-use axum::response::IntoResponse;
 use std::sync::Arc;
 use tracing::info;
 

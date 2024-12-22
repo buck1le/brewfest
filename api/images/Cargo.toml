@@ -16,3 +16,6 @@ image = "0.25.5"
 
 [dev-dependencies]
 tracing-test = "0.2.5"
+
+[lib]
+path = "src/lib.rs"

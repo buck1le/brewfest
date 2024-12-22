@@ -9,7 +9,7 @@ primary_region = 'dfw'
 [build]
 
 [http_service]
-  internal_port = 80
+  internal_port = 8080
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -17,8 +17,7 @@ primary_region = 'dfw'
   processes = ['app']
 
 [env]
-  PORT = "80"
-
+  PORT = "8080"
 
 [[vm]]
   memory = '1gb'

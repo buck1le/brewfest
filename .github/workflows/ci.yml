@@ -71,20 +71,19 @@ jobs:
       working-directory: api
       run: cargo test --workspace --verbose
 
-  # deploy-client-to-fly:
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   needs: 
-  #     - types
-  #     - tests
-  #
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #
-  #     - name: Setup Flyctl
-  #       uses: superfly/flyctl-actions/setup-flyctl@master
-  #
-  #     - name: Deploy
-  #       working-directory: client
-  #       run: flyctl deploy --remote-only
+  deploy-api-to-fly:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: 
+      - api-tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy
+        working-directory: api
+        run: flyctl deploy --remote-only

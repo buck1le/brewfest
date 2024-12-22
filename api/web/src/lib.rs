@@ -5,12 +5,11 @@ use std::sync::Arc;
 use tokio::net::TcpListener;
 use tracing::{debug, info};
 use tracing_subscriber::EnvFilter;
-
 use images::S3;
 
+mod config;
 pub mod auth;
 pub mod common;
-mod config;
 pub mod handlers;
 pub mod presenters;
 pub mod routers;
@@ -42,7 +41,7 @@ async fn start() -> anyhow::Result<()> {
         .layer(Extension(db))
         .layer(Extension(aws_s3_client));
 
-    let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
+    let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
     axum::serve(listener, routes_all.into_make_service()).await?;
 
@@ -84,8 +83,6 @@ mod test {
 
     impl TestApp {
         pub async fn new() -> Self {
-            env_logger::builder().is_test(true).try_init().ok();
-
             debug!("Starting test app");
 
             let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
