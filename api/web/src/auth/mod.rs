@@ -28,7 +28,7 @@ where
 
         match api_key {
             Some(key) if key == expected_api_key.as_str() => Ok(ExtractApiKey(key.to_string())),
-            _ => Err((StatusCode::UNAUTHORIZED, "Invalid or missing API key")),
+            _ => Err((StatusCode::UNAUTHORIZED, "Not authorized for this resource")),
         }
     }
 }

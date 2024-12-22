@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  # mobile-types:
+  #   runs-on: ubuntu-latest
+  #
+  #   steps:
+  #   - name: Check out source
+  #     uses: actions/checkout@v4
+  #
+  #   - uses: actions/setup-node@v4
+  #     with:
+  #       node-version-file: 'client/.node-version'
+  #       cache: yarn
+  #       cache-dependency-path: client/yarn.lock
+  #
+  #   - name: Cache Node.js modules
+  #     uses: actions/cache@v4
+  #     with:
+  #       path: client/node_modules
+  #       key: ${{ runner.os }}-node-modules-${{ hashFiles('client/yarn.lock') }}
+  #       restore-keys: |
+  #         ${{ runner.os }}-node-modules-
+  #
+  #   - name: Install dependencies
+  #     working-directory: client
+  #     run: yarn install --frozen-lockfile
+  #
+  #   - name: Check TypeScript types
+  #     working-directory: client
+  #     env:
+  #       NODE_OPTIONS: "--max-old-space-size=8192"
+  #     run: yarn run tsc
+
+  api-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out source
+      uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Cache Cargo dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          api/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('api/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Run tests
+      working-directory: api
+      run: cargo test --verbose
+
+  # deploy-client-to-fly:
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   needs: 
+  #     - types
+  #     - tests
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup Flyctl
+  #       uses: superfly/flyctl-actions/setup-flyctl@master
+  #
+  #     - name: Deploy
+  #       working-directory: client
+  #       run: flyctl deploy --remote-only

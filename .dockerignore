@@ -1,0 +1,32 @@
+# flyctl launch added from .gitignore
+**/.DS_Store
+
+# flyctl launch added from mobile/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+mobile/node_modules
+mobile/.pnp
+mobile/**/.pnp.js
+
+# testing
+mobile/coverage
+
+# production
+mobile/build
+
+# misc
+mobile/**/.DS_Store
+mobile/**/.env.local
+mobile/**/.env.development.local
+mobile/**/.env.test.local
+mobile/**/.env.production.local
+
+mobile/**/npm-debug.log*
+mobile/**/yarn-debug.log*
+mobile/**/yarn-error.log*
+
+# flyctl launch added from mobile/node_modules/tailwindcss/stubs/.gitignore
+!mobile/node_modules/tailwindcss/stubs/**/*
+fly.toml
+
