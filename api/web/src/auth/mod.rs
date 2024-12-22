@@ -1,25 +1,33 @@
 use axum::{
     async_trait,
-    extract::{FromRequest, Request},
-    http::StatusCode,
+    extract::FromRequestParts,
+    http::{request::Parts, StatusCode},
 };
 
-struct ApiKey;
+pub struct ExtractApiKey(pub String);
 
 #[async_trait]
-impl<S> FromRequest<S> for ApiKey {
+impl<S> FromRequestParts<S> for ExtractApiKey
+where
+    S: Send + Sync,
+{
     type Rejection = (StatusCode, &'static str);
 
-    async fn from_request(req: Request, _state: &S) -> Result<Self, Self::Rejection> {
-        let api_key = req
-            .headers()
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
+        let api_key = parts
+            .headers
             .get("x-api-key")
             .and_then(|value| value.to_str().ok());
 
+        let expected_api_key = std::env::var("API_KEY").map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Missing environment variable",
+            )
+        })?;
+
         match api_key {
-            Some(key) if key == std::env::var("API_KEY").expect("API_KEY must be set") => {
-                Ok(ApiKey)
-            }
+            Some(key) if key == expected_api_key.as_str() => Ok(ExtractApiKey(key.to_string())),
             _ => Err((StatusCode::UNAUTHORIZED, "Invalid or missing API key")),
         }
     }

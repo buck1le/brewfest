@@ -7,6 +7,7 @@ use std::sync::Arc;
 use entities::sea_orm::*;
 use entities::vendors::Entity as Vendors;
 
+use crate::auth::ExtractApiKey;
 use crate::common::events::load_event;
 use crate::presenters::events::vendors::{Partial as VendorPartial, Presenter as VendorPresenter};
 
@@ -74,6 +75,7 @@ pub struct VendorCreateRequest {
 
 pub async fn create(
     Extension(db): Extension<Arc<DatabaseConnection>>,
+    ExtractApiKey(_api_key): ExtractApiKey,
     Path(event_id): Path<i32>,
     Json(payload): Json<VendorCreateRequest>,
 ) -> impl IntoResponse {

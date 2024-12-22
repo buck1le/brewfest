@@ -1,12 +1,13 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
 use chrono::NaiveDate;
 use serde::Deserialize;
+use tracing::debug;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
 use entities::*;
 
-use crate::presenters::events::{Partial, Presenter as IndexPresenter};
+use crate::{auth::ExtractApiKey, presenters::events::{Partial, Presenter as IndexPresenter}};
 
 pub mod schedule;
 pub mod vendor;
@@ -25,8 +26,10 @@ fn parse_date(date_str: &str) -> Result<NaiveDate, (StatusCode, String)> {
         .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))
 }
 
+#[axum::debug_handler]
 pub async fn create(
     Extension(db): Extension<Arc<DatabaseConnection>>,
+    ExtractApiKey(_api_key): ExtractApiKey,
     Json(payload): Json<EventCreateRequest>,
 ) -> impl IntoResponse {
     let database_connection = &*db;

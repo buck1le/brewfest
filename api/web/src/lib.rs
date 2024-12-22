@@ -149,10 +149,11 @@ mod test {
                 .unwrap()
         }
 
-        pub async fn post(&self, path: &str, payload: &str) -> reqwest::Response {
+        pub async fn post(&self, path: &str, payload: &str, api_key: &str) -> reqwest::Response {
             self.client
                 .post(format!("http://{}{}", self.addr, path))
                 .body(payload.to_string())
+                .header("x-api-key", api_key)
                 .header("Content-Type", "application/json")
                 .send()
                 .await
@@ -225,7 +226,14 @@ mod test {
     }
 
     mod protected_routes {
+        use once_cell::sync::Lazy;
+
         use super::*;
+
+        static API_KEY: Lazy<String> = Lazy::new(|| {
+            std::env::set_var("API_KEY", "test");
+            std::env::var("API_KEY").expect("API_KEY must be set for tests")
+        });
 
         #[tokio::test]
         async fn test_create_event() {
@@ -233,7 +241,7 @@ mod test {
 
             let app = TestApp::new().await;
 
-            let res = app.post("/api/events", payload).await;
+            let res = app.post("/api/events", payload, &API_KEY).await;
 
             assert_eq!(res.status(), 200);
         }
@@ -264,8 +272,8 @@ mod test {
                 .post(
                     &format!("/api/events/{}/vendors", inserted_event.id),
                     payload,
+                    &API_KEY,
                 )
-
                 .await;
 
             assert_eq!(res.status(), 200);
