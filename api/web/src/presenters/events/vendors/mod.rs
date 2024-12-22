@@ -20,7 +20,6 @@ struct VendorResponse {
     updated_at: String,
     event_id: i32,
     coordinates: Coordinates,
-    image: Option<String>,
     category: Option<String>,
     resources: Resources,
 }
@@ -36,6 +35,7 @@ struct Coordinates {
 #[serde(rename_all = "camelCase")]
 struct Resources {
     images: ResourceLink,
+    thumbnail: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -59,7 +59,6 @@ impl<'a> Partial<'a> {
             updated_at: self.vendor.updated_at.to_string(),
             category: self.vendor.category.clone(),
             event_id: self.vendor.event_id,
-            image: self.vendor.image.clone(),
             coordinates: Coordinates {
                 latitude: self.vendor.latitude,
                 longitude: self.vendor.longitude,
@@ -71,6 +70,12 @@ impl<'a> Partial<'a> {
                         self.vendor.event_id, self.vendor.id
                     ),
                 },
+                thumbnail: ResourceLink {
+                    href: format!(
+                        "/events/{}/vendors/{}/thumbnail",
+                        self.vendor.event_id, self.vendor.id
+                    ),
+                }
             },
         };
 
