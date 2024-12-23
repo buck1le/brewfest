@@ -14,7 +14,6 @@ pub struct Model {
     pub description: String,
     pub start_date: DateTime,
     pub end_date: DateTime,
-    pub image: Option<String>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
     pub event_id: i32,

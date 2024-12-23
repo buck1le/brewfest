@@ -1,8 +1,8 @@
 use serde::Serialize;
 use serde_json::Value;
 
-pub mod presenter;
 pub mod images;
+pub mod presenter;
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {
@@ -75,7 +75,7 @@ impl<'a> Partial<'a> {
                         "/events/{}/vendors/{}/thumbnail",
                         self.vendor.event_id, self.vendor.id
                     ),
-                }
+                },
             },
         };
 

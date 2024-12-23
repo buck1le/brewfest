@@ -19,7 +19,6 @@ pub struct Model {
     pub longitude: f64,
     pub event_id: i32,
     pub category: Option<String>,
-    pub image: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

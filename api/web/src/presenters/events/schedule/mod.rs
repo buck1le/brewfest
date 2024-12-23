@@ -20,7 +20,6 @@ struct ScheduleItemResponse {
     end_date: String,
     created_at: String,
     updated_at: String,
-    image: Option<String>,
     event_id: i32,
     resources: Resources,
 }
@@ -52,7 +51,6 @@ impl <'a> Partial <'a> {
             created_at: self.schedule_item.created_at.to_string(),
             updated_at: self.schedule_item.updated_at.to_string(),
             event_id: self.schedule_item.event_id,
-            image: self.schedule_item.image.clone(),
             resources: Resources {
                 images: ResourceLink {
                     href: format!("/events/{}/schedule_items/{}/images",

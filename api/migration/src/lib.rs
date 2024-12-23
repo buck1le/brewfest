@@ -38,7 +38,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20241217_141437_create_vendor_images::Migration),
             Box::new(m20241222_232955_add_thumbnail_column_to_images::Migration),
         ];
-
         // Migrations for development database here
         base_migrations.push(Box::new(seeds::accounts::Migration));
 
