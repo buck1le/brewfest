@@ -11,36 +11,42 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
-  # mobile-types:
-  #   runs-on: ubuntu-latest
-  #
-  #   steps:
-  #   - name: Check out source
-  #     uses: actions/checkout@v4
-  #
-  #   - uses: actions/setup-node@v4
-  #     with:
-  #       node-version-file: 'client/.node-version'
-  #       cache: yarn
-  #       cache-dependency-path: client/yarn.lock
-  #
-  #   - name: Cache Node.js modules
-  #     uses: actions/cache@v4
-  #     with:
-  #       path: client/node_modules
-  #       key: ${{ runner.os }}-node-modules-${{ hashFiles('client/yarn.lock') }}
-  #       restore-keys: |
-  #         ${{ runner.os }}-node-modules-
-  #
-  #   - name: Install dependencies
-  #     working-directory: client
-  #     run: yarn install --frozen-lockfile
-  #
-  #   - name: Check TypeScript types
-  #     working-directory: client
-  #     env:
-  #       NODE_OPTIONS: "--max-old-space-size=8192"
-  #     run: yarn run tsc
+  mobile-types:
+    runs-on: ubuntu-latest
+
+    if: |
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.modified, 'mobile/') ||
+      contains(github.event.head_commit.added, 'mobile/') ||
+      contains(github.event.head_commit.removed, 'mobile/')
+
+    steps:
+    - name: Check out source
+      uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: 'mobile/.node-version'
+        cache: yarn
+        cache-dependency-path: mobile/yarn.lock
+
+    - name: Cache Node.js modules
+      uses: actions/cache@v4
+      with:
+        path: mobile/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('client/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+
+    - name: Install dependencies
+      working-directory: mobile
+      run: yarn install --frozen-lockfile
+
+    - name: Check TypeScript types
+      working-directory: mobile
+      env:
+        NODE_OPTIONS: "--max-old-space-size=8192"
+      run: yarn run tsc
 
   api-tests:
     runs-on: ubuntu-latest
