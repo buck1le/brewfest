@@ -47,6 +47,24 @@ const App = () => {
           colors: {
             background: colors.primary,
           },
+          fonts: {
+            regular: {
+              fontFamily: 'Montserrat-Regular',
+              fontWeight: 'normal',
+            },
+            medium: {
+              fontFamily: 'Montserrat-Medium',
+              fontWeight: 'normal',
+            },
+            heavy: {
+              fontFamily: 'Montserrat-Heavy',
+              fontWeight: 'normal',
+            },
+            bold: {
+              fontFamily: 'Montserrat-Bold',
+              fontWeight: 'normal',
+            }
+          },
         }}
       >
         <Stack.Navigator
