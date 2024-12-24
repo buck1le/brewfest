@@ -45,6 +45,13 @@ jobs:
   api-tests:
     runs-on: ubuntu-latest
 
+    # Changes occur in the api directory
+    if: |
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.modified, 'api/') ||
+      contains(github.event.head_commit.added, 'api/') ||
+      contains(github.event.head_commit.removed, 'api/')
+
     steps:
     - name: Check out source
       uses: actions/checkout@v4
