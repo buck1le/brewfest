@@ -1,5 +1,6 @@
 import { TouchableWithoutFeedback, View } from 'react-native';
 import Schedule from 'screens/schedule';
+import Map from 'screens/map';
 import Vendors from 'screens/vendors';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -57,6 +58,20 @@ const MainTabNavigator = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? 'calendar' : 'calendar-outline'}
+              size={size}
+              color={color}
+            />
+          ),
+          tabBarLabelStyle: styles.tabLabel,
+        })}
+      />
+      <Tab.Screen
+        name="Map"
+        component={Map}
+        options={() => ({
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={focused ? 'map' : 'map-outline'}
               size={size}
               color={color}
             />
