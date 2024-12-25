@@ -70,11 +70,11 @@ pub async fn upload(
 
     let mut buffer = Vec::new();
     resized_image
-        .write_to(&mut Cursor::new(&mut buffer), ImageFormat::Jpeg)
+        .write_to(&mut Cursor::new(&mut buffer), ImageFormat::Png)
         .expect("Failed to write resized image");
 
     let body = ByteStream::from(buffer);
-    let s3_key = format!("{}/{}.{}", s3.folder_name(), object_name, "jpg");
+    let s3_key = format!("{}/{}.{}", s3.folder_name(), object_name, "png");
 
     info!("Uploading image to S3");
 
