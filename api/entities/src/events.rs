@@ -13,7 +13,7 @@ pub struct Model {
     pub description: String,
     pub start_date: chrono::NaiveDate,
     pub end_date: chrono::NaiveDate,
-    pub image: Option<String>,
+    pub thumbnail: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

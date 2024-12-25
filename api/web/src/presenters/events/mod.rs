@@ -19,7 +19,7 @@ struct EventResponse {
     description: String,
     start_date: String,
     end_date: String,
-    image: Option<String>,
+    thumbnail: Option<String>,
     resources: Resources,
 }
 
@@ -49,7 +49,7 @@ impl<'a> Partial<'a> {
             description: self.event.description.clone(),
             start_date: self.event.start_date.to_string(),
             end_date: self.event.end_date.to_string(),
-            image: self.event.image.as_ref().map(|image| image.to_string()),
+            thumbnail: self.event.thumbnail.clone(),
             resources: Resources {
                 schedule_items: ResourceLink {
                     href: format!("/events/{}/schedule_items", self.event.id),

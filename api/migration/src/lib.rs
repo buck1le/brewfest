@@ -14,6 +14,7 @@ mod m20241209_211320_add_image_to_vendors;
 mod m20241210_005959_add_image_to_schedule_item;
 mod m20241217_141437_create_vendor_images;
 mod m20241222_232955_add_thumbnail_column_to_event_items;
+mod m20241225_040709_add_thumbnail_column_to_events;
 
 pub struct Migrator;
 
@@ -37,6 +38,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241210_005959_add_image_to_schedule_item::Migration),
             Box::new(m20241217_141437_create_vendor_images::Migration),
             Box::new(m20241222_232955_add_thumbnail_column_to_event_items::Migration),
+            Box::new(m20241225_040709_add_thumbnail_column_to_events::Migration),
         ];
         // Migrations for development database here
         base_migrations.push(Box::new(seeds::accounts::Migration));
