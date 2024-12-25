@@ -1,4 +1,5 @@
 pub mod image;
+pub mod thumbnail;
 
 use axum::extract::{Json, Path};
 use axum::http::StatusCode;

@@ -1,6 +1,7 @@
 use axum::{Router, routing::get, routing::post};
 use crate::handlers::events::schedule;
 use crate::handlers::events::schedule::image;
+use crate::handlers::events::schedule::thumbnail;
 
 pub fn routes() -> Router {
     Router::new()
@@ -9,4 +10,5 @@ pub fn routes() -> Router {
         .route("/:schedule_item_id", get(schedule::show))
         .route("/:schedule_item_id/images", post(image::create))
         .route("/:schedule_item_id/images", get(image::index))
+        .route("/:schedule_item_id/thumbnail", post(thumbnail::create))
 }

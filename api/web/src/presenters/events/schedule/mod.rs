@@ -6,7 +6,7 @@ pub mod presenter;
 
 pub use presenter::Presenter;
 
-pub struct Partial <'a> {
+pub struct Partial<'a> {
     schedule_item: &'a entities::schedule_items::Model,
 }
 
@@ -21,6 +21,7 @@ struct ScheduleItemResponse {
     created_at: String,
     updated_at: String,
     event_id: i32,
+    thumbnail: Option<String>,
     resources: Resources,
 }
 
@@ -28,6 +29,7 @@ struct ScheduleItemResponse {
 #[serde(rename_all = "camelCase")]
 struct Resources {
     images: ResourceLink,
+    thumbnail: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -36,7 +38,7 @@ struct ResourceLink {
     href: String,
 }
 
-impl <'a> Partial <'a> {
+impl<'a> Partial<'a> {
     pub fn new(schedule_item: &'a entities::schedule_items::Model) -> Self {
         Self { schedule_item }
     }
@@ -51,14 +53,21 @@ impl <'a> Partial <'a> {
             created_at: self.schedule_item.created_at.to_string(),
             updated_at: self.schedule_item.updated_at.to_string(),
             event_id: self.schedule_item.event_id,
+            thumbnail: self.schedule_item.thumbnail.clone(),
             resources: Resources {
                 images: ResourceLink {
-                    href: format!("/events/{}/schedule_items/{}/images",
-                        self.schedule_item.event_id,
-                        self.schedule_item.id
-                        ),
+                    href: format!(
+                        "/events/{}/schedule_items/{}/images",
+                        self.schedule_item.event_id, self.schedule_item.id
+                    ),
                 },
-            }
+                thumbnail: ResourceLink {
+                    href: format!(
+                        "/events/{}/schedule_items/{}/thumbnail",
+                        self.schedule_item.event_id, self.schedule_item.id
+                    ),
+                },
+            },
         };
 
         serde_json::to_value(response).unwrap()
