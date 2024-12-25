@@ -20,6 +20,7 @@ struct VendorResponse {
     updated_at: String,
     event_id: i32,
     thumbnail: Option<String>,
+    operating_out_of: String,
     coordinates: Coordinates,
     category: Option<String>,
     resources: Resources,
@@ -61,6 +62,7 @@ impl<'a> Partial<'a> {
             thumbnail: self.vendor.thumbnail.clone(),
             category: self.vendor.category.clone(),
             event_id: self.vendor.event_id,
+            operating_out_of: self.vendor.operating_out_of.clone(),
             coordinates: Coordinates {
                 latitude: self.vendor.latitude,
                 longitude: self.vendor.longitude,

@@ -14,6 +14,8 @@ pub struct Model {
     pub email: String,
     pub phone: String,
     pub created_at: DateTime,
+    pub operating_out_of: String,
+    pub description: String,
     pub updated_at: DateTime,
     pub latitude: f64,
     pub longitude: f64,
