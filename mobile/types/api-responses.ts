@@ -48,7 +48,6 @@ export interface Event {
   resources: {
     vendors: Resource;
     scheduleItems: Resource;
-    image: Image[];
   };
 }
 
