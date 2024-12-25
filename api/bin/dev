@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Start the local postgres server
+# Start the local postgres server and run the application
 
 check_docker_compose_installed() {
   if ! [ -x "$(command -v docker-compose)" ]; then
