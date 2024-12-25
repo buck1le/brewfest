@@ -1,7 +1,6 @@
 use axum::{routing::get, routing::post, Router};
 
-use crate::handlers::events::vendor;
-use crate::handlers::events::vendor::image;
+use crate::handlers::events::vendor::{self, thumbnail, image};
 
 pub fn routes() -> Router {
     Router::new()
@@ -10,4 +9,5 @@ pub fn routes() -> Router {
         .route("/:vendor_id", get(vendor::show))
         .route("/:vendor_id/images", post(image::create))
         .route("/:vendor_id/images", get(image::index))
+        .route("/:vendor_id/thumbnail", post(thumbnail::create))
 }

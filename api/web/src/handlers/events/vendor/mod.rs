@@ -12,6 +12,7 @@ use crate::common::events::load_event;
 use crate::presenters::events::vendors::{Partial as VendorPartial, Presenter as VendorPresenter};
 
 pub mod image;
+pub mod thumbnail;
 
 pub struct Query;
 

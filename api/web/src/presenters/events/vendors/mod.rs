@@ -19,6 +19,7 @@ struct VendorResponse {
     created_at: String,
     updated_at: String,
     event_id: i32,
+    thumbnail: Option<String>,
     coordinates: Coordinates,
     category: Option<String>,
     resources: Resources,
@@ -57,6 +58,7 @@ impl<'a> Partial<'a> {
             phone: self.vendor.phone.clone(),
             created_at: self.vendor.created_at.to_string(),
             updated_at: self.vendor.updated_at.to_string(),
+            thumbnail: self.vendor.thumbnail.clone(),
             category: self.vendor.category.clone(),
             event_id: self.vendor.event_id,
             coordinates: Coordinates {
