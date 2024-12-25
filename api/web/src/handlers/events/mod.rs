@@ -1,7 +1,6 @@
 use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
 use chrono::NaiveDate;
 use serde::Deserialize;
-use tracing::debug;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
@@ -11,6 +10,7 @@ use crate::{auth::ExtractApiKey, presenters::events::{Partial, Presenter as Inde
 
 pub mod schedule;
 pub mod vendor;
+pub mod thumbnail;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
