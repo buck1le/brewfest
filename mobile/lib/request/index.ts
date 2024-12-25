@@ -1,9 +1,9 @@
 import { FetchResponse } from "./types";
 
-export const HOST = (__DEV__) ?
-  'http://localhost:3000' : 'https://wwbf-api.herokuapp.com';
+export const HOST = (false) ?
+  'http://localhost:3000' : 'https://brew-fest-api.fly.dev';
 
-export const BREW_FEST_IMAGE_HOST = 'https://brew-fest.s3.us-east-2.amazonaws.com/images';
+export const BREW_FEST_IMAGE_HOST = 'https://brew-fest.s3.us-east-2.amazonaws.com/';
 
 type RequestFetchResponse<ApiResponse = unknown> =
   Omit<FetchResponse<ApiResponse>, 'loading'>;

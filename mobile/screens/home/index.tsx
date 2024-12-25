@@ -12,7 +12,7 @@ interface HomeProps {
   navigation: any;
 }
 
-const ROOT_RESOURCE = `${HOST}/events`;
+const ROOT_RESOURCE = `${HOST}/api/events`;
 
 const Home = ({ navigation }: HomeProps) => {
   const eventsAtom = useEventsAtom(ROOT_RESOURCE);
@@ -48,7 +48,7 @@ const Home = ({ navigation }: HomeProps) => {
               <TouchableImage
                 key={event.id}
                 onPress={() => handlePress(event)}
-                image={event.image}
+                image={event.thumbnail}
                 style={{
                   width: 300,
                   height: 300,

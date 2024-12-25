@@ -14,9 +14,11 @@ import { useAtomValue } from "jotai";
 import { modalVisableAtom } from "./atoms";
 import { View } from "react-native";
 
-server.listen({
-  onUnhandledRequest: 'bypass',
-});
+if (false) {
+  server.listen({
+    onUnhandledRequest: 'bypass',
+  });
+}
 
 const Stack = createStackNavigator<RootStackParamList>();
 

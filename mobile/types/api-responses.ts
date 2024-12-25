@@ -38,7 +38,7 @@ export interface Event {
   id: number;
   name: string;
   description: string;
-  image: Image[];
+  thumbnail: Image;
   coordinate: {
     latitude: number;
     longitude: number;
@@ -47,7 +47,8 @@ export interface Event {
   };
   resources: {
     vendors: Resource;
-    schedule: Resource;
+    scheduleItems: Resource;
+    image: Image[];
   };
 }
 
