@@ -12,7 +12,7 @@ interface HomeProps {
   navigation: any;
 }
 
-const ROOT_RESOURCE = `${HOST}/api/events`;
+const ROOT_RESOURCE = `/events`;
 
 const Home = ({ navigation }: HomeProps) => {
   const eventsAtom = useEventsAtom(ROOT_RESOURCE);

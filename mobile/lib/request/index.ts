@@ -1,7 +1,7 @@
 import { FetchResponse } from "./types";
 
 export const HOST = (false) ?
-  'http://localhost:3000' : 'https://brew-fest-api.fly.dev';
+  'http://localhost:3000' : 'https://brew-fest-api.fly.dev/api';
 
 export const BREW_FEST_IMAGE_HOST = 'https://brew-fest.s3.us-east-2.amazonaws.com/';
 
@@ -17,7 +17,9 @@ const get = async <ApiResponse = unknown>(
   resource: string,
 ): Promise<RequestFetchResponse<ApiResponse>> => {
   try {
-    const response = await fetch(resource, {
+    const url = `${HOST}${resource}`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers
     });

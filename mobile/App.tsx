@@ -33,7 +33,7 @@ const LogoTitle = () => {
         navigation.navigate('Home')
       }
       }
-      image={selectedEvent?.image}
+      image={selectedEvent?.thumbnail}
       style={styles.headerImage}
     />
   );

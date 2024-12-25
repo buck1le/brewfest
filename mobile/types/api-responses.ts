@@ -12,10 +12,10 @@ export interface Resource {
 // Entities
 export interface Vendor {
   id: number;
-  title: string;
+  name: string;
   description: string;
   operatingOutOf: string;
-  image: Image;
+  thumbnail: string;
   category: string;
   coordinate: {
     latitude: number;
@@ -38,7 +38,7 @@ export interface Event {
   id: number;
   name: string;
   description: string;
-  thumbnail: Image;
+  thumbnail: string;
   coordinate: {
     latitude: number;
     longitude: number;

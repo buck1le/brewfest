@@ -10,11 +10,12 @@ import { TileColumn } from 'components/common/tiles';
 import { VendorModal, VendorTile } from 'components/vendors';
 import { useImagesAtom } from 'components/common/atoms';
 import { useState } from 'react';
+import { BREW_FEST_IMAGE_HOST } from 'lib/request';
 
 const categories: Category[] = [
   {
     name: 'Drinks',
-    query: 'drinks',
+    query: 'beverage',
     icon: 'beer-outline',
   },
   {
@@ -46,7 +47,7 @@ const Vendors = () => {
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
-  const imageUrls = vendors.data?.map(vendor => vendor.image.url);
+  const imageUrls = vendors.data?.map(vendor => `${BREW_FEST_IMAGE_HOST}${vendor.thumbnail}`);
   const imagesAtom = useImagesAtom(imageUrls);
   const images = useAtomValue(imagesAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
@@ -59,6 +60,10 @@ const Vendors = () => {
 
   if (!vendors.data) {
     return <Text>No data</Text>
+  }
+
+  if (images.loading) {
+    return <Text>Loading...</Text>
   }
 
   return (
@@ -85,7 +90,7 @@ const Vendors = () => {
                 onPress={() => {
                   setSelectedItem(item);
                   setModalVisable(true);
-                  }
+                }
                 }
               />
             )}

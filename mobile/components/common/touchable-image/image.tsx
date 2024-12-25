@@ -1,5 +1,6 @@
-import { Image, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { BREW_FEST_IMAGE_HOST } from 'lib/request';
+import { Image } from 'expo-image';
 
 interface TouchableImageProps {
   onPress: () => void;
@@ -15,7 +16,7 @@ const TouchableImage = ({ onPress, image, style }: TouchableImageProps) => {
       <Image
         source={{ uri: image_url }}
         style={style} 
-        resizeMode='contain'
+        contentFit='contain'
         />
     </TouchableOpacity>
   );

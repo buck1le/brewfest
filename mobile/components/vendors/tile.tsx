@@ -3,6 +3,7 @@ import { Vendor } from "types/api-responses";
 import { Image } from "expo-image";
 
 import { styles } from "./tile-styles";
+import { BREW_FEST_IMAGE_HOST } from "lib/request";
 
 interface VendorTileProps {
   item: Vendor;
@@ -14,6 +15,8 @@ const VendorTile = ({
   item,
   onPress,
 }: VendorTileProps) => {
+  const image_url = `${BREW_FEST_IMAGE_HOST}${item.thumbnail}`;
+
   return (
     <Pressable
       style={styles.tileContainer}
@@ -21,14 +24,14 @@ const VendorTile = ({
       >
       <Image
         style={styles.vendorImage}
-        source={{ uri: item.image.url }}
+        source={{ uri: image_url }}
       />
       <View style={styles.textContainer}>
         <Text style={{
           fontSize: 18,
           fontWeight: 'bold',
         }}>
-          {item.title}
+          {item.name}
         </Text>
         <OperatingOutOfChip operatingOutOf={item.operatingOutOf} />
       </View>

@@ -53,7 +53,7 @@ const VendorModal = ({ item }: VendorModalProps) => {
         }}
       >
         <View style={styles.textContainer}>
-          <Text style={styles.itemTitle}>{item?.title}</Text>
+          <Text style={styles.itemTitle}>{item?.name}</Text>
           <Text>{item?.description}</Text>
         </View>
         <View style={styles.inventoryListContainer}>
