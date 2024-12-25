@@ -11,16 +11,40 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
-  mobile-types:
+  changes:
     runs-on: ubuntu-latest
 
-    if: |
-      github.event_name == 'push' &&
-      contains(github.event.head_commit.modified, 'mobile/') ||
-      contains(github.event.head_commit.added, 'mobile/') ||
-      contains(github.event.head_commit.removed, 'mobile/')
+    permissions:
+      contents: read
+      pull-requests: read
+
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
 
     steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'api/**'
+            frontend:
+              - 'mobile/**'
+
+  mobile-types:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check if files have changed in mobile
+      uses: dorny/paths-filter@v3
+      with:
+        filters: |
+          mobile: 
+            - 'mobile/**'
+
     - name: Check out source
       uses: actions/checkout@v4
 
@@ -49,14 +73,9 @@ jobs:
       run: yarn run tsc
 
   api-tests:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
-
-    # Changes occur in the api directory
-    if: |
-      github.event_name == 'push' &&
-      contains(github.event.head_commit.modified, 'api/') ||
-      contains(github.event.head_commit.added, 'api/') ||
-      contains(github.event.head_commit.removed, 'api/')
 
     steps:
     - name: Check out source
