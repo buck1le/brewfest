@@ -66,11 +66,12 @@ impl From<VendorCategory> for Option<String> {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct VendorCreateRequest {
     name: String,
     email: String,
     phone: String,
-    opearting_out_of: String,
+    operating_out_of: String,
     description: String,
     coordinates: Location,
     category: VendorCategory,
@@ -91,7 +92,7 @@ pub async fn create(
         latitude: Set(payload.coordinates.latitude),
         longitude: Set(payload.coordinates.longitude),
         category: Set(payload.category.into()),
-        operating_out_of: Set(payload.opearting_out_of),
+        operating_out_of: Set(payload.operating_out_of),
         description: Set(payload.description),
         event_id: Set(event_id),
         ..Default::default() // sets the other fields such as ID

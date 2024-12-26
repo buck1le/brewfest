@@ -202,7 +202,10 @@ mod test {
                 name: Set("Hello, World!".into()),
                 email: Set("jloesch@example.com".into()),
                 phone: Set("123-456-7890".into()),
+                operating_out_of: Set("Hello, World!".into()),
+                description: Set("Hello, World!".into()),
                 latitude: Set(0.0),
+                category: Set(Some("Food".into())),
                 longitude: Set(0.0),
                 event_id: Set(inserted_event.id),
                 ..Default::default()
@@ -249,6 +252,8 @@ mod test {
                     "name": "Hello, World!", 
                     "email": "jloesch@example.com", 
                     "phone": "123-456-7890", 
+                    "description": "Hello, World!",
+                    "operatingOutOf": "Hello, World!",
                     "coordinates": { "latitude": 0.0, "longitude": 0.0 },
                     "category": "Food"
                 }"#;
