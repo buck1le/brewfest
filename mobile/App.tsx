@@ -14,7 +14,7 @@ import { useAtomValue } from "jotai";
 import { modalVisableAtom } from "./atoms";
 import { View } from "react-native";
 
-if (false) {
+if (process.env.EXPO_PUBLIC_TEST_SERVER) {
   server.listen({
     onUnhandledRequest: 'bypass',
   });

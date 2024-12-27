@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+# env files
+.env.local
+
 android/app/build
 
 # rust
