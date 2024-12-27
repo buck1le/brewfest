@@ -18,7 +18,7 @@ impl Partial {
             "id": self.image.id,
             "vendor_id": self.image.vendor_id,
             "url": self.image.url,
-            "text": self.image.text,
+            "alt": self.image.text,
         })
     }
 }

@@ -8,9 +8,7 @@ import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
 import { VendorModal, VendorTile } from 'components/vendors';
-import { useImagesAtom } from 'components/common/atoms';
-import { Suspense, useMemo, useState } from 'react';
-import { BREW_FEST_IMAGE_HOST } from 'lib/request';
+import { Suspense, useState } from 'react';
 
 const categories: Category[] = [
   {

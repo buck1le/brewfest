@@ -99,7 +99,7 @@ pub async fn index(
 
             ImagePresenter::new(images).render()
         } else {
-            Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
+            Err((StatusCode::NOT_FOUND, "Vendor not found".to_string()))
         }
     } else {
         Err((StatusCode::NOT_FOUND, "Event not found".to_string()))

@@ -7,6 +7,7 @@ import { styles } from "./modal-styles";
 import { useInventoryAtom } from "components/common/tiles/atoms";
 import { useAtomValue } from "jotai";
 import S3Image from "components/common/image";
+import { useVendorImagesAtom } from "./atoms";
 
 const width = Dimensions.get("window").width;
 
@@ -17,6 +18,15 @@ interface VendorModalProps {
 const VendorModal = ({ item }: VendorModalProps) => {
   const ref = useRef<ICarouselInstance>(null);
 
+  console.log("VendorModal", item);
+
+  const vendorImagesAtom = useVendorImagesAtom(item.resources.images.href);
+  const images = useAtomValue(vendorImagesAtom);
+
+  if (!images.data) {
+    return
+  }
+
   return (
     <>
       <View style={styles.carouselContainer}>
@@ -24,7 +34,7 @@ const VendorModal = ({ item }: VendorModalProps) => {
           ref={ref}
           width={width}
           height={width / 2}
-          data={item?.resources.images}
+          data={images.data}
           loop
           autoPlay
           autoPlayInterval={3000}

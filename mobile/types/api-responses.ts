@@ -1,7 +1,12 @@
 // Generic Types
 export interface Image {
+  id: number;
   url: string;
   alt: string;
+}
+
+export interface VendorImageResponse extends Image {
+  vendor_id: number;
 }
 
 export interface Resource {
@@ -22,7 +27,7 @@ export interface Vendor {
     longitude: number;
   };
   resources: {
-    images: Image[];
+    images: Resource;
     inventory: Resource;
   };
 }
