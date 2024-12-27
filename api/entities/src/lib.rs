@@ -10,3 +10,4 @@ pub mod schedule_items;
 pub mod schedule_images;
 pub mod vendors;
 pub mod vendor_images;
+pub mod vendor_inventory_items;

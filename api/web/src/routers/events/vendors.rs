@@ -1,5 +1,7 @@
 use axum::{routing::get, routing::post, Router};
 
+pub mod inventory;
+
 use crate::handlers::events::vendor::{self, thumbnail, image};
 
 pub fn routes() -> Router {

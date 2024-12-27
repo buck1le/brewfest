@@ -13,6 +13,7 @@ use crate::presenters::events::vendors::{Partial as VendorPartial, Presenter as 
 
 pub mod image;
 pub mod thumbnail;
+pub mod inventory;
 
 pub struct Query;
 

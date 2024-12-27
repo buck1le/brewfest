@@ -3,6 +3,8 @@ use serde_json::Value;
 
 pub mod images;
 pub mod presenter;
+pub mod inventory;
+
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {

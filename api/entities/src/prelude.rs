@@ -5,3 +5,4 @@ pub use super::events::Entity as Events;
 pub use super::schedule_images::Entity as ScheduleImages;
 pub use super::schedule_items::Entity as ScheduleItems;
 pub use super::vendors::Entity as Vendors;
+pub use super::vendor_inventory_items::Entity as VendorInventoryItems;

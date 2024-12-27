@@ -17,6 +17,7 @@ mod m20241222_232955_add_thumbnail_column_to_event_items;
 mod m20241225_040709_add_thumbnail_column_to_events;
 mod m20241225_200857_operating_out_of_to_vendor;
 mod m20241225_201805_add_missing_vendor_fields;
+mod m20241227_163654_create_vendor_inventory;
 
 pub struct Migrator;
 
@@ -43,6 +44,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241225_040709_add_thumbnail_column_to_events::Migration),
             Box::new(m20241225_200857_operating_out_of_to_vendor::Migration),
             Box::new(m20241225_201805_add_missing_vendor_fields::Migration),
+            Box::new(m20241227_163654_create_vendor_inventory::Migration),
         ];
         // Migrations for development database here
         base_migrations.push(Box::new(seeds::accounts::Migration));
