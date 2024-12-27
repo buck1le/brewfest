@@ -1,6 +1,5 @@
 import { TouchableOpacity } from 'react-native';
-import { BREW_FEST_IMAGE_HOST } from 'lib/request';
-import { Image } from 'expo-image';
+import S3Image from '../image';
 
 interface TouchableImageProps {
   onPress: () => void;
@@ -9,12 +8,10 @@ interface TouchableImageProps {
 }
 
 const TouchableImage = ({ onPress, image, style }: TouchableImageProps) => {
-  const image_url = `${BREW_FEST_IMAGE_HOST}${image}`;
-
   return (
     <TouchableOpacity onPress={onPress}>
-      <Image
-        source={{ uri: image_url }}
+      <S3Image
+        source={{ uri: image }}
         style={style} 
         contentFit='contain'
         />

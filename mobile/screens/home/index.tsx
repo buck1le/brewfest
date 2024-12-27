@@ -5,8 +5,8 @@ import TouchableImage from 'components/common/touchable-image';
 import { styles } from './styles';
 import { selectedEventAtom } from 'atoms/index';
 import { useEventsAtom } from './atoms';
-import { HOST } from 'lib/request';
 import { Event } from 'types/api-responses';
+import { Suspense } from 'react';
 
 interface HomeProps {
   navigation: any;
@@ -43,20 +43,22 @@ const Home = ({ navigation }: HomeProps) => {
           marginTop: 50,
         }}
         >
-          {events.data &&
-            events.data.map((event) => (
-              <TouchableImage
-                key={event.id}
-                onPress={() => handlePress(event)}
-                image={event.thumbnail}
-                style={{
-                  width: 300,
-                  height: 300,
-                  marginBottom: 10,
-                }}
-              />
-            ))
-          }
+          <Suspense fallback={<Text>Loading...</Text>}>
+            {events.data &&
+              events.data.map((event) => (
+                <TouchableImage
+                  key={event.id}
+                  onPress={() => handlePress(event)}
+                  image={event.thumbnail}
+                  style={{
+                    width: 300,
+                    height: 300,
+                    marginBottom: 10,
+                  }}
+                />
+              ))
+            }
+          </Suspense>
         </View>
       </View>
     </SafeAreaView>

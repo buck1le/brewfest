@@ -9,7 +9,7 @@ import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
 import { VendorModal, VendorTile } from 'components/vendors';
 import { useImagesAtom } from 'components/common/atoms';
-import { useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { BREW_FEST_IMAGE_HOST } from 'lib/request';
 
 const categories: Category[] = [
@@ -47,23 +47,12 @@ const Vendors = () => {
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
-  const imageUrls = vendors.data?.map(vendor => `${BREW_FEST_IMAGE_HOST}${vendor.thumbnail}`);
-  const imagesAtom = useImagesAtom(imageUrls);
-  const images = useAtomValue(imagesAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
   const [selectedItem, setSelectedItem] = useState<Vendor | null>(null);
 
-  if (vendors.error) {
-    return <Text>Error: {vendors.error}</Text>
-  }
-
-  if (!vendors.data) {
-    return <Text>No data</Text>
-  }
-
-  if (images.loading) {
-    return <Text>Loading...</Text>
+  if (vendors.error || !vendors.data) {
+    return
   }
 
   return (
@@ -84,18 +73,20 @@ const Vendors = () => {
               <VendorModal item={item} />
             )}
             RenderTileComponent={({ item }: { item: Vendor }) => (
-              <VendorTile
-                key={item.id}
-                item={item}
-                onPress={() => {
-                  setSelectedItem(item);
-                  setModalVisable(true);
-                }
-                }
-              />
+              <Suspense fallback={<Text>Loading...</Text>}>
+                <VendorTile
+                  key={item.id}
+                  item={item}
+                  onPress={() => {
+                    setSelectedItem(item);
+                    setModalVisable(true);
+                  }
+                  }
+                />
+              </Suspense>
             )}
             selectedItem={selectedItem}
-            tileLoading={vendors.loading || images.loading}
+            tileLoading={vendors.loading}
           />
         </View>
       </View>

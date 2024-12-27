@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { styles } from "./modal-styles";
 import { useInventoryAtom } from "components/common/tiles/atoms";
 import { useAtomValue } from "jotai";
-import { Image } from "expo-image";
+import S3Image from "components/common/image";
 
 const width = Dimensions.get("window").width;
 
@@ -35,7 +35,7 @@ const VendorModal = ({ item }: VendorModalProps) => {
                 flex: 1,
               }}
             >
-              <Image
+              <S3Image
                 source={{ uri: item.url }}
                 style={{
                   width: width,
@@ -89,11 +89,13 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
           key={item.id}
           style={styles.inventoryTile}
         >
-          <Image source={{ uri: item.image.url }} style={{
-            width: 100,
-            height: 100,
-            aspectRatio: 1,
-          }}
+          <S3Image
+            source={{ uri: item.image.url }}
+            style={{
+              width: 100,
+              height: 100,
+              aspectRatio: 1,
+            }}
           />
           <Text style={styles.inventoryTitle}>{item.title}</Text>
           <View style={{

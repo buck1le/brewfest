@@ -19,7 +19,7 @@ const Schedule = () => {
     return <Text>Please select an event</Text>
   }
 
-  const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
+  const scheduleAtom = useScheduleAtom(selectedEvent.resources.scheduleItems.href);
   const schedule_items = useAtomValue(scheduleAtom);
 
   const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
