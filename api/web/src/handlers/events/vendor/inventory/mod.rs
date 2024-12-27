@@ -7,7 +7,7 @@ use axum::{
 use std::sync::Arc;
 
 use crate::common::events::load_event;
-use crate::presenters::events::vendors::images::Presenter as ImagePresenter;
+use crate::presenters::events::vendors::inventory::Presenter as VendorInventoryItemsPresenter;
 
 use entities::{vendors, sea_orm::*};
 
@@ -38,8 +38,7 @@ pub async fn index(
                 .await
                 .unwrap();
 
-            //TODO: implement inventory presenter
-            //ImagePresenter::new(images).render()
+            VendorInventoryItemsPresenter::new(&inventory).render()
         } else {
             Err((StatusCode::NOT_FOUND, "Vendor not found".to_string()))
         }

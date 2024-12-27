@@ -5,6 +5,10 @@ pub struct Partial<'a> {
     inventory_item: &'a entities::vendor_inventory_items::Model,
 }
 
+pub mod presenter;
+
+pub use presenter::Presenter;
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct VendorInventoryItemResponse {
