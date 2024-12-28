@@ -67,7 +67,7 @@ pub async fn create(
                     )
                         .into_response()
                 }
-            };
+            }
         }
     }
 
