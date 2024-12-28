@@ -5,10 +5,6 @@ export interface Image {
   alt: string;
 }
 
-export interface VendorImageResponse extends Image {
-  vendor_id: number;
-}
-
 export interface Resource {
   href: string;
   auth: string | null;
@@ -34,9 +30,9 @@ export interface Vendor {
 
 export interface InventoryItem {
   id: number;
-  title: string;
-  type: string;
-  image: Image;
+  name: string;
+  category: string;
+  thumbnail: Image;
 }
 
 export interface Event {

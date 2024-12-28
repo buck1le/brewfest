@@ -10,7 +10,7 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use crate::common::events::load_event;
+use crate::common::events::{load_event, load_schedule_item};
 use crate::handlers::response::Response;
 use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
 
@@ -40,7 +40,6 @@ pub async fn create(
                         .into_response()
                 }
             };
-
 
             let s3_key = match upload(file_data, &object_name, &*aws_s3_client).await {
                 Ok(key) => key,
@@ -81,28 +80,18 @@ pub async fn index(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    let event = load_event(event_id, &db).await?;
+    let schedule_item = load_schedule_item(event_id, schedule_item_id, &db).await?;
 
-    if let Some(event) = event {
-        let item = event
-            .find_related(ScheduleItems)
-            .filter(schedule_items::Column::Id.eq(schedule_item_id))
-            .one(database_connection)
-            .await
-            .unwrap();
+    let images = schedule_item
+        .find_related(ScheduleImages)
+        .all(database_connection)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to fetch images: {}", e),
+            )
+        })?;
 
-        if let Some(item) = item {
-            let images = item
-                .find_related(ScheduleImages)
-                .all(database_connection)
-                .await
-                .unwrap();
-
-            ImagePresenter::new(images).render()
-        } else {
-            Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-    }
+    ImagePresenter::new(images).render()
 }

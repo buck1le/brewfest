@@ -8,12 +8,12 @@ use entities::sea_orm::*;
 use entities::vendors::Entity as Vendors;
 
 use crate::auth::ExtractApiKey;
-use crate::common::events::load_event;
+use crate::common::events::{load_event, load_vendor};
 use crate::presenters::events::vendors::{Partial as VendorPartial, Presenter as VendorPresenter};
 
 pub mod image;
-pub mod thumbnail;
 pub mod inventory;
+pub mod thumbnail;
 
 pub struct Query;
 
@@ -25,18 +25,14 @@ pub async fn index(
 
     let event = load_event(event_id, &db).await?;
 
-    if let Some(event) = event {
-        let vendors = event.find_related(Vendors).all(database_connection).await;
+    let vendors = event.find_related(Vendors).all(database_connection).await;
 
-        match vendors {
-            Ok(vendors) => VendorPresenter::new(&vendors).render(),
-            Err(e) => Err((
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to fetch vendors: {}", e),
-            )),
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
+    match vendors {
+        Ok(vendors) => VendorPresenter::new(&vendors).render(),
+        Err(e) => Err((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Failed to fetch vendors: {}", e),
+        )),
     }
 }
 
@@ -52,7 +48,6 @@ enum VendorCategory {
     Beverage,
     Merchandise,
     Service,
-    
 }
 
 impl From<VendorCategory> for Option<String> {
@@ -122,24 +117,6 @@ pub async fn show(
         vendor_id,
     }): Path<ShowParams>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let database_connection = &*db;
-
-    let event = load_event(event_id, &db).await.unwrap();
-
-    if let Some(event) = event {
-        let item = event
-            .find_related(Vendors)
-            .filter(vendors::Column::Id.eq(vendor_id))
-            .one(database_connection)
-            .await
-            .unwrap();
-
-        if let Some(item) = item {
-            Ok(Json(VendorPartial::new(&item).render()).into_response())
-        } else {
-            Err((StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-    }
+    let vendor = load_vendor(event_id, vendor_id, &db).await?;
+    Ok(Json(VendorPartial::new(&vendor).render()).into_response())
 }

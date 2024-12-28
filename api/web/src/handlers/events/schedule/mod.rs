@@ -15,9 +15,9 @@ use entities::schedule_items::Entity as ScheduleItems;
 use entities::sea_orm::*;
 use std::sync::Arc;
 
-use crate::common::events::load_event;
-use crate::presenters::events::schedule::Presenter as SchedulePresenter;
+use crate::common::events::{load_event, load_schedule_item};
 use crate::presenters::events::schedule::Partial as SchedulePartial;
+use crate::presenters::events::schedule::Presenter as SchedulePresenter;
 
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
@@ -27,22 +27,18 @@ pub async fn index(
 
     let event = load_event(event_id, database_connection).await?;
 
-    if let Some(event) = event {
-        let schedule_items = event
-            .find_related(ScheduleItems)
-            .all(database_connection)
-            .await;
-
-        match schedule_items {
-            Ok(schedule_items) => SchedulePresenter::new(&schedule_items).render(),
-            Err(e) => Err((
+    let schedule_items = event
+        .find_related(ScheduleItems)
+        .all(database_connection)
+        .await
+        .map_err(|e| {
+            (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("Failed to fetch schedule items: {}", e),
-            )),
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-    }
+            )
+        })?;
+
+    SchedulePresenter::new(&schedule_items).render()
 }
 
 #[derive(Deserialize)]
@@ -58,26 +54,8 @@ pub async fn show(
         schedule_item_id,
     }): Path<ShowParams>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let database_connection = &*db;
-
-    let event = load_event(event_id, &db).await.unwrap();
-
-    if let Some(event) = event {
-        let item = event
-            .find_related(ScheduleItems)
-            .filter(schedule_items::Column::Id.eq(schedule_item_id))
-            .one(database_connection)
-            .await
-            .unwrap();
-
-        if let Some(item) = item {
-            Ok(Json(SchedulePartial::new(&item).render()).into_response())
-        } else {
-            Err((StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-    }
+    let schedule_item = load_schedule_item(event_id, schedule_item_id, &db).await?;
+    Ok(Json(SchedulePartial::new(&schedule_item).render()))
 }
 
 #[derive(Deserialize)]
@@ -110,10 +88,6 @@ pub async fn create(
 
     let event = load_event(event_id, database_connection).await?;
 
-    if event.is_none() {
-        return Err((StatusCode::NOT_FOUND, "Event not found".to_string()));
-    }
-
     let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
     let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
 
@@ -122,7 +96,7 @@ pub async fn create(
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
         end_date: Set(end_date_time),
-        event_id: Set(event_id),
+        event_id: Set(event.id),
         ..Default::default() // sets the other fields such as ID
     };
 

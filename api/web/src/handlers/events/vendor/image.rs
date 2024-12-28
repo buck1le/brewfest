@@ -9,14 +9,13 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use crate::common::events::load_event;
+use crate::common::events::load_vendor;
 use crate::handlers::response::Response;
 use crate::presenters::events::vendors::images::Presenter as ImagePresenter;
 
-use entities::{vendors, sea_orm::*};
+use entities::sea_orm::*;
 
 use entities::vendor_images::Entity as VendorImages;
-use entities::vendors::Entity as Vendors;
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,
@@ -40,7 +39,6 @@ pub async fn create(
                 }
             };
 
-
             let s3_key = match upload(file_data, &object_name, &*aws_s3_client).await {
                 Ok(key) => key,
                 Err(e) => {
@@ -54,9 +52,7 @@ pub async fn create(
 
             info!("Successfully uploaded the image to S3 with key: {}", s3_key);
 
-            match VendorImages::create_vendor_image(&db, event_id, vendor_id, &s3_key, "")
-                .await
-            {
+            match VendorImages::create_vendor_image(&db, event_id, vendor_id, &s3_key, "").await {
                 Ok(_) => info!("Successfully created the vendor image."),
                 Err(e) => {
                     return (
@@ -80,28 +76,18 @@ pub async fn index(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
 
-    let event = load_event(event_id, &db).await?;
+    let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
-    if let Some(event) = event {
-        let vendor = event
-            .find_related(Vendors)
-            .filter(vendors::Column::Id.eq(vendor_id))
-            .one(database_connection)
-            .await
-            .unwrap();
+    let images = vendor
+        .find_related(VendorImages)
+        .all(database_connection)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to fetch images: {}", e),
+            )
+        })?;
 
-        if let Some(vendor) = vendor {
-            let images = vendor
-                .find_related(VendorImages)
-                .all(database_connection)
-                .await
-                .unwrap();
-
-            ImagePresenter::new(images).render()
-        } else {
-            Err((StatusCode::NOT_FOUND, "Vendor not found".to_string()))
-        }
-    } else {
-        Err((StatusCode::NOT_FOUND, "Event not found".to_string()))
-    }
+    ImagePresenter::new(images).render()
 }
