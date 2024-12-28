@@ -4,24 +4,20 @@ use axum::{
     response::IntoResponse,
     Extension,
 };
-use entities::schedule_images::Entity as ScheduleImage;
 use images::{upload, S3};
 use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use crate::common::events::load_schedule_item;
+use entities::{sea_orm::*, vendor_inventory_items};
+
+use crate::common::events::load_vendor_inventory_item;
 use crate::handlers::response::Response;
-use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
-
-use entities::sea_orm::*;
-
-use entities::schedule_images::Entity as ScheduleImages;
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,
     Extension(db): Extension<Arc<DatabaseConnection>>,
-    Path((event_id, schedule_item_id)): Path<(i32, i32)>,
+    Path((event_id, vendor_id, inventory_id)): Path<(i32, i32, i32)>,
     mut multipart: Multipart,
 ) -> impl IntoResponse {
     while let Some(field) = multipart.next_field().await.unwrap() {
@@ -53,44 +49,27 @@ pub async fn create(
 
             info!("Successfully uploaded the image to S3 with key: {}", s3_key);
 
-            match ScheduleImage::create_schedule_image(&db, event_id, schedule_item_id, &s3_key, "")
-                .await
-            {
-                Ok(_) => info!("Successfully created the schedule image."),
+            let inventory_item = match load_vendor_inventory_item(event_id, vendor_id, inventory_id, &db).await {
+                Ok(inventory_item) => inventory_item,
+                Err(e) => return e.into_response(),
+            };
+
+            let mut inventory_item: vendor_inventory_items::ActiveModel = inventory_item.into();
+
+            inventory_item.thumbnail = Set(Some(s3_key));
+
+            match inventory_item.update(&*db).await {
+                Ok(_) => Response::success("Successfully updated the inventory item with thumbnail.").into_response(),
                 Err(e) => {
                     return (
                         StatusCode::INTERNAL_SERVER_ERROR,
-                        format!("Failed to create the schedule image: {}", e),
+                        format!("Failed to update the inventory item with thumbnail: {}", e),
                     )
                         .into_response()
                 }
-            }
-        } else {
-            return (StatusCode::BAD_REQUEST, "Invalid field name").into_response();
+            };
         }
     }
 
-    Response::success("Successfully uploaded the image").into_response()
-}
-
-pub async fn index(
-    Extension(db): Extension<Arc<DatabaseConnection>>,
-    Path((event_id, schedule_item_id)): Path<(i32, i32)>,
-) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let database_connection = &*db;
-
-    let schedule_item = load_schedule_item(event_id, schedule_item_id, &db).await?;
-
-    let images = schedule_item
-        .find_related(ScheduleImages)
-        .all(database_connection)
-        .await
-        .map_err(|e| {
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to fetch images: {}", e),
-            )
-        })?;
-
-    ImagePresenter::new(images).render()
+    (StatusCode::BAD_REQUEST, "Invalid field name").into_response()
 }

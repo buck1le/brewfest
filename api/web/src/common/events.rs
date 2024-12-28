@@ -60,3 +60,25 @@ pub async fn load_schedule_item(
         })?
         .ok_or_else(|| (StatusCode::NOT_FOUND, "Schedule item not found".to_string()))
 }
+
+pub async fn load_vendor_inventory_item(
+    event_id: i32,
+    vendor_id: i32,
+    inventory_item_id: i32,
+    db: &DatabaseConnection,
+) -> Result<vendor_inventory_items::Model, (StatusCode, String)> {
+    let vendor = load_vendor(event_id, vendor_id, db).await?;
+
+    vendor
+        .find_related(vendor_inventory_items::Entity)
+        .filter(vendor_inventory_items::Column::Id.eq(inventory_item_id))
+        .one(db)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Database query error: {}", e),
+            )
+        })?
+        .ok_or_else(|| (StatusCode::NOT_FOUND, "Inventory item not found".to_string()))
+}

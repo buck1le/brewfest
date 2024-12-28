@@ -1,3 +1,5 @@
+pub mod thumbnail;
+
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Json};
 
 use serde::Deserialize;

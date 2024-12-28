@@ -12,12 +12,13 @@ use uuid::Uuid;
 use entities::vendors::Entity as Vendors;
 use entities::{sea_orm::*, vendors};
 
+use crate::common::events::load_vendor;
 use crate::handlers::response::Response;
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,
     Extension(db): Extension<Arc<DatabaseConnection>>,
-    Path((_event_id, vendor_id)): Path<(i32, i32)>,
+    Path((event_id, vendor_id)): Path<(i32, i32)>,
     mut multipart: Multipart,
 ) -> impl IntoResponse {
     while let Some(field) = multipart.next_field().await.unwrap() {
@@ -49,33 +50,25 @@ pub async fn create(
 
             info!("Successfully uploaded the image to S3 with key: {}", s3_key);
 
-            let vendor = match Vendors::find_by_id(vendor_id).one(&*db).await.map_err(|e| {
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Failed to fetch vendor: {}", e),
-                )
-            }) {
+            let vendor = match load_vendor(event_id, vendor_id, &db).await {
                 Ok(vendor) => vendor,
                 Err(e) => return e.into_response(),
             };
 
-            if let Some(vendor) = vendor {
-                let mut vendor: vendors::ActiveModel = vendor.into();
+            let mut vendor: vendors::ActiveModel = vendor.into();
 
-                vendor.thumbnail = Set(Some(s3_key));
-                match vendor.update(&*db).await.map_err(|e| {
-                    (
-                        StatusCode::INTERNAL_SERVER_ERROR,
-                        format!("Failed to update vendor: {}", e),
-                    )
-                }) {
-                    Ok(_) => {
-                        return Response::success("Successfully updated the vendor").into_response()
-                    }
-                    Err(e) => return e.into_response(),
+            vendor.thumbnail = Set(Some(s3_key));
+            match vendor.update(&*db).await {
+                Ok(_) => {
+                    return Response::success("Successfully updated the vendor").into_response()
                 }
-            } else {
-                return (StatusCode::NOT_FOUND, "Vendor not found").into_response();
+                Err(e) => {
+                    return (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("Failed to update the vendor: {}", e),
+                    )
+                        .into_response()
+                }
             }
         }
     }
