@@ -59,7 +59,7 @@ pub async fn create(
             inventory_item.thumbnail = Set(Some(s3_key));
 
             match inventory_item.update(&*db).await {
-                Ok(_) => Response::success("Successfully updated the inventory item with thumbnail.").into_response(),
+                Ok(_) => return Response::success("Successfully updated the inventory item with thumbnail.").into_response(),
                 Err(e) => {
                     return (
                         StatusCode::INTERNAL_SERVER_ERROR,

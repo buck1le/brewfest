@@ -9,7 +9,6 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use entities::vendors::Entity as Vendors;
 use entities::{sea_orm::*, vendors};
 
 use crate::common::events::load_vendor;
