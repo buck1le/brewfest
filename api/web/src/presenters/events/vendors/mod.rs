@@ -2,8 +2,8 @@ use serde::Serialize;
 use serde_json::Value;
 
 pub mod images;
-pub mod presenter;
 pub mod inventory;
+pub mod presenter;
 
 pub use presenter::Presenter;
 
@@ -40,6 +40,7 @@ struct Coordinates {
 struct Resources {
     images: ResourceLink,
     thumbnail: ResourceLink,
+    inventory: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -79,6 +80,12 @@ impl<'a> Partial<'a> {
                 thumbnail: ResourceLink {
                     href: format!(
                         "/events/{}/vendors/{}/thumbnail",
+                        self.vendor.event_id, self.vendor.id
+                    ),
+                },
+                inventory: ResourceLink {
+                    href: format!(
+                        "/events/{}/vendors/{}/inventory",
                         self.vendor.event_id, self.vendor.id
                     ),
                 },
