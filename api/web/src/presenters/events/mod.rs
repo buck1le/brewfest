@@ -26,7 +26,7 @@ struct EventResponse {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Resources {
-    schedule_items: ResourceLink,
+    schedule: ResourceLink,
     vendors: ResourceLink,
     thumbnail: ResourceLink,
 }
@@ -51,8 +51,8 @@ impl<'a> Partial<'a> {
             end_date: self.event.end_date.to_string(),
             thumbnail: self.event.thumbnail.clone(),
             resources: Resources {
-                schedule_items: ResourceLink {
-                    href: format!("/events/{}/schedule_items", self.event.id),
+                schedule: ResourceLink {
+                    href: format!("/events/{}/schedule", self.event.id),
                 },
                 vendors: ResourceLink {
                     href: format!("/events/{}/vendors", self.event.id),
