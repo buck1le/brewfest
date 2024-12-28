@@ -28,6 +28,7 @@ struct EventResponse {
 struct Resources {
     schedule_items: ResourceLink,
     vendors: ResourceLink,
+    thumbnail: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -55,6 +56,9 @@ impl<'a> Partial<'a> {
                 },
                 vendors: ResourceLink {
                     href: format!("/events/{}/vendors", self.event.id),
+                },
+                thumbnail: ResourceLink {
+                    href: format!("/events/{}/thumbnail", self.event.id),
                 }
             },
         };
