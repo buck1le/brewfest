@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { WritableAtom, atom } from "jotai";
 import request from "lib/request";
 import { Image } from "expo-image";
 
@@ -104,9 +104,91 @@ const createPrefetchedImagesAtom = <Response>(
   return resourceAtom;
 }
 
+const createResourceCacheMapAtom = <
+  Response
+>(): ResourceCacheMapAtom<Response> => {
+  const mapBaseAtom = atom<Record<string, FetchResponse<Response> | undefined>>(
+    {}
+  );
+  const mapAtom = atom<
+    Record<string, FetchResponse<Response> | undefined>,
+    [ResourceCacheAtomPayload],
+    void
+  >(
+    (get) => {
+      return get(mapBaseAtom)
+    },
+    async (get, set, payload) => {
+      const href = payload.href;
+      if (!href) {
+        return;
+      }
+      const detail = get(mapBaseAtom)[payload.href];
+      if (!detail || payload.force) {
+        set(mapBaseAtom, (current) => ({
+          ...current,
+          [payload.href]: { loading: true, data: undefined },
+        }));
+        const res = await request.get<Response>(
+          href,
+        );
+
+        set(mapBaseAtom, (current) => ({
+          ...current,
+          [payload.href]: {
+            loading: false,
+            status: res.status,
+            data: res.data,
+          },
+        }));
+      }
+    }
+  );
+
+  return mapAtom;
+};
+
+
+export interface ResourceCacheAtomPayload {
+  href: string;
+  force?: boolean;
+  abortController?: AbortController;
+}
+
+export type ResourceCacheMapAtom<Response> = WritableAtom<
+  Record<string, FetchResponse<Response> | undefined>,
+  [ResourceCacheAtomPayload],
+  void
+>;
+
+
+const createSingleCacheEntryAtom =
+  <Response>(cache: ResourceCacheMapAtom<Response>) =>
+    (
+      href: string,
+    ) => {
+      const singleEntryAtom = atom<
+        FetchResponse<Response>,
+        [ResourceCacheAtomPayload],
+        void
+      >(
+        (get) => {
+          return get(cache)[href] || { loading: true, data: undefined, status: undefined };
+        },
+        (_get, set, payload) => {
+          set(cache, { ...payload });
+        }
+      );
+      singleEntryAtom.onMount = (set) => {
+        set({ href });
+      };
+      return singleEntryAtom;
+    };
 
 export {
   createResourceAtom,
   createResourceWithCategoryAtom,
-  createPrefetchedImagesAtom
+  createPrefetchedImagesAtom,
+  createSingleCacheEntryAtom,
+  createResourceCacheMapAtom,
 };
