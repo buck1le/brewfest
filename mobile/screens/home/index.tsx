@@ -1,12 +1,10 @@
-import { SafeAreaView, Text, View } from 'react-native';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { Dimensions, SafeAreaView, Text, View } from 'react-native';
+import { useAtomValue } from 'jotai';
 
-import TouchableImage from 'components/common/touchable-image';
 import { styles } from './styles';
-import { selectedEventAtom } from 'atoms/index';
 import { useEventsAtom } from './atoms';
-import { Event } from 'types/api-responses';
 import { Suspense } from 'react';
+import { EventCard } from 'components/home';
 
 interface HomeProps {
   navigation: any;
@@ -14,10 +12,11 @@ interface HomeProps {
 
 const ROOT_RESOURCE = `/events`;
 
+const { width } = Dimensions.get('window');
+
 const Home = ({ navigation }: HomeProps) => {
   const eventsAtom = useEventsAtom(ROOT_RESOURCE);
   const events = useAtomValue(eventsAtom);
-  const setSelectedEvent = useSetAtom(selectedEventAtom);
 
   if (events.loading) {
     return (
@@ -29,35 +28,43 @@ const Home = ({ navigation }: HomeProps) => {
     );
   }
 
-  const handlePress = (event: Event) => {
-    setSelectedEvent(event);
-    navigation.navigate('Main');
-  };
+  const numberOfEvents = events.data ? events.data.length : 1;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={{
           flexDirection: 'column',
-          gap: 50,
-          marginTop: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 30,
         }}
         >
+          <Text style={{
+            fontSize: 30,
+            marginBottom: 20,
+            color: '#211A0A',
+          }}>
+            Choose an Event Location
+          </Text>
           <Suspense fallback={<Text>Loading...</Text>}>
-            {events.data &&
-              events.data.map((event) => (
-                <TouchableImage
-                  key={event.id}
-                  onPress={() => handlePress(event)}
-                  image={event.thumbnail}
-                  style={{
-                    width: 300,
-                    height: 300,
-                    marginBottom: 10,
-                  }}
-                />
-              ))
-            }
+            <View style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              width: '100%',
+              gap: 10,
+            }}>
+              {events.data &&
+                events.data.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    width={(width / numberOfEvents) * 0.9}
+                    navigation={navigation}
+                  />
+                ))
+              }
+            </View>
           </Suspense>
         </View>
       </View>

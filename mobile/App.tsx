@@ -73,12 +73,7 @@ const App = () => {
           initialRouteName="Home"
         >
           <Stack.Group screenOptions={{
-            headerStyle: {
-              backgroundColor: colors.primary,
-            },
-            headerTintColor: colors.primary,
-            headerShadowVisible: false,
-            headerLeftContainerStyle: styles.leftHeader,
+            headerShown: false,
           }}
           >
             <Stack.Screen name="Home" component={Home} />

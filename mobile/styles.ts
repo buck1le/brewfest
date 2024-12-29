@@ -1,4 +1,5 @@
 import { StyleSheet, Platform } from 'react-native';
+
 export const colors = {
   primary: '#f1b863',
   secondary: '#fff',
