@@ -1,8 +1,8 @@
 import { Pressable, View, Text } from "react-native";
 import { ScheduleItem } from "types/api-responses";
-import { Image } from "expo-image";
 
 import { styles } from "./tile-styles";
+import S3Image from "components/common/image";
 
 interface VendorTileProps {
   item: ScheduleItem;
@@ -19,9 +19,9 @@ const ScheduleTile = ({
       style={styles.tileContainer}
       onPress={onPress}
     >
-      <Image
+      <S3Image
         style={styles.vendorImage}
-        source={{ uri: item.image.url }}
+        source={{ uri: item.thumbnail }}
       />
       <View style={styles.textContainer}>
         <Text style={{
@@ -30,7 +30,7 @@ const ScheduleTile = ({
         }}>
           {item.title}
         </Text>
-        <TimeInfo startTime={item.startTime} endTime={item.endTime} />
+        <TimeInfo startTime={item.startDate} endTime={item.endDate} />
       </View>
     </Pressable>
   );

@@ -7,7 +7,6 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useScheduleAtom } from './atoms';
 import { TileColumn } from 'components/common/tiles';
-import { useImagesAtom } from 'components/common/atoms';
 import { ScheduleTile } from 'components/schedule-items';
 import ScheduleModal from 'components/schedule-items/modal';
 
@@ -19,14 +18,13 @@ const Schedule = () => {
     return <Text>Please select an event</Text>
   }
 
-  const scheduleAtom = useScheduleAtom(selectedEvent.resources.scheduleItems.href);
+  const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
   const schedule_items = useAtomValue(scheduleAtom);
 
   const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  const imagesAtom = useImagesAtom(schedule_items.data?.map(item => item.image.url));
-  const images = useAtomValue(imagesAtom);
+  console.log("schedule_items", schedule_items);
 
   if (schedule_items.loading) {
     return <Text>Loading...</Text>
@@ -57,7 +55,7 @@ const Schedule = () => {
               />
             )}
             selectedItem={selectedItem}
-            tileLoading={schedule_items.loading || images.loading}
+            tileLoading={schedule_items.loading}
           />
         </View>
 

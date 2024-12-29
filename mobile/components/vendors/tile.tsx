@@ -21,7 +21,7 @@ const VendorTile = ({
     <Pressable
       style={styles.tileContainer}
       onPress={onPress}
-      >
+    >
       <Image
         style={styles.vendorImage}
         source={{ uri: image_url }}
@@ -47,15 +47,15 @@ const OperatingOutOfChip = ({ operatingOutOf }: { operatingOutOf: string }) => {
       borderRadius: 10,
       marginTop: 5,
       maxWidth: 100,
-      minWidth: '90%',
       alignItems: 'center',
-      alignSelf: 'flex-start',
+      justifyContent: 'flex-start',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
     }}>
       <Text style={{
         fontSize: 12,
+        fontWeight: 'bold',
       }}>
         {operatingOutOf}
       </Text>

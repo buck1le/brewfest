@@ -19,6 +19,8 @@ const get = async <ApiResponse = unknown>(
   try {
     const url = `${HOST}${resource}`;
 
+    console.log("url", url);
+
     const response = await fetch(url, {
       method: 'GET',
       headers

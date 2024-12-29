@@ -32,7 +32,7 @@ export interface InventoryItem {
   id: number;
   name: string;
   category: string;
-  thumbnail: Image;
+  thumbnail: string;
 }
 
 export interface Event {
@@ -48,7 +48,7 @@ export interface Event {
   };
   resources: {
     vendors: Resource;
-    scheduleItems: Resource;
+    schedule: Resource;
   };
 }
 
@@ -56,12 +56,12 @@ export interface ScheduleItem {
   id: number;
   title: string;
   description: string;
-  startTime: string;
-  endTime: string;
+  startDate: string;
+  endDate: string;
   createdAt: string;
   updatedAt: string;
   eventId: number;
-  image: Image;
+  thumbnail: string;
   resources: {
     images: Image[];
   };

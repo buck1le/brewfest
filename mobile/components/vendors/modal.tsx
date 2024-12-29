@@ -18,8 +18,6 @@ interface VendorModalProps {
 const VendorModal = ({ item }: VendorModalProps) => {
   const ref = useRef<ICarouselInstance>(null);
 
-  console.log("VendorModal", item);
-
   const vendorImagesAtom = useVendorImagesAtom(item.resources.images.href);
   const images = useAtomValue(vendorImagesAtom);
 
@@ -81,6 +79,8 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
 
   const numColumns = 3;
 
+  console.log("inventory", inventory.data);
+
   return (
     <FlatList
       scrollEnabled={false}
@@ -100,14 +100,15 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
           style={styles.inventoryTile}
         >
           <S3Image
-            source={{ uri: item.image.url }}
+            source={{ uri: item.thumbnail }}
             style={{
               width: 100,
               height: 100,
               aspectRatio: 1,
             }}
+            contentFit="contain"
           />
-          <Text style={styles.inventoryTitle}>{item.title}</Text>
+          <Text style={styles.inventoryTitle}>{item.name}</Text>
           <View style={{
             backgroundColor: 'rgba(0, 0, 0, 0.1)',
             padding: 5,
@@ -117,7 +118,7 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
             minWidth: 50,
           }}
           >
-            <Text>{item.type}</Text>
+            <Text>{item.category}</Text>
           </View>
         </View>
       )}
