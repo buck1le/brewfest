@@ -8,7 +8,7 @@ import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
 import { VendorModal, VendorTile } from 'components/vendors';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 
 const categories: Category[] = [
   {
@@ -39,7 +39,11 @@ const Vendors = () => {
   const setCategoryAtom = useSetAtom(writeCategoryAtom);
 
   if (!selectedEvent) {
-    return <Text>Please select an event</Text>
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text>Please select an event</Text>
+      </SafeAreaView>
+    )
   }
 
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
@@ -71,17 +75,15 @@ const Vendors = () => {
               <VendorModal item={item} />
             )}
             RenderTileComponent={({ item }: { item: Vendor }) => (
-              <Suspense fallback={<Text>Loading...</Text>}>
-                <VendorTile
-                  key={item.id}
-                  item={item}
-                  onPress={() => {
-                    setSelectedItem(item);
-                    setModalVisable(true);
-                  }
-                  }
-                />
-              </Suspense>
+              <VendorTile
+                key={item.id}
+                item={item}
+                onPress={() => {
+                  setSelectedItem(item);
+                  setModalVisable(true);
+                }
+                }
+              />
             )}
             selectedItem={selectedItem}
             tileLoading={vendors.loading}

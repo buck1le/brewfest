@@ -4,8 +4,6 @@ import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './modal-styles';
-import { useSetAtom } from 'jotai';
-import { modalVisableAtom } from 'atoms/index';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,

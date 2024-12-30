@@ -19,6 +19,7 @@
     "expo": "^52.0.6",
     "expo-application": "~6.0.1",
     "expo-auth-session": "~6.0.0",
+    "expo-font": "~13.0.2",
     "expo-haptics": "~14.0.0",
     "expo-image": "~2.0.0",
     "expo-linear-gradient": "^14.0.1",

@@ -40,6 +40,8 @@ export interface Event {
   name: string;
   description: string;
   thumbnail: string;
+  startDate: string;
+  endDate: string;
   coordinate: {
     latitude: number;
     longitude: number;

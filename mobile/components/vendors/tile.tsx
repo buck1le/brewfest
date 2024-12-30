@@ -1,14 +1,17 @@
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, Dimensions } from "react-native";
 import { Vendor } from "types/api-responses";
 import { Image } from "expo-image";
 
 import { styles } from "./tile-styles";
 import { BREW_FEST_IMAGE_HOST } from "lib/request";
+import { Ionicons } from "@expo/vector-icons";
 
 interface VendorTileProps {
   item: Vendor;
   onPress: () => void;
 }
+
+const width = Dimensions.get("window").width;
 
 
 const VendorTile = ({
@@ -19,7 +22,16 @@ const VendorTile = ({
 
   return (
     <Pressable
-      style={styles.tileContainer}
+      style={{
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: width - 20,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 4,
+      }}
       onPress={onPress}
     >
       <Image
@@ -33,35 +45,20 @@ const VendorTile = ({
         }}>
           {item.name}
         </Text>
-        <OperatingOutOfChip operatingOutOf={item.operatingOutOf} />
+        <View>
+          <Text>{item.description}</Text>
+        </View>
+        <View style={{
+          marginTop: 5,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+          <Ionicons name="location-outline" size={24} color="black" />
+          <Text>{item.operatingOutOf}</Text>
+        </View>
       </View>
     </Pressable>
   );
 }
-
-const OperatingOutOfChip = ({ operatingOutOf }: { operatingOutOf: string }) => {
-  return (
-    <View style={{
-      backgroundColor: 'lightgrey',
-      padding: 5,
-      borderRadius: 10,
-      marginTop: 5,
-      maxWidth: 100,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-    }}>
-      <Text style={{
-        fontSize: 12,
-        fontWeight: 'bold',
-      }}>
-        {operatingOutOf}
-      </Text>
-    </View>
-  );
-}
-
 
 export default VendorTile;

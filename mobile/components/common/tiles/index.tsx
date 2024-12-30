@@ -6,6 +6,7 @@ import { modalVisableAtom } from 'atoms/index';
 import { MotiView } from "moti";
 import TileModal from "./modal";
 import { useAtom } from "jotai";
+import { Suspense } from "react";
 
 const TileSkeleton = () => {
   return (
@@ -97,12 +98,22 @@ const TileColumn = <T extends object>({
             <RenderModalComponent item={item} />
           )}
         >
-          {data.map((item, index) => (
-            <RenderTileComponent
-              key={index}
-              item={item}
-            />
-          ))}
+          <Suspense fallback={
+            <SafeAreaView>
+              <ScrollView contentContainerStyle={styles.tilesColumContainer}>
+                {[1, 2, 3].map(index => (
+                  <TileSkeleton key={index} />
+                ))}
+              </ScrollView>
+            </SafeAreaView>
+          }>
+            {data.map((item, index) => (
+              <RenderTileComponent
+                key={index}
+                item={item}
+              />
+            ))}
+          </Suspense>
         </TileModal>
       </ScrollView>
     </SafeAreaView >

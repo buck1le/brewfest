@@ -65,11 +65,9 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     width: '100%',
-    padding: 10,
   },
   inventoryListContainer: {
     width: '100%',
-    padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

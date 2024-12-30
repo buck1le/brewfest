@@ -54,16 +54,25 @@ const VendorModal = ({ item }: VendorModalProps) => {
           )}
         />
       </View>
+      <Text style={styles.itemTitle}>{item?.name}</Text>
+      <View style={styles.textContainer}>
+        <Text>{item?.description}</Text>
+      </View>
+      <View style={[styles.textContainer, {
+        marginTop: 30,
+      }]}>
+        <Text style={{
+          fontSize: 18,
+          fontFamily: 'Poppins-Regular',
+          fontWeight: 'bold',
+        }}>Featured Items</Text>
+      </View>
       <ScrollView
         style={{
           flexShrink: 0,
           width: '100%',
         }}
       >
-        <View style={styles.textContainer}>
-          <Text style={styles.itemTitle}>{item?.name}</Text>
-          <Text>{item?.description}</Text>
-        </View>
         <View style={styles.inventoryListContainer}>
           <InventoryList vendor={item} />
         </View>
@@ -73,22 +82,20 @@ const VendorModal = ({ item }: VendorModalProps) => {
   )
 }
 
+const numColumns = 2;
+
 const InventoryList = ({ vendor }: { vendor: Vendor }) => {
   const inventoryAtom = useInventoryAtom(vendor.resources.inventory.href);
   const inventory = useAtomValue(inventoryAtom);
-
-  const numColumns = 3;
-
-  console.log("inventory", inventory.data);
 
   return (
     <FlatList
       scrollEnabled={false}
       numColumns={numColumns}
       contentContainerStyle={{
-        padding: 10,
+        marginTop: 10,
         gap: 15,
-        marginBottom: 300,
+        marginBottom: 400,
       }}
       columnWrapperStyle={{
         gap: 15,
@@ -102,13 +109,12 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
           <S3Image
             source={{ uri: item.thumbnail }}
             style={{
-              width: 100,
-              height: 100,
-              aspectRatio: 1,
+              borderRadius: 8,
+              width: (width / numColumns) - 20,
+              height: 200,
             }}
-            contentFit="contain"
+            contentFit="cover"
           />
-          <Text style={styles.inventoryTitle}>{item.name}</Text>
           <View style={{
             backgroundColor: 'rgba(0, 0, 0, 0.1)',
             padding: 5,

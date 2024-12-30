@@ -25,7 +25,11 @@ const Map = () => {
   const _scrollView = useRef<ScrollView>(null);
   const markerRefs = useRef<{ [key: number]: MapMarker | null }>({});
 
-  const vendorsAtom = useVendorsAtom(selectedEvent?.resources.vendors.href);
+  if (!selectedEvent) {
+    return <Text>Please select an event</Text>
+  }
+  
+  const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
   let mapAnimation = new Animated.Value(0);

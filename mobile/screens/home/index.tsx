@@ -28,8 +28,6 @@ const Home = ({ navigation }: HomeProps) => {
     );
   }
 
-  const numberOfEvents = events.data ? events.data.length : 1;
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -42,15 +40,18 @@ const Home = ({ navigation }: HomeProps) => {
         >
           <Text style={{
             fontSize: 30,
+            fontFamily: 'Poppins-Regular',
             marginBottom: 20,
+            fontWeight: 'bold',
             color: '#211A0A',
           }}>
-            Choose an Event Location
+            Howdy! Choose an Event Location
           </Text>
           <Suspense fallback={<Text>Loading...</Text>}>
             <View style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
               width: '100%',
               gap: 10,
             }}>
@@ -59,7 +60,7 @@ const Home = ({ navigation }: HomeProps) => {
                   <EventCard
                     key={event.id}
                     event={event}
-                    width={(width / numberOfEvents) * 0.9}
+                    width={width * 0.8}
                     navigation={navigation}
                   />
                 ))

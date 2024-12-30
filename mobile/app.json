@@ -16,7 +16,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.anonymous.brewfestmobile"
     },
     "android": {
@@ -33,6 +33,14 @@
       "eas": {
         "projectId": "c682fd72-fa21-42ee-9a7a-6383356363bc"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/Poppins/Poppins-Regular.ttf"],
+        }
+      ]
+    ]
   }
 }
