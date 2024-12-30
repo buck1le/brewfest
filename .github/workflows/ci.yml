@@ -39,6 +39,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
     - name: Check if files have changed in mobile
       uses: dorny/paths-filter@v3
       with:
