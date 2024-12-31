@@ -57,13 +57,13 @@ impl<'a> Partial<'a> {
             resources: Resources {
                 images: ResourceLink {
                     href: format!(
-                        "/events/{}/schedule_items/{}/images",
+                        "/events/{}/schedule/{}/images",
                         self.schedule_item.event_id, self.schedule_item.id
                     ),
                 },
                 thumbnail: ResourceLink {
                     href: format!(
-                        "/events/{}/schedule_items/{}/thumbnail",
+                        "/events/{}/schedule/{}/thumbnail",
                         self.schedule_item.event_id, self.schedule_item.id
                     ),
                 },
