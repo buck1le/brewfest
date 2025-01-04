@@ -169,6 +169,8 @@ mod test {
                 name: Set("Hello, World!".into()),
                 description: Set("Hello, World!".into()),
                 start_date: Set("2021-01-01".parse().unwrap()),
+                latitude: Set(0.0),
+                longitude: Set(0.0),
                 end_date: Set("2021-01-01".parse().unwrap()),
                 ..Default::default()
             };
@@ -193,6 +195,8 @@ mod test {
                 name: Set("Hello, World!".into()),
                 description: Set("Hello, World!".into()),
                 start_date: Set("2021-01-01".parse().unwrap()),
+                latitude: Set(0.0),
+                longitude: Set(0.0),
                 end_date: Set("2021-01-01".parse().unwrap()),
                 ..Default::default()
             };
@@ -237,7 +241,13 @@ mod test {
 
         #[tokio::test]
         async fn test_create_event() {
-            let payload = r#"{ "name": "Hello, World!", "description": "Hello, World!", "startDate": "2021-01-01", "endDate": "2021-01-01" }"#;
+            let payload = r#"{ 
+                "name": "Hello, World!", 
+                "description": "Hello, World!", 
+                "startDate": "2021-01-01", 
+                "coordinates": { "latitude": 0.0, "longitude": 0.0 },
+                "endDate": "2021-01-01" 
+             }"#;
 
             let app = TestApp::new().await;
 
@@ -264,6 +274,8 @@ mod test {
                 name: Set("Hello, World!".into()),
                 description: Set("Hello, World!".into()),
                 start_date: Set("2021-01-01".parse().unwrap()),
+                latitude: Set(0.0),
+                longitude: Set(0.0),
                 end_date: Set("2021-01-01".parse().unwrap()),
                 ..Default::default()
             };
