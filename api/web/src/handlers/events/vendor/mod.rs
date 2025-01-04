@@ -21,6 +21,10 @@ pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
     Path(event_id): Path<i32>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
+    // Artificial delay to simulate a slow request
+
+    tokio::time::sleep(std::time::Duration::from_secs(3)).await;
+
     let database_connection = &*db;
 
     let event = load_event(event_id, &db).await?;
