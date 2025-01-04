@@ -6,7 +6,7 @@ use std::sync::Arc;
 use entities::sea_orm::*;
 use entities::*;
 
-use crate::{auth::ExtractApiKey, presenters::events::{Partial, Presenter as IndexPresenter}};
+use crate::{auth::ExtractApiKey, presenters::events::{Coordinates, Partial, Presenter as IndexPresenter}};
 
 pub mod schedule;
 pub mod vendor;
@@ -17,6 +17,7 @@ pub mod thumbnail;
 pub struct EventCreateRequest {
     name: String,
     description: String,
+    coordinates: Coordinates,
     start_date: String,
     end_date: String,
 }
@@ -41,6 +42,8 @@ pub async fn create(
         name: Set(payload.name.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
+        latitude: Set(payload.coordinates.latitude),
+        longitude: Set(payload.coordinates.longitude),
         end_date: Set(end_date_time),
         ..Default::default() // sets the other fields such as ID
     };

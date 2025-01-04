@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 pub mod presenter;
@@ -19,6 +19,7 @@ struct EventResponse {
     description: String,
     start_date: String,
     end_date: String,
+    coordinates: Coordinates,
     thumbnail: Option<String>,
     resources: Resources,
 }
@@ -37,6 +38,13 @@ struct ResourceLink {
     href: String,
 }
 
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Coordinates {
+    pub latitude: f64,
+    pub longitude: f64,
+}
+
 impl<'a> Partial<'a> {
     pub fn new(event: &'a entities::events::Model) -> Self {
         Self { event }
@@ -49,6 +57,10 @@ impl<'a> Partial<'a> {
             description: self.event.description.clone(),
             start_date: self.event.start_date.to_string(),
             end_date: self.event.end_date.to_string(),
+            coordinates: Coordinates {
+                latitude: self.event.latitude,
+                longitude: self.event.longitude,
+            },
             thumbnail: self.event.thumbnail.clone(),
             resources: Resources {
                 schedule: ResourceLink {

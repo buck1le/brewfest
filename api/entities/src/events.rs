@@ -3,7 +3,7 @@ use sea_orm::{entity::prelude::*};
 use serde::{Deserialize, Serialize};
 
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "events")]
 #[serde(rename_all = "camelCase")]
 pub struct Model {
@@ -12,6 +12,8 @@ pub struct Model {
     pub name: String,
     pub description: String,
     pub start_date: chrono::NaiveDate,
+    pub latitude: f64,
+    pub longitude: f64,
     pub end_date: chrono::NaiveDate,
     pub thumbnail: Option<String>,
 }
