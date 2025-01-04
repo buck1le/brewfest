@@ -4,7 +4,9 @@ import { View, Text, ScrollView, Dimensions } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRef } from "react";
 import { styles } from "./modal-styles";
-import { Image } from "expo-image";
+import { useScheduleItemImagesAtom } from "./atom";
+import { useAtomValue } from "jotai";
+import S3Image from "components/common/image";
 
 const width = Dimensions.get("window").width;
 
@@ -15,6 +17,13 @@ interface ScheduleModalProps {
 const ScheduleModal = ({ item }: ScheduleModalProps) => {
   const ref = useRef<ICarouselInstance>(null);
 
+  const scheduleItemImages = useScheduleItemImagesAtom(item.resources.images.href);
+  const images = useAtomValue(scheduleItemImages);
+
+  if (!images.data) {
+    return
+  }
+
   return (
     <>
       <View style={styles.carouselContainer}>
@@ -22,7 +31,7 @@ const ScheduleModal = ({ item }: ScheduleModalProps) => {
           ref={ref}
           width={width}
           height={width / 2}
-          data={item?.resources.images}
+          data={images.data}
           loop
           autoPlay
           autoPlayInterval={3000}
@@ -33,7 +42,7 @@ const ScheduleModal = ({ item }: ScheduleModalProps) => {
                 flex: 1,
               }}
             >
-              <Image
+              <S3Image
                 source={{ uri: item.url }}
                 style={{
                   width: width,

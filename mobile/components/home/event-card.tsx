@@ -5,6 +5,7 @@ import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import S3Image from "components/common/image";
 import { Pressable } from "react-native-gesture-handler";
+import { Suspense } from "react";
 
 interface EventCardProps {
   event: Event;
@@ -35,6 +36,7 @@ const EventCard = ({ event, width, navigation }: EventCardProps) => {
         shadowOpacity: 0.2,
       }}>
       <S3Image
+        onLoadStart={() => console.log('loading')}
         key={event.id}
         source={{ uri: event.thumbnail }}
         contentFit="cover"

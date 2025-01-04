@@ -47,26 +47,24 @@ const Home = ({ navigation }: HomeProps) => {
           }}>
             Howdy! Choose an Event Location
           </Text>
-          <Suspense fallback={<Text>Loading...</Text>}>
-            <View style={{
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-              gap: 10,
-            }}>
-              {events.data &&
-                events.data.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    width={width * 0.8}
-                    navigation={navigation}
-                  />
-                ))
-              }
-            </View>
-          </Suspense>
+          <View style={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            gap: 10,
+          }}>
+            {events.data &&
+              events.data.map((event) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  width={width * 0.8}
+                  navigation={navigation}
+                />
+              ))
+            }
+          </View>
         </View>
       </View>
     </SafeAreaView>

@@ -1,14 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 export const borderRadius = 6;
+
+const width = Dimensions.get('window').width;
 
 export const styles = StyleSheet.create({
   tileContainer: {
     backgroundColor: 'white',
     flexDirection: 'row',
     borderRadius: borderRadius,
-    width: '100%',
-    maxWidth: 350,
+    width: width - 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,

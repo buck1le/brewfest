@@ -1,4 +1,4 @@
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, Dimensions } from "react-native";
 import { ScheduleItem } from "types/api-responses";
 
 import { styles } from "./tile-styles";
@@ -9,6 +9,7 @@ interface VendorTileProps {
   onPress: () => void;
 }
 
+const width = Dimensions.get("window").width;
 
 const ScheduleTile = ({
   item,
@@ -16,7 +17,16 @@ const ScheduleTile = ({
 }: VendorTileProps) => {
   return (
     <Pressable
-      style={styles.tileContainer}
+      style={{
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        width: width - 20,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 4,
+      }}
       onPress={onPress}
     >
       <S3Image
@@ -58,30 +68,19 @@ const TimeInfo = ({ startTime, endTime }: {
   return (
     <View style={{
       justifyContent: 'space-between',
-      padding: 5,
       gap: 10,
       width: '100%',
+      marginTop: 10,
     }}
     >
       <View style={{
-        flex: 1,
-        backgroundColor: 'lightgrey',
-        flexDirection: 'row',
-        padding: 5,
-        borderRadius: 10,
-        marginTop: 5,
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
       }}>
         <Text style={{
           fontSize: 12,
           fontWeight: 'bold',
           marginRight: 5,
         }}
-          >
+        >
           Start:
         </Text>
         <Text style={{
@@ -91,24 +90,13 @@ const TimeInfo = ({ startTime, endTime }: {
         </Text>
       </View>
       <View style={{
-        flex: 1,
-        backgroundColor: 'lightgrey',
-        flexDirection: 'row',
-        padding: 5,
-        borderRadius: 10,
-        marginTop: 5,
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
       }}>
         <Text style={{
           fontSize: 12,
           fontWeight: 'bold',
           marginRight: 5,
         }}
-          >
+        >
           End:
         </Text>
         <Text style={{

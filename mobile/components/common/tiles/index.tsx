@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView } from "react-native";
+import { View, ScrollView, SafeAreaView, Dimensions } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
@@ -21,7 +21,7 @@ const TileSkeleton = () => {
 
         <MotiView style={styles.textContainer}>
           <Skeleton
-            width={120}
+            width={130}
             height={20}
             radius={4}
             colorMode="light"
@@ -59,6 +59,7 @@ interface TilesProps<T extends object> {
   }>;
   RenderModalComponent: React.ComponentType<{ item: T }>;
 }
+
 
 const TileColumn = <T extends object>({
   data,

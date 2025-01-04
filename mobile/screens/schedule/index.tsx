@@ -24,8 +24,6 @@ const Schedule = () => {
   const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  console.log("schedule_items", schedule_items);
-
   if (schedule_items.loading) {
     return <Text>Loading...</Text>
   }

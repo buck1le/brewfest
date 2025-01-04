@@ -16,6 +16,7 @@ import {
   SPACING_FOR_CARD_INSET
 } from './styles';
 import { colors } from 'global_styles';
+import S3Image from 'components/common/image';
 
 const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
@@ -53,12 +54,12 @@ const Map = () => {
         setSelectedMarker(index);
 
         if (index >= 0 && vendors.data && index < vendors.data.length) {
-          const { coordinate } = vendors.data[index];
+          const { coordinates } = vendors.data[index];
 
           _map.current?.animateToRegion(
             {
-              latitude: coordinate.latitude,
-              longitude: coordinate.longitude,
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude,
               latitudeDelta: SCROLL_ZOOM_LEVEL,
               longitudeDelta: SCROLL_ZOOM_LEVEL,
             },
@@ -107,10 +108,10 @@ const Map = () => {
         ref={_map}
         pitchEnabled={false}
         initialRegion={{
-          latitude: selectedEvent.coordinate.latitude,
-          longitude: selectedEvent.coordinate.longitude,
-          latitudeDelta: selectedEvent.coordinate.latitudeDelta,
-          longitudeDelta: selectedEvent.coordinate.longitudeDelta,
+          latitude: selectedEvent.coordinates.latitude,
+          longitude: selectedEvent.coordinates.longitude,
+          latitudeDelta: 3,
+          longitudeDelta: 3,
         }}
       >
         {vendors.data && vendors.data.map((vendor, i) => {
@@ -120,8 +121,8 @@ const Map = () => {
               ref={ref => markerRefs.current[i] = ref}
               tracksViewChanges={false}
               coordinate={{
-                latitude: vendor.coordinate.latitude,
-                longitude: vendor.coordinate.longitude,
+                latitude: vendor.coordinates.latitude,
+                longitude: vendor.coordinates.longitude,
               }}
               onPress={(e) => onMarkerPress(e)}
               pinColor={selectedMarker === i ? 'red' : 'blue'}
@@ -169,13 +170,13 @@ const Map = () => {
       >
         {vendors.data?.map((marker, index) => (
           <View style={styles.card} key={index}>
-            <Image
-              source={marker.image.url}
+            <S3Image
+              source={{ uri: marker.thumbnail }}
               style={styles.cardImage}
               contentFit='cover'
             />
             <View style={styles.textContent}>
-              <Text numberOfLines={1} style={styles.cardtitle}>{marker.title}</Text>
+              <Text numberOfLines={1} style={styles.cardtitle}>{marker.name}</Text>
               <Text numberOfLines={1} style={styles.cardDescription}>{marker.description}</Text>
             </View>
           </View>
