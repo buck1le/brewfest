@@ -10,14 +10,13 @@ export const colors = {
 
 export const styles = StyleSheet.create({
   tabBackground: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.blue,
     width: '100%',
     bottom: 0,
     position: 'absolute',
     overflow: 'hidden',
     ...Platform.select({
       ios: {
-        height: 85,
       },
       android: {
         elevation: 5,

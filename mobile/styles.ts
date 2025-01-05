@@ -4,6 +4,7 @@ export const colors = {
   primary: '#f1b863',
   secondary: '#fff',
   grey: '#f5f5f5',
+  blue: '#345384',
 };
 
 

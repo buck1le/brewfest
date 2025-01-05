@@ -5,7 +5,6 @@ import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import S3Image from "components/common/image";
 import { Pressable } from "react-native-gesture-handler";
-import { Suspense } from "react";
 
 interface EventCardProps {
   event: Event;
@@ -26,6 +25,8 @@ const EventCard = ({ event, width, navigation }: EventCardProps) => {
       onPress={() => handlePress(event)}
       style={{
         backgroundColor: '#FAF7F0',
+        borderColor: '#E5E5E5',
+        borderWidth: 1,
         borderRadius: 10,
         width: width,
         shadowColor: '#000',
@@ -78,13 +79,20 @@ const EventCard = ({ event, width, navigation }: EventCardProps) => {
           alignItems: 'center',
           gap: 5,
         }}>
-          <Ionicons name="calendar-outline" size={24} color="black" />
+          <Ionicons name="calendar-outline" size={20} color="black" />
           <Text>{event.startDate} - {event.endDate}</Text>
         </View>
         <View style={{
           flexDirection: 'row',
         }}>
-          <Ionicons name="location-outline" size={24} color="black" />
+          <Ionicons name="location-outline" size={20} color="black" />
+        </View>
+        <View style={{
+          flexDirection: 'row',
+          width: '100%',
+          justifyContent: 'flex-end',
+        }}>
+          <Ionicons name="arrow-forward" size={24} color="black" />
         </View>
       </View>
     </Pressable >

@@ -5,8 +5,9 @@ import Vendors from 'screens/vendors';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { styles, colors } from './styles';
+import { styles } from './styles';
 import * as Haptics from 'expo-haptics';
+import { colors } from 'global_styles';
 
 
 const Tab = createBottomTabNavigator();
@@ -20,10 +21,12 @@ const MainTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
         tabBarStyle: {
-          marginTop: -10
+          backgroundColor: colors.blue,
+          paddingTop: 10,
         },
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'white',
         tabBarBackground: TabTarBackground,
         headerShown: false,
         tabBarButton: ({ onPress, ...props }) => (

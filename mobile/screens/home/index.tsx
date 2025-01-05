@@ -3,7 +3,6 @@ import { useAtomValue } from 'jotai';
 
 import { styles } from './styles';
 import { useEventsAtom } from './atoms';
-import { Suspense } from 'react';
 import { EventCard } from 'components/home';
 
 interface HomeProps {
@@ -38,15 +37,6 @@ const Home = ({ navigation }: HomeProps) => {
           marginTop: 30,
         }}
         >
-          <Text style={{
-            fontSize: 30,
-            fontFamily: 'Poppins-Regular',
-            marginBottom: 20,
-            fontWeight: 'bold',
-            color: '#211A0A',
-          }}>
-            Howdy! Choose an Event Location
-          </Text>
           <View style={{
             flexDirection: 'column',
             justifyContent: 'center',
