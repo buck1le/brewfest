@@ -6,7 +6,9 @@ export const borderRadius = 6;
 const width = Dimensions.get('window').width;
 
 export const styles = StyleSheet.create({
-  tileContainer: { backgroundColor: 'white', flexDirection: 'row',
+  tileContainer: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
     borderRadius: borderRadius,
     width: width - 20,
     shadowColor: '#000',

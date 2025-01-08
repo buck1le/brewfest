@@ -1,3 +1,5 @@
+export const ROOT_RESOURCE = `/events`;
+
 // Generic Types
 export interface Image {
   id: number;

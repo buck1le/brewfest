@@ -7,11 +7,6 @@
     "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -39,6 +34,14 @@
         "expo-font",
         {
           "fonts": ["./assets/fonts/Poppins/Poppins-Regular.ttf"],
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+         "backgroundColor": "#232323",
+          "image": "./assets/WWBF-KATYImage.png",
+          "imageWidth": 200
         }
       ]
     ]

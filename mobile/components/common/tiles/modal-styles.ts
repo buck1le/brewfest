@@ -25,11 +25,11 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   dragIndicator: {
-    width: 40,
-    height: 4,
+    width: 80,
+    height: 10,
     backgroundColor: '#DEDEDE',
-    borderRadius: 2,
-    marginBottom: 20,
+    borderRadius: 4,
+    marginBottom: 25,
   },
   button: {
     borderRadius: 20,

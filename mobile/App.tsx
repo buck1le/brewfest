@@ -2,6 +2,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
+import * as SplashScreen from 'expo-splash-screen';
+
+import { useFonts } from "expo-font";
+
+import {
+  Poppins_400Regular
+} from '@expo-google-fonts/poppins';
+
+import { ROOT_RESOURCE } from "types/api-responses";
 
 import MainTabNavigator from "components/tab-nav/tab-navigator";
 import TouchableImage from 'components/common/touchable-image';
@@ -10,9 +19,11 @@ import { styles, colors } from './styles';
 import { MainNavigationProp, RootStackParamList } from "types/navigation";
 import { server } from "./mocks/server";
 import { selectedEventAtom } from "./atoms";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modalVisableAtom } from "./atoms";
 import { View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { eventsAtom, useEventsAtom } from "screens/home/atoms";
 
 if (process.env.EXPO_PUBLIC_TEST_SERVER === "true") {
   server.listen({
@@ -39,11 +50,54 @@ const LogoTitle = () => {
   );
 }
 
+SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
 const App = () => {
+  const [appIsReady, setAppIsReady] = useState(false);
   const modalVisable = useAtomValue(modalVisableAtom);
+  
+  const eventsFetchAtom = useEventsAtom(ROOT_RESOURCE);
+  const events = useAtomValue(eventsFetchAtom);
+  const setEvents = useSetAtom(eventsAtom);
+
+  const [fontLoaded, error] = useFonts({
+    Poppins_400Regular,
+  });
+
+  useEffect(() => {
+    if (fontLoaded && !events.loading) {
+      setEvents(events.data);
+
+      // Simulate a delay to show the splash screen
+      new Promise((resolve) => setTimeout(resolve, 3000))
+
+      setAppIsReady(true);
+    }
+
+  }, [fontLoaded, events.data]);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady || !fontLoaded) {
+    return null;
+  }
+
+  if (error) {
+    // TODO: improve error handling at some point
+    console.error(error);
+  }
 
   return (
-    <>
+    <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
       <NavigationContainer
         theme={{
           colors: {
@@ -89,7 +143,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       {modalVisable && <Overlay />}
-    </>
+    </View>
   );
 }
 
