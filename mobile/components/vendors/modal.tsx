@@ -54,16 +54,27 @@ const VendorModal = ({ item }: VendorModalProps) => {
           )}
         />
       </View>
-      <Text style={styles.itemTitle}>{item?.name}</Text>
+      <Text style={{
+        alignSelf: 'flex-start',
+        fontSize: 30,
+        marginBottom: 10,
+        fontWeight: 'bold',
+        fontFamily: 'Poppins_700Bold',
+      }}>{item?.name}</Text>
       <View style={styles.textContainer}>
-        <Text>{item?.description}</Text>
+        <Text
+          style={{
+            fontSize: 15,
+            fontFamily: 'Poppins_400Regular',
+          }}
+        >{item?.description}</Text>
       </View>
       <View style={[styles.textContainer, {
         marginTop: 30,
       }]}>
         <Text style={{
           fontSize: 18,
-          fontFamily: 'Poppins-Regular',
+          fontFamily: 'Poppins_700Bold',
           fontWeight: 'bold',
         }}>Featured Items</Text>
       </View>

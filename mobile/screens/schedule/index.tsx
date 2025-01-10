@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { styles } from './styles';
+import { styles, borderRadius } from './styles';
 import { ScheduleItem } from 'types/api-responses';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
@@ -9,6 +9,50 @@ import { useScheduleAtom } from './atoms';
 import { TileColumn } from 'components/common/tiles';
 import { ScheduleTile } from 'components/schedule-items';
 import ScheduleModal from 'components/schedule-items/modal';
+import { Skeleton } from 'moti/skeleton';
+import { MotiView } from 'moti';
+
+const ScheduleLoadingSkeleton = () => {
+  return (
+    <View style={styles.tileContainer}>
+      <Skeleton.Group show={true}>
+        <Skeleton
+          width={200}
+          height={130}
+          radius={borderRadius}
+          colorMode="light"
+        />
+
+        <MotiView style={styles.textContainer}>
+          <Skeleton
+            width={130}
+            height={20}
+            radius={4}
+            colorMode="light"
+          />
+
+          <View style={{
+            marginTop: 8,
+            gap: 4,
+          }}>
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+          </View>
+        </MotiView>
+      </Skeleton.Group>
+    </View>
+  )
+}
 
 
 const Schedule = () => {
@@ -25,11 +69,21 @@ const Schedule = () => {
   const setModalVisable = useSetAtom(modalVisableAtom);
 
   if (schedule_items.loading) {
-    return <Text>Loading...</Text>
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.skeletonContainer}>
+            <ScheduleLoadingSkeleton />
+            <ScheduleLoadingSkeleton />
+            <ScheduleLoadingSkeleton />
+          </View>
+        </View>
+      </SafeAreaView>
+    )
   }
 
-  if (!schedule_items.data) {
-    return <Text>No data</Text>
+  if (schedule_items.error || !schedule_items.data) {
+    return
   }
 
   return (

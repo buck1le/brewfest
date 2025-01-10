@@ -1,9 +1,8 @@
 import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { MapMarker, Marker } from 'react-native-maps';
-import { useAtomValue } from 'jotai';
-import { Image } from 'expo-image';
-import { selectedEventAtom } from 'atoms/index';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useVendorsAtom } from 'screens/vendors/atoms';
 import { useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
@@ -17,6 +16,10 @@ import {
 } from './styles';
 import { colors } from 'global_styles';
 import S3Image from 'components/common/image';
+import { Vendor } from 'types/api-responses';
+import TileModal from 'components/common/tiles/modal';
+import { VendorModal } from 'components/vendors';
+import { Pressable } from 'react-native-gesture-handler';
 
 const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
@@ -26,10 +29,13 @@ const Map = () => {
   const _scrollView = useRef<ScrollView>(null);
   const markerRefs = useRef<{ [key: number]: MapMarker | null }>({});
 
+  const [selectedItem, setSelectedItem] = useState<Vendor | null>(null);
+  const [modalVisable, setModalVisable] = useAtom(modalVisableAtom);
+
   if (!selectedEvent) {
     return <Text>Please select an event</Text>
   }
-  
+
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
@@ -69,6 +75,11 @@ const Map = () => {
       }
     }
   );
+
+  const onTilePress = (item: Vendor) => {
+    setSelectedItem(item);
+    setModalVisable(true);
+  }
 
   const onMarkerPress = (mapEventData: any) => {
     console.log(typeof mapEventData)
@@ -114,22 +125,33 @@ const Map = () => {
           longitudeDelta: 3,
         }}
       >
-        {vendors.data && vendors.data.map((vendor, i) => {
-          return (
-            <Marker
-              key={i}
-              ref={ref => markerRefs.current[i] = ref}
-              tracksViewChanges={false}
-              coordinate={{
-                latitude: vendor.coordinates.latitude,
-                longitude: vendor.coordinates.longitude,
-              }}
-              onPress={(e) => onMarkerPress(e)}
-              pinColor={selectedMarker === i ? 'red' : 'blue'}
-            >
-            </Marker>
-          )
-        })}
+        <TileModal
+          item={selectedItem}
+          animationType="slide"
+          transparent={true}
+          visable={modalVisable}
+          onRequestClose={() => setModalVisable(false)}
+          RenderItem={({ item }: { item: Vendor }) => (
+            <VendorModal item={item} />
+          )}
+        >
+          {vendors.data && vendors.data.map((vendor, i) => {
+            return (
+              <Marker
+                key={i}
+                ref={ref => markerRefs.current[i] = ref}
+                tracksViewChanges={false}
+                coordinate={{
+                  latitude: vendor.coordinates.latitude,
+                  longitude: vendor.coordinates.longitude,
+                }}
+                onPress={(e) => onMarkerPress(e)}
+                pinColor={selectedMarker === i ? 'red' : 'blue'}
+              >
+              </Marker>
+            )
+          })}
+        </TileModal>
       </MapView>
       <ScrollView
         horizontal
@@ -151,7 +173,7 @@ const Map = () => {
         ref={_scrollView}
         horizontal
         pagingEnabled
-        scrollEnabled={false}
+        scrollEnabled={true}
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + 20}
@@ -169,17 +191,19 @@ const Map = () => {
         onScroll={onScroll}
       >
         {vendors.data?.map((marker, index) => (
-          <View style={styles.card} key={index}>
+          <Pressable style={styles.card}
+            onPress={() => onTilePress(marker)}
+            key={index}>
             <S3Image
               source={{ uri: marker.thumbnail }}
               style={styles.cardImage}
               contentFit='cover'
             />
-            <View style={styles.textContent}>
+            <View style={styles.textContent} >
               <Text numberOfLines={1} style={styles.cardtitle}>{marker.name}</Text>
               <Text numberOfLines={1} style={styles.cardDescription}>{marker.description}</Text>
             </View>
-          </View>
+          </Pressable>
         ))}
       </Animated.ScrollView>
     </SafeAreaView>

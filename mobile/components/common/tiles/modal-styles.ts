@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   dragIndicator: {
     width: 80,
-    height: 10,
+    height: 5,
     backgroundColor: '#DEDEDE',
     borderRadius: 4,
     marginBottom: 25,

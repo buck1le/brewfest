@@ -7,7 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from "expo-font";
 
 import {
-  Poppins_400Regular
+  Poppins_400Regular,
+  Poppins_700Bold
 } from '@expo-google-fonts/poppins';
 
 import { ROOT_RESOURCE } from "types/api-responses";
@@ -53,7 +54,7 @@ const LogoTitle = () => {
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({
-  duration: 1000,
+  duration: 1500,
   fade: true,
 });
 
@@ -67,15 +68,12 @@ const App = () => {
 
   const [fontLoaded, error] = useFonts({
     Poppins_400Regular,
+    Poppins_700Bold
   });
 
   useEffect(() => {
     if (fontLoaded && !events.loading) {
       setEvents(events.data);
-
-      // Simulate a delay to show the splash screen
-      new Promise((resolve) => setTimeout(resolve, 3000))
-
       setAppIsReady(true);
     }
 

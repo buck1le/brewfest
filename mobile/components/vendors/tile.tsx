@@ -40,21 +40,25 @@ const VendorTile = ({
       />
       <View style={styles.textContainer}>
         <Text style={{
-          fontSize: 18,
-          fontWeight: 'bold',
+          fontFamily: "Poppins_700Bold",
+          fontSize: 15,
         }}>
           {item.name}
         </Text>
-        <View>
-          <Text>{item.description}</Text>
-        </View>
         <View style={{
           marginTop: 5,
           flexDirection: 'row',
           alignItems: 'center',
         }}>
           <Ionicons name="location-outline" size={24} color="black" />
-          <Text>{item.operatingOutOf}</Text>
+          <Text
+          style={{
+            fontFamily: "Poppins_400Regular",
+            fontSize: 12,
+            marginLeft: 2,
+          }}
+
+          >{item.operatingOutOf}</Text>
         </View>
       </View>
     </Pressable>
