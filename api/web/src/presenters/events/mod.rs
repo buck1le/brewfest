@@ -30,6 +30,7 @@ struct Resources {
     schedule: ResourceLink,
     vendors: ResourceLink,
     thumbnail: ResourceLink,
+    brews: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -71,6 +72,9 @@ impl<'a> Partial<'a> {
                 },
                 thumbnail: ResourceLink {
                     href: format!("/events/{}/thumbnail", self.event.id),
+                },
+                brews: ResourceLink {
+                    href: format!("/events/{}/vendors?vendor_type=brewery", self.event.id),
                 }
             },
         };

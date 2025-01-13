@@ -43,7 +43,6 @@ struct Resources {
     images: ResourceLink,
     thumbnail: ResourceLink,
     inventory: ResourceLink,
-    brews: ResourceLink,
 }
 
 #[derive(Serialize)]
@@ -94,12 +93,6 @@ impl<'a> Partial<'a> {
                         self.vendor.event_id, self.vendor.id
                     ),
                 },
-                brews: ResourceLink {
-                    href: format!(
-                        "/events/{}/vendors/{}/inventory?vendor_type=brewery",
-                        self.vendor.event_id, self.vendor.id
-                    ),
-                }
             },
         };
 
