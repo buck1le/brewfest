@@ -206,6 +206,7 @@ mod test {
                 name: Set("Hello, World!".into()),
                 email: Set("jloesch@example.com".into()),
                 phone: Set("123-456-7890".into()),
+                vendor_type: Set(None),
                 operating_out_of: Set("Hello, World!".into()),
                 description: Set("Hello, World!".into()),
                 latitude: Set(0.0),
@@ -264,6 +265,7 @@ mod test {
                     "phone": "123-456-7890", 
                     "description": "Hello, World!",
                     "operatingOutOf": "Hello, World!",
+                    "vendorType": "Food",
                     "coordinates": { "latitude": 0.0, "longitude": 0.0 },
                     "category": "Food"
                 }"#;
