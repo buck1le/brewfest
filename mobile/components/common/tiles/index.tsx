@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView, Dimensions } from "react-native";
+import { View, ScrollView, SafeAreaView } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
@@ -8,7 +8,7 @@ import TileModal from "./modal";
 import { useAtom } from "jotai";
 import { Suspense } from "react";
 
-const TileSkeleton = () => {
+const TileColumnSkeleton = () => {
   return (
     <View style={styles.tileContainer}>
       <Skeleton.Group show={true}>
@@ -79,7 +79,7 @@ const TileColumn = <T extends object>({
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.tilesColumContainer}>
           {[1, 2, 3].map(index => (
-            <TileSkeleton key={index} />
+            <TileColumnSkeleton key={index} />
           ))}
         </ScrollView>
       </SafeAreaView>
@@ -103,7 +103,109 @@ const TileColumn = <T extends object>({
             <SafeAreaView>
               <ScrollView contentContainerStyle={styles.tilesColumContainer}>
                 {[1, 2, 3].map(index => (
-                  <TileSkeleton key={index} />
+                  <TileColumnSkeleton key={index} />
+                ))}
+              </ScrollView>
+            </SafeAreaView>
+          }>
+            {data.map((item, index) => (
+              <RenderTileComponent
+                key={index}
+                item={item}
+              />
+            ))}
+          </Suspense>
+        </TileModal>
+      </ScrollView>
+    </SafeAreaView >
+  );
+}
+
+const TileGridSkeleton = () => {
+  return (
+    <View style={styles.tileContainer}>
+      <Skeleton.Group show={true}>
+        <Skeleton
+          width={200}
+          height={130}
+          radius={borderRadius}
+          colorMode="light"
+        />
+
+        <MotiView style={styles.textContainer}>
+          <Skeleton
+            width={130}
+            height={20}
+            radius={4}
+            colorMode="light"
+          />
+
+          <View style={{
+            marginTop: 8,
+            gap: 4,
+          }}>
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+            <Skeleton
+              width={120}
+              height={12}
+              radius={4}
+              colorMode="light"
+            />
+          </View>
+        </MotiView>
+      </Skeleton.Group>
+    </View>
+  );
+}
+
+const TileGrid = <T extends object>({
+  data,
+  selectedItem,
+  tileLoading,
+  RenderModalComponent,
+  RenderTileComponent,
+}: TilesProps<T>) => {
+  const [modalVisable, setModalVisible] = useAtom(modalVisableAtom);
+
+  const closeModal = () => {
+    setModalVisible(false);
+  }
+
+  if (tileLoading) {
+    return (
+      <SafeAreaView>
+        <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+          {[1, 2, 3].map(index => (
+            <TileColumnSkeleton key={index} />
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+        <TileModal
+          item={selectedItem}
+          animationType="slide"
+          transparent={true}
+          visable={modalVisable}
+          onRequestClose={() => closeModal()}
+          RenderItem={({ item }: { item: T }) => (
+            <RenderModalComponent item={item} />
+          )}
+        >
+          <Suspense fallback={
+            <SafeAreaView>
+              <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+                {[1, 2, 3].map(index => (
+                  <TileColumnSkeleton key={index} />
                 ))}
               </ScrollView>
             </SafeAreaView>
@@ -122,6 +224,8 @@ const TileColumn = <T extends object>({
 }
 
 export {
-  TileSkeleton,
+  TileColumnSkeleton,
   TileColumn,
+  TileGridSkeleton,
+  TileGrid,
 };

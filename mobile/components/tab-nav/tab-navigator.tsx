@@ -55,12 +55,12 @@ const MainTabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Schedule"
-        component={Schedule}
+        name="Brews"
+        component={Map}
         options={() => ({
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'calendar' : 'calendar-outline'}
+              name={focused ? 'beer' : 'beer-outline'}
               size={size}
               color={color}
             />
@@ -69,12 +69,12 @@ const MainTabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Map"
-        component={Map}
+        name="Schedule"
+        component={Schedule}
         options={() => ({
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? 'map' : 'map-outline'}
+              name={focused ? 'calendar' : 'calendar-outline'}
               size={size}
               color={color}
             />

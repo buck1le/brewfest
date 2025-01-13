@@ -17,6 +17,10 @@ export interface Vendor {
   id: number;
   name: string;
   description: string;
+
+  // The type of the vendor being shopping or beer/wine
+  type: string;
+
   operatingOutOf: string;
   thumbnail: string;
   category: string;
@@ -50,6 +54,7 @@ export interface Event {
   };
   resources: {
     vendors: Resource;
+    brews: Resource;
     schedule: Resource;
   };
 }
