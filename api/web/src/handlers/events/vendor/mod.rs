@@ -1,3 +1,4 @@
+use axum::extract::Query;
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Json};
 use entities::*;
 use serde::Deserialize;
@@ -15,21 +16,35 @@ pub mod image;
 pub mod inventory;
 pub mod thumbnail;
 
-pub struct Query;
+#[derive(Deserialize)]
+pub struct VendorType {
+    vendor_type: Option<String>,
+}
 
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
+    Query(vendor_type): Query<VendorType>,
     Path(event_id): Path<i32>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    // Artificial delay to simulate a slow request
-
-    tokio::time::sleep(std::time::Duration::from_secs(3)).await;
-
     let database_connection = &*db;
 
     let event = load_event(event_id, &db).await?;
 
-    let vendors = event.find_related(Vendors).all(database_connection).await;
+    let vendors = match vendor_type.vendor_type {
+        Some(vendor_type) => {
+            event
+                .find_related(Vendors)
+                .filter(vendors::Column::VendorType.eq(vendor_type))
+                .all(database_connection)
+                .await
+        }
+        None => {
+            event
+                .find_related(Vendors)
+                .all(database_connection)
+                .await
+        }
+    };
 
     match vendors {
         Ok(vendors) => VendorPresenter::new(&vendors).render(),
@@ -72,6 +87,7 @@ pub struct VendorCreateRequest {
     email: String,
     phone: String,
     operating_out_of: String,
+    vendor_type: String,
     description: String,
     coordinates: Location,
     category: VendorCategory,
@@ -89,6 +105,7 @@ pub async fn create(
         name: Set(payload.name),
         email: Set(payload.email),
         phone: Set(payload.phone),
+        vendor_type: Set(Some(payload.vendor_type)),
         latitude: Set(payload.coordinates.latitude),
         longitude: Set(payload.coordinates.longitude),
         category: Set(payload.category.into()),

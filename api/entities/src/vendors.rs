@@ -16,6 +16,7 @@ pub struct Model {
     pub created_at: DateTime,
     pub operating_out_of: String,
     pub description: String,
+    pub vendor_type: Option<String>,
     pub updated_at: DateTime,
     pub latitude: f64,
     pub longitude: f64,
