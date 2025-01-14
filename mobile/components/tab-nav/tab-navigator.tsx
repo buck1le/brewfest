@@ -1,6 +1,5 @@
 import { TouchableWithoutFeedback, View } from 'react-native';
 import Schedule from 'screens/schedule';
-import Map from 'screens/map';
 import Vendors from 'screens/vendors';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './styles';
 import * as Haptics from 'expo-haptics';
 import { colors } from 'global_styles';
+import Brews from 'screens/brews';
 
 
 const Tab = createBottomTabNavigator();
@@ -55,8 +55,8 @@ const MainTabNavigator = () => {
         })}
       />
       <Tab.Screen
-        name="Brews"
-        component={Map}
+        name="Drinks"
+        component={Brews}
         options={() => ({
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons

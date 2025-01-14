@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 interface TileModalProps<T extends object> {
-  item: T | null;
+  item: T | undefined;
   visable: boolean;
   animationType: 'slide' | 'fade' | 'none';
   transparent: boolean;

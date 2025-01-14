@@ -94,7 +94,7 @@ const Vendors = () => {
   const vendors = useAtomValue(vendorsAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  const [selectedItem, setSelectedItem] = useState<Vendor | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Vendor | undefined>(undefined);
 
   if (vendors.loading) {
     return (

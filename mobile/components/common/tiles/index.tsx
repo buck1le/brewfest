@@ -53,7 +53,7 @@ const TileColumnSkeleton = () => {
 interface TilesProps<T extends object> {
   data: T[];
   tileLoading: boolean;
-  selectedItem: T | null;
+  selectedItem: T | undefined;
   RenderTileComponent: React.ComponentType<{
     item: T;
   }>;
@@ -205,7 +205,7 @@ const TileGrid = <T extends object>({
             <SafeAreaView>
               <ScrollView contentContainerStyle={styles.tilesGridContainer}>
                 {[1, 2, 3].map(index => (
-                  <TileColumnSkeleton key={index} />
+                  <TileGridSkeleton key={index} />
                 ))}
               </ScrollView>
             </SafeAreaView>
