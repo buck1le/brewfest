@@ -28,9 +28,9 @@ export const styles = StyleSheet.create({
   },
   tilesColumContainer: {
     marginTop: 30,
+    paddingBottom: 300,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
   },
   textContainer: {
     padding: 10,

@@ -88,7 +88,9 @@ const TileColumn = <T extends object>({
 
   return (
     <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.tilesColumContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.tilesColumContainer}>
         <TileModal
           item={selectedItem}
           animationType="slide"
@@ -99,22 +101,12 @@ const TileColumn = <T extends object>({
             <RenderModalComponent item={item} />
           )}
         >
-          <Suspense fallback={
-            <SafeAreaView>
-              <ScrollView contentContainerStyle={styles.tilesColumContainer}>
-                {[1, 2, 3].map(index => (
-                  <TileColumnSkeleton key={index} />
-                ))}
-              </ScrollView>
-            </SafeAreaView>
-          }>
-            {data.map((item, index) => (
-              <RenderTileComponent
-                key={index}
-                item={item}
-              />
-            ))}
-          </Suspense>
+          {data.map((item, index) => (
+            <RenderTileComponent
+              key={index}
+              item={item}
+            />
+          ))}
         </TileModal>
       </ScrollView>
     </SafeAreaView >

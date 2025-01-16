@@ -33,20 +33,16 @@ const CateoryTileRow = ({
     <View style={{
       flexDirection: 'row',
       gap: 10,
+      paddingInline: 10,
     }}>
-      <View style={{
-        flexDirection: 'row',
-        gap: 10,
-      }}>
-        {categories.map((category, i) => (
-          <CategoryTile
-            setCategory={setCategory}
-            selected={selectedCategory === category.query}
-            category={category}
-            key={i}
-          />
-        ))}
-      </View>
+      {categories.map((category, i) => (
+        <CategoryTile
+          setCategory={setCategory}
+          selected={selectedCategory === category.query}
+          category={category}
+          key={i}
+        />
+      ))}
     </View>
   );
 }

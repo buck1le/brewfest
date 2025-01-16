@@ -1,10 +1,9 @@
 import { Pressable, View, Text, Dimensions } from "react-native";
 import { Vendor } from "types/api-responses";
-import { Image } from "expo-image";
 
 import { styles } from "./tile-styles";
-import { BREW_FEST_IMAGE_HOST } from "lib/request";
 import { Ionicons } from "@expo/vector-icons";
+import S3Image from "components/common/image";
 
 interface VendorTileProps {
   item: Vendor;
@@ -18,8 +17,6 @@ const VendorTile = ({
   item,
   onPress,
 }: VendorTileProps) => {
-  const image_url = `${BREW_FEST_IMAGE_HOST}${item.thumbnail}`;
-
   return (
     <Pressable
       style={{
@@ -34,9 +31,9 @@ const VendorTile = ({
       }}
       onPress={onPress}
     >
-      <Image
+      <S3Image
         style={styles.vendorImage}
-        source={{ uri: image_url }}
+        source={{ uri: item.thumbnail }}
       />
       <View style={styles.textContainer}>
         <Text style={{

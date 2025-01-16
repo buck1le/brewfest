@@ -8,6 +8,7 @@ import { ScrollView } from "moti";
 import { TileGrid } from "components/common/tiles";
 import { InventoryItem } from "types/api-responses";
 import { useState } from "react";
+import { DrinkTile } from "components/drinks";
 
 const categories: Category[] = [
   {
@@ -69,10 +70,11 @@ const Brews = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <ScrollView
-          horizontal={true}
           style={{
-            paddingLeft: 10,
+            maxHeight: 95,
           }}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
         >
           <CateoryTileRow
             categories={categories}
@@ -84,7 +86,10 @@ const Brews = () => {
           <TileGrid
             data={brews.data}
             RenderTileComponent={({ item }: { item: InventoryItem }) => (
-              <Text>{item.name}</Text>
+              <DrinkTile
+                drink={item}
+                onPress={() => setSelectedBrew(item)}
+              />
             )}
             RenderModalComponent={({ item }: { item: InventoryItem }) => (
               <Text>{item.name}</Text>

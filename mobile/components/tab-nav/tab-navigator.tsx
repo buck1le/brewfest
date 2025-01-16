@@ -24,6 +24,9 @@ const MainTabNavigator = () => {
         tabBarStyle: {
           backgroundColor: colors.blue,
           paddingTop: 10,
+
+          // NOTE: So that the content scrolls behind the tab bar 
+          marginTop: -300
         },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'white',
