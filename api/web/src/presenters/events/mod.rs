@@ -74,7 +74,7 @@ impl<'a> Partial<'a> {
                     href: format!("/events/{}/thumbnail", self.event.id),
                 },
                 brews: ResourceLink {
-                    href: format!("/events/{}/vendors?vendor_type=brewery", self.event.id),
+                    href: format!("/events/{}/inventory?vendor_type=brewery", self.event.id),
                 }
             },
         };

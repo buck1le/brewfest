@@ -1,16 +1,30 @@
-use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
+use axum::{
+    extract::{Path, Query},
+    http::StatusCode,
+    response::IntoResponse,
+    Extension, Json,
+};
 use chrono::NaiveDate;
 use serde::Deserialize;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
+use entities::vendor_inventory_items::Entity as VendorInventoryItems;
+use entities::vendors::Entity as Vendors;
 use entities::*;
 
-use crate::{auth::ExtractApiKey, presenters::events::{Coordinates, Partial, Presenter as IndexPresenter}};
+use crate::{
+    auth::ExtractApiKey,
+    common::events::load_event,
+    presenters::events::{
+        vendors::inventory::Presenter as VendorInventoryItemsPresenter, Coordinates, Partial,
+        Presenter as IndexPresenter,
+    },
+};
 
 pub mod schedule;
-pub mod vendor;
 pub mod thumbnail;
+pub mod vendor;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -66,4 +80,34 @@ pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl In
         .unwrap();
 
     IndexPresenter::new(events).render()
+}
+
+#[derive(Deserialize)]
+pub struct VendorType {
+    vendor_type: Option<String>,
+}
+
+pub async fn inventory(
+    Extension(db): Extension<Arc<DatabaseConnection>>,
+    Query(VendorType { vendor_type }): Query<VendorType>,
+    Path(event_id): Path<i32>,
+) -> impl IntoResponse {
+    let database_connection = &*db;
+
+    let event = load_event(event_id, &db).await?;
+
+    let vendors_and_events = event
+        .find_related(Vendors)
+        .filter(vendors::Column::VendorType.eq(vendor_type))
+        .find_with_related(VendorInventoryItems)
+        .all(database_connection)
+        .await
+        .unwrap();
+
+    let inventory = vendors_and_events
+        .into_iter()
+        .flat_map(|(_, inventory_items)| inventory_items)
+        .collect::<Vec<_>>();
+
+    VendorInventoryItemsPresenter::new(&inventory).render()
 }
