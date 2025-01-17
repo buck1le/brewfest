@@ -38,6 +38,11 @@ const categories: Category[] = [
   },
 ];
 
+const filterDrinksByCategory = (drinks: InventoryItem[], category: string) => {
+  return drinks.filter(drink => drink.category.includes(category));
+}
+
+
 const Brews = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
 
@@ -80,7 +85,10 @@ const Brews = () => {
         </ScrollView>
         <View style={styles.content}>
           <TileGrid
-            data={brews.data}
+            data={selectedCategory ?
+              filterDrinksByCategory(brews.data, selectedCategory) :
+              brews.data
+            }
             RenderTileComponent={({ item }: { item: InventoryItem }) => (
               <DrinkTile
                 drink={item}

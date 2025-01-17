@@ -38,5 +38,11 @@ export const styles = StyleSheet.create({
   },
   tilesGridContainer: {
     paddingTop: 25,
+    paddingInline: 10,
+
+    // Take up the entire screen so that you can scroll everything
+    minWidth: width,
+    alignItems: 'flex-start',
+    alignContent: 'flex-start',
   },
 });

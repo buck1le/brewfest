@@ -183,7 +183,11 @@ const TileGrid = <T extends object>({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+    <ScrollView 
+    style={{
+      width: '100%',
+    }}
+    contentContainerStyle={styles.tilesGridContainer}>
       <TileModal
         item={selectedItem}
         animationType="slide"
@@ -213,7 +217,8 @@ const TileGrid = <T extends object>({
             }}
             contentContainerStyle={{
               gap: 10,
-              alignItems: 'flex-start'
+              alignItems: 'flex-start',
+              width: '100%',
             }}
             scrollEnabled={false}
             numColumns={2}
