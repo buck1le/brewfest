@@ -12,34 +12,29 @@ import { DrinkTile } from "components/drinks";
 
 const categories: Category[] = [
   {
-    name: 'Drinks',
-    query: 'beverage',
+    name: 'Sour',
+    query: 'sour',
     icon: 'beer-outline',
   },
   {
-    name: 'Food',
-    query: 'food',
-    icon: 'fast-food-outline',
+    name: 'IPA',
+    query: 'ipa',
+    icon: 'beer-outline',
   },
   {
-    name: 'Shop',
-    query: 'shop',
-    icon: 'pricetags-outline',
+    name: 'Stout',
+    query: 'stout',
+    icon: 'beer-outline',
   },
   {
-    name: 'Shop',
-    query: 'shop',
-    icon: 'pricetags-outline',
+    name: 'Wine',
+    query: 'wine',
+    icon: 'beer-outline',
   },
   {
-    name: 'Shop',
-    query: 'shop',
-    icon: 'pricetags-outline',
-  },
-  {
-    name: 'Shop',
-    query: 'shop',
-    icon: 'pricetags-outline',
+    name: 'Other',
+    query: 'other',
+    icon: 'beer-outline',
   },
 ];
 
@@ -71,7 +66,7 @@ const Brews = () => {
       <View style={styles.container}>
         <ScrollView
           style={{
-            maxHeight: 95,
+            maxHeight: 70,
           }}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -80,6 +75,7 @@ const Brews = () => {
             categories={categories}
             setCategory={setCategoryAtom}
             selectedCategory={selectedCategory}
+            showIcons={false}
           />
         </ScrollView>
         <View style={styles.content}>

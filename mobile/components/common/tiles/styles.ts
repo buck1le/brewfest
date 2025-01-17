@@ -36,4 +36,7 @@ export const styles = StyleSheet.create({
     padding: 10,
     flexShrink: 1,
   },
+  tilesGridContainer: {
+    paddingTop: 25,
+  },
 });

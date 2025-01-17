@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView } from "react-native";
+import { View, ScrollView, SafeAreaView, FlatList, Dimensions } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
@@ -7,6 +7,8 @@ import { MotiView } from "moti";
 import TileModal from "./modal";
 import { useAtom } from "jotai";
 import { Suspense } from "react";
+
+const width = Dimensions.get('window').width;
 
 const TileColumnSkeleton = () => {
   return (
@@ -181,37 +183,49 @@ const TileGrid = <T extends object>({
   }
 
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.tilesGridContainer}>
-        <TileModal
-          item={selectedItem}
-          animationType="slide"
-          transparent={true}
-          visable={modalVisable}
-          onRequestClose={() => closeModal()}
-          RenderItem={({ item }: { item: T }) => (
-            <RenderModalComponent item={item} />
-          )}
-        >
-          <Suspense fallback={
-            <SafeAreaView>
-              <ScrollView contentContainerStyle={styles.tilesGridContainer}>
-                {[1, 2, 3].map(index => (
-                  <TileGridSkeleton key={index} />
-                ))}
-              </ScrollView>
-            </SafeAreaView>
-          }>
-            {data.map((item, index) => (
-              <RenderTileComponent
-                key={index}
-                item={item}
-              />
-            ))}
-          </Suspense>
-        </TileModal>
-      </ScrollView>
-    </SafeAreaView >
+    <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+      <TileModal
+        item={selectedItem}
+        animationType="slide"
+        transparent={true}
+        visable={modalVisable}
+        onRequestClose={() => closeModal()}
+        RenderItem={({ item }: { item: T }) => (
+          <RenderModalComponent item={item} />
+        )}
+      >
+        <Suspense fallback={
+          <SafeAreaView>
+            <ScrollView contentContainerStyle={styles.tilesGridContainer}>
+              {[1, 2, 3].map(index => (
+                <TileGridSkeleton key={index} />
+              ))}
+            </ScrollView>
+          </SafeAreaView>
+        }>
+          <FlatList
+            style={{
+              width: '100%',
+            }}
+            columnWrapperStyle={{
+              gap: 10,
+              justifyContent: 'center',
+            }}
+            contentContainerStyle={{
+              gap: 10,
+              alignItems: 'flex-start'
+            }}
+            scrollEnabled={false}
+            numColumns={2}
+            data={data}
+            renderItem={({ item }) => (
+              <RenderTileComponent item={item} />
+            )}
+
+          />
+        </Suspense>
+      </TileModal>
+    </ScrollView>
   );
 }
 

@@ -21,12 +21,14 @@ export interface Category {
 type CategoryTileRowProps = {
   categories: Category[];
   selectedCategory?: string;
+  showIcons?: boolean;
   setCategory: (category: string | undefined) => void;
 };
 
 const CateoryTileRow = ({
   categories,
   selectedCategory,
+  showIcons,
   setCategory
 }: CategoryTileRowProps) => {
   return (
@@ -37,6 +39,7 @@ const CateoryTileRow = ({
     }}>
       {categories.map((category, i) => (
         <CategoryTile
+          showIcon={showIcons}
           setCategory={setCategory}
           selected={selectedCategory === category.query}
           category={category}
@@ -50,12 +53,14 @@ const CateoryTileRow = ({
 interface CategoryTileProps {
   category: Category;
   selected: boolean;
+  showIcon?: boolean;
   setCategory: (category: string | undefined) => void;
 }
 
 const CategoryTile = ({
   category,
   selected,
+  showIcon = true,
   setCategory
 }: CategoryTileProps) => {
   const [scale] = useState(new Animated.Value(1));
@@ -106,12 +111,16 @@ const CategoryTile = ({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        minHeight: 24,
         gap: 5,
       }}>
-        <Ionicons
-          name={category.icon}
-          size={24}
-          color="black" />
+        {showIcon && (
+          <Ionicons
+            name={category.icon}
+            size={24}
+            color="black" />
+        )
+        }
         <Text>
           {category.name}
         </Text>
