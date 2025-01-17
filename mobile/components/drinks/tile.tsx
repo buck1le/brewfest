@@ -1,4 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import S3Image from "components/common/image";
+import { colors } from "global_styles";
 
 import { Dimensions, Pressable, Text, View } from "react-native"
 import { InventoryItem } from "types/api-responses";
@@ -9,6 +11,7 @@ interface DrinkProps {
 }
 
 const width = Dimensions.get("window").width;
+const borderRadius = 8;
 
 const DrinkTile = ({ drink, onPress }: DrinkProps) => {
   return (
@@ -34,8 +37,8 @@ const DrinkTile = ({ drink, onPress }: DrinkProps) => {
         style={{
           height: 110,
           width: '100%',
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 8,
+          borderTopLeftRadius: borderRadius,
+          borderTopRightRadius: borderRadius,
         }}
       />
       <Text style={{
@@ -49,14 +52,25 @@ const DrinkTile = ({ drink, onPress }: DrinkProps) => {
         flexDirection: 'column',
         justifyContent: 'flex-end',
       }}>
-        <Text style={{
-          fontFamily: 'Poppins_400Regular',
-          fontSize: 12,
+        <View style={{
           paddingLeft: 10,
-          marginBottom: 10,
+          paddingBlock: 5,
+          borderBottomLeftRadius: borderRadius,
+          borderBottomRightRadius: borderRadius,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          backgroundColor: colors.blue
         }}>
-          {drink.category}
-        </Text>
+          <Text style={{
+            fontFamily: 'Poppins_400Regular',
+            fontSize: 13,
+            letterSpacing: 1,
+            color: 'white',
+          }}>
+            {drink.category}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
