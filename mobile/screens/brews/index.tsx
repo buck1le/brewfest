@@ -1,4 +1,4 @@
-import { selectedEventAtom } from "atoms/index";
+import { modalVisableAtom, selectedEventAtom } from "atoms/index";
 import { useAtomValue, useSetAtom } from "jotai";
 import { SafeAreaView, Text, View } from "react-native";
 import { categoryAtom, useBrewsAtom, writeCategoryAtom } from "./atoms";
@@ -9,6 +9,8 @@ import { TileGrid } from "components/common/tiles";
 import { InventoryItem } from "types/api-responses";
 import { useState } from "react";
 import { DrinkTile } from "components/drinks";
+import { VendorModal } from "components/vendors";
+import DrinkModal from "components/drinks/modal";
 
 const categories: Category[] = [
   {
@@ -45,6 +47,9 @@ const filterDrinksByCategory = (drinks: InventoryItem[], category: string) => {
 
 const Brews = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
+  const selectedCategory = useAtomValue(categoryAtom);
+  const setCategoryAtom = useSetAtom(writeCategoryAtom);
+  const setModalVisable = useSetAtom(modalVisableAtom);
 
   if (!selectedEvent) {
     return (
@@ -56,9 +61,6 @@ const Brews = () => {
 
   const brewsAtom = useBrewsAtom(selectedEvent.resources.brews.href);
   const brews = useAtomValue(brewsAtom);
-
-  const selectedCategory = useAtomValue(categoryAtom);
-  const setCategoryAtom = useSetAtom(writeCategoryAtom);
 
   const [selectedBrew, setSelectedBrew] = useState<InventoryItem | undefined>(undefined);
 
@@ -92,11 +94,15 @@ const Brews = () => {
             RenderTileComponent={({ item }: { item: InventoryItem }) => (
               <DrinkTile
                 drink={item}
-                onPress={() => setSelectedBrew(item)}
+                onPress={() => {
+                  setSelectedBrew(item);
+                  setModalVisable(true);
+                  }
+                }
               />
             )}
             RenderModalComponent={({ item }: { item: InventoryItem }) => (
-              <Text>{item.name}</Text>
+              <DrinkModal item={item} />
             )}
             selectedItem={selectedBrew}
             tileLoading={brews.loading}

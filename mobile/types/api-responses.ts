@@ -39,7 +39,11 @@ export interface InventoryItem {
   name: string;
   category: string;
   thumbnail: string;
+  resources: {
+    vendor: Resource;
+  }
 }
+
 
 export interface Event {
   id: number;
