@@ -58,6 +58,7 @@ pub async fn create(
         name: Set(payload.name),
         category: Set(payload.category),
         vendor_id: Set(vendor.id),
+        event_id: Set(event_id),
         ..Default::default() // sets the other fields such as ID
     };
 

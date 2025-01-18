@@ -10,6 +10,7 @@ pub struct Model {
     pub name: String,
     pub category: String,
     pub vendor_id: i32,
+    pub event_id: i32,
     pub thumbnail: Option<String>,
 }
 
