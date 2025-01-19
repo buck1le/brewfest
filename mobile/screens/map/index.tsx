@@ -29,7 +29,7 @@ const Map = () => {
   const _scrollView = useRef<ScrollView>(null);
   const markerRefs = useRef<{ [key: number]: MapMarker | null }>({});
 
-  const [selectedItem, setSelectedItem] = useState<Vendor | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Vendor | undefined>(undefined);
   const [modalVisable, setModalVisable] = useAtom(modalVisableAtom);
 
   if (!selectedEvent) {
