@@ -69,14 +69,9 @@ pub struct ScheduleCreateRequest {
 
 fn parse_date(
     date_str: &str,
-    hour: u32,
-    minute: u32,
-    second: u32,
 ) -> Result<NaiveDateTime, (StatusCode, String)> {
-    let date = NaiveDate::parse_from_str(date_str, "%Y-%m-%d")
-        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))?;
-    date.and_hms_opt(hour, minute, second)
-        .ok_or((StatusCode::BAD_REQUEST, "Invalid date".to_string()))
+    NaiveDateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S")
+        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid date: {}", e)))
 }
 
 pub async fn create(
@@ -88,8 +83,8 @@ pub async fn create(
 
     let event = load_event(event_id, database_connection).await?;
 
-    let start_date_time = parse_date(&payload.start_date, 0, 0, 0)?;
-    let end_date_time = parse_date(&payload.end_date, 23, 59, 59)?;
+    let start_date_time = parse_date(&payload.start_date)?;
+    let end_date_time = parse_date(&payload.end_date)?;
 
     let new_item = schedule_items::ActiveModel {
         title: Set(payload.title.clone()),
