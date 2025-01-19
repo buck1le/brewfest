@@ -54,11 +54,14 @@ const extractDateFromTimestamp = (timestamp: string): string => {
 }
 
 const extractTimeFromTimestamp = (timestamp: string): string => {
+  console.log(timestamp);
   const date = new Date(timestamp);
   const hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const amOrPm = hours >= 12 ? 'pm' : 'am';
-  return `${hours % 12}:${minutes} ${amOrPm}`;
+  const displayHour = hours % 12 || 12;
+
+  return `${displayHour}:${minutes}${amOrPm}`;
 }
 
 const TimeInfo = ({ startTime, endTime }: {
@@ -86,7 +89,7 @@ const TimeInfo = ({ startTime, endTime }: {
         <Text style={{
           fontSize: 12,
         }}>
-          {extractDateFromTimestamp(startTime)} - {extractTimeFromTimestamp(startTime)}
+          {extractDateFromTimestamp(startTime)} • {extractTimeFromTimestamp(startTime)}
         </Text>
       </View>
       <View style={{
@@ -102,7 +105,7 @@ const TimeInfo = ({ startTime, endTime }: {
         <Text style={{
           fontSize: 12,
         }}>
-          {extractDateFromTimestamp(endTime)} - {extractTimeFromTimestamp(endTime)}
+          {extractDateFromTimestamp(endTime)} • {extractTimeFromTimestamp(endTime)}
         </Text>
       </View>
     </View>

@@ -65,7 +65,7 @@ const Schedule = () => {
   const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
   const schedule_items = useAtomValue(scheduleAtom);
 
-  const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ScheduleItem | undefined>(undefined);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
   if (schedule_items.loading) {
