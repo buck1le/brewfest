@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import S3Image from "components/common/image";
 import { colors } from "global_styles";
 
@@ -32,7 +31,7 @@ const DrinkTile = ({ drink, onPress }: DrinkProps) => {
       onPress={onPress}
     >
       <S3Image
-        source={{ uri: drink.thumbnail }}
+        uri={drink.thumbnail}
         contentFit="cover"
         style={{
           height: 110,

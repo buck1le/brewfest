@@ -195,7 +195,7 @@ const Map = () => {
             onPress={() => onTilePress(marker)}
             key={index}>
             <S3Image
-              source={{ uri: marker.thumbnail }}
+              uri={marker.thumbnail}
               style={styles.cardImage}
               contentFit='cover'
             />

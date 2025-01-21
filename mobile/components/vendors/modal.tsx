@@ -44,7 +44,7 @@ const VendorModal = ({ item }: VendorModalProps) => {
               }}
             >
               <S3Image
-                source={{ uri: item.url }}
+                uri={item.url}
                 style={{
                   width: width,
                   height: width / 2,
@@ -54,36 +54,37 @@ const VendorModal = ({ item }: VendorModalProps) => {
           )}
         />
       </View>
-      <Text style={{
-        alignSelf: 'flex-start',
-        fontSize: 30,
-        marginBottom: 10,
-        fontWeight: 'bold',
-        fontFamily: 'Poppins_700Bold',
-      }}>{item?.name}</Text>
-      <View style={styles.textContainer}>
-        <Text
-          style={{
-            fontSize: 15,
-            fontFamily: 'Poppins_400Regular',
-          }}
-        >{item?.description}</Text>
-      </View>
-      <View style={[styles.textContainer, {
-        marginTop: 30,
-      }]}>
-        <Text style={{
-          fontSize: 18,
-          fontFamily: 'Poppins_700Bold',
-          fontWeight: 'bold',
-        }}>Featured Items</Text>
-      </View>
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={{
           flexShrink: 0,
           width: '100%',
         }}
       >
+        <Text style={{
+          alignSelf: 'flex-start',
+          fontSize: 30,
+          marginBottom: 10,
+          fontWeight: 'bold',
+          fontFamily: 'Poppins_700Bold',
+        }}>{item?.name}</Text>
+        <View style={styles.textContainer}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: 'Poppins_400Regular',
+            }}
+          >{item?.description}</Text>
+        </View>
+        <View style={[styles.textContainer, {
+          marginTop: 30,
+        }]}>
+          <Text style={{
+            fontSize: 18,
+            fontFamily: 'Poppins_700Bold',
+            fontWeight: 'bold',
+          }}>Featured Items</Text>
+        </View>
         <View style={styles.inventoryListContainer}>
           <InventoryList vendor={item} />
         </View>
@@ -102,6 +103,7 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
   return (
     <FlatList
       scrollEnabled={false}
+      showsHorizontalScrollIndicator={false}
       numColumns={numColumns}
       contentContainerStyle={{
         marginTop: 10,
@@ -118,7 +120,7 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
           style={styles.inventoryTile}
         >
           <S3Image
-            source={{ uri: item.thumbnail }}
+            uri={item.thumbnail}
             style={{
               borderRadius: 8,
               width: (width / numColumns) - 20,

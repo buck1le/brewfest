@@ -43,7 +43,7 @@ const ScheduleModal = ({ item }: ScheduleModalProps) => {
               }}
             >
               <S3Image
-                source={{ uri: item.url }}
+                uri={item.url }
                 style={{
                   width: width,
                   height: width / 2,

@@ -31,7 +31,7 @@ const EventCard = ({ event, width, navigation }: EventCardProps) => {
       <S3Image
         onLoadStart={() => console.log('loading')}
         key={event.id}
-        source={{ uri: event.thumbnail }}
+        uri={event.thumbnail}
         contentFit="contain"
         style={{
           width: "100%",

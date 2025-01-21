@@ -31,7 +31,7 @@ const ScheduleTile = ({
     >
       <S3Image
         style={styles.vendorImage}
-        source={{ uri: item.thumbnail }}
+        uri={item.thumbnail}
       />
       <View style={styles.textContainer}>
         <Text style={{

@@ -42,7 +42,6 @@ export const styles = StyleSheet.create({
 
     // Take up the entire screen so that you can scroll everything
     minWidth: width,
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
+    paddingBottom: 300,
   },
 });

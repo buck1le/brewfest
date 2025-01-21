@@ -9,7 +9,6 @@ import { TileGrid } from "components/common/tiles";
 import { InventoryItem } from "types/api-responses";
 import { useState } from "react";
 import { DrinkTile } from "components/drinks";
-import { VendorModal } from "components/vendors";
 import DrinkModal from "components/drinks/modal";
 
 const categories: Category[] = [

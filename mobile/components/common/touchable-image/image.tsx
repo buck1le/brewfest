@@ -12,7 +12,7 @@ const TouchableImage = ({ onPress, image, style, contentFit}: TouchableImageProp
   return (
     <TouchableOpacity onPress={onPress}>
       <S3Image
-        source={{ uri: image }}
+        uri={image}
         style={style} 
         contentFit={contentFit || 'contain'}
         />

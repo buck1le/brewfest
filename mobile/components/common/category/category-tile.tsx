@@ -128,8 +128,6 @@ const CategoryTile = ({
     </Animated.View>
   );
 
-  console.log("setCategory", setCategory);
-
   return (
     <Pressable
       onPress={() => setCategory(category.query)}
