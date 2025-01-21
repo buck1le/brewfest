@@ -1,5 +1,5 @@
 import { modalVisableAtom, selectedEventAtom } from "atoms/index";
-import { useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { SafeAreaView, Text, View } from "react-native";
 import { categoryAtom, useBrewsAtom, writeCategoryAtom } from "./atoms";
 import { styles } from "./styles";
@@ -7,7 +7,7 @@ import { Category, CateoryTileRow } from "components/common/category";
 import { ScrollView } from "moti";
 import { TileGrid } from "components/common/tiles";
 import { InventoryItem } from "types/api-responses";
-import { useState } from "react";
+import { useCallback } from "react";
 import { DrinkTile } from "components/drinks";
 import DrinkModal from "components/drinks/modal";
 
@@ -44,6 +44,8 @@ const filterDrinksByCategory = (drinks: InventoryItem[], category: string) => {
 }
 
 
+const selectedBrewAtom = atom<InventoryItem | undefined>(undefined);
+
 const Brews = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
   const selectedCategory = useAtomValue(categoryAtom);
@@ -61,7 +63,12 @@ const Brews = () => {
   const brewsAtom = useBrewsAtom(selectedEvent.resources.brews.href);
   const brews = useAtomValue(brewsAtom);
 
-  const [selectedBrew, setSelectedBrew] = useState<InventoryItem | undefined>(undefined);
+  const setSelectedBrew = useSetAtom(selectedBrewAtom);
+
+  const handleBrewPress = useCallback((brew: InventoryItem) => {
+    setSelectedBrew(brew);
+    setModalVisable(true);
+  }, []);
 
   if (brews.error || !brews.data) {
     return
@@ -93,18 +100,14 @@ const Brews = () => {
             RenderTileComponent={({ item }: { item: InventoryItem }) => (
               <DrinkTile
                 drink={item}
-                onPress={() => {
-                  setSelectedBrew(item);
-                  setModalVisable(true);
-                  }
-                }
+                onPress={() => handleBrewPress(item)}
               />
             )}
             RenderModalComponent={({ item }: { item: InventoryItem }) => (
               <DrinkModal item={item} />
             )}
-            selectedItem={selectedBrew}
             tileLoading={brews.loading}
+            itemAtom={selectedBrewAtom}
           />
         </View>
       </View>

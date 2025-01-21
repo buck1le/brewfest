@@ -1,14 +1,12 @@
-import { View, ScrollView, SafeAreaView, FlatList, Dimensions } from "react-native";
+import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
 import { modalVisableAtom } from 'atoms/index';
 import { MotiView } from "moti";
 import TileModal from "./modal";
-import { useAtom } from "jotai";
-import { Suspense } from "react";
-
-const width = Dimensions.get('window').width;
+import { Atom, useAtom, useAtomValue } from "jotai";
+import { Suspense, useCallback } from "react";
 
 const TileColumnSkeleton = () => {
   return (
@@ -55,7 +53,7 @@ const TileColumnSkeleton = () => {
 interface TilesProps<T extends object> {
   data: T[];
   tileLoading: boolean;
-  selectedItem: T | undefined;
+  itemAtom: Atom<T | undefined>;
   RenderTileComponent: React.ComponentType<{
     item: T;
   }>;
@@ -65,16 +63,18 @@ interface TilesProps<T extends object> {
 
 const TileColumn = <T extends object>({
   data,
-  selectedItem,
+  itemAtom,
   tileLoading,
   RenderModalComponent,
   RenderTileComponent,
 }: TilesProps<T>) => {
   const [modalVisable, setModalVisible] = useAtom(modalVisableAtom);
 
-  const closeModal = () => {
+  const selectedItem = useAtomValue(itemAtom);
+
+  const closeModal = useCallback(() => {
     setModalVisible(false);
-  }
+  }, []);
 
   if (tileLoading) {
     return (
@@ -159,16 +159,21 @@ const TileGridSkeleton = () => {
 
 const TileGrid = <T extends object>({
   data,
-  selectedItem,
+  itemAtom,
   tileLoading,
   RenderModalComponent,
   RenderTileComponent,
 }: TilesProps<T>) => {
   const [modalVisable, setModalVisible] = useAtom(modalVisableAtom);
 
-  const closeModal = () => {
+  const selectedItem = useAtomValue(itemAtom);
+
+  const closeModal = useCallback(() => {
     setModalVisible(false);
-  }
+  }, []);
+
+  const keyExtractor = useCallback((item: T, index: number) =>
+    `${(item as any).id || index}`, []);
 
   if (tileLoading) {
     return (
@@ -183,11 +188,11 @@ const TileGrid = <T extends object>({
   }
 
   return (
-    <ScrollView 
-    style={{
-      width: '100%',
-    }}
-    contentContainerStyle={styles.tilesGridContainer}>
+    <ScrollView
+      style={{
+        width: '100%',
+      }}
+      contentContainerStyle={styles.tilesGridContainer}>
       <TileModal
         item={selectedItem}
         animationType="slide"
@@ -220,6 +225,7 @@ const TileGrid = <T extends object>({
               alignItems: 'flex-start',
               width: '100%',
             }}
+            keyExtractor={keyExtractor}
             scrollEnabled={false}
             numColumns={2}
             data={data}

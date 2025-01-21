@@ -1,7 +1,8 @@
 import S3Image from "components/common/image";
 import { colors } from "global_styles";
+import { memo } from "react";
 
-import { Dimensions, Pressable, Text, View } from "react-native"
+import { Pressable, Text, View, useWindowDimensions } from "react-native"
 import { InventoryItem } from "types/api-responses";
 
 interface DrinkProps {
@@ -9,10 +10,13 @@ interface DrinkProps {
   onPress: () => void;
 }
 
-const width = Dimensions.get("window").width;
 const borderRadius = 8;
 
-const DrinkTile = ({ drink, onPress }: DrinkProps) => {
+const DrinkTile = memo(({ drink, onPress }: DrinkProps) => {
+  const { width } = useWindowDimensions();
+
+  console.log("re-rendering drink tile");
+
   return (
     <Pressable
       style={{
@@ -73,6 +77,6 @@ const DrinkTile = ({ drink, onPress }: DrinkProps) => {
       </View>
     </Pressable>
   );
-}
+});
 
 export default DrinkTile;

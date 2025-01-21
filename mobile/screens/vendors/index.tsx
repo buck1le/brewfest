@@ -3,12 +3,12 @@ import { styles, borderRadius } from './styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CateoryTileRow, Category } from 'components/common/category';
 import { categoryAtom, useVendorsAtom, writeCategoryAtom } from './atoms';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { Vendor } from 'types/api-responses';
 import { TileColumn } from 'components/common/tiles';
 import { VendorModal, VendorTile } from 'components/vendors';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Skeleton } from "moti/skeleton";
 import { MotiView } from "moti";
 
@@ -77,6 +77,8 @@ const VendorsLoadingSkeleton = () => {
   )
 }
 
+const selectedVendorAtom = atom<Vendor | undefined>(undefined);
+
 const Vendors = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
   const selectedCategory = useAtomValue(categoryAtom);
@@ -94,7 +96,12 @@ const Vendors = () => {
   const vendors = useAtomValue(vendorsAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  const [selectedItem, setSelectedItem] = useState<Vendor | undefined>(undefined);
+  const setSelectedItem= useSetAtom(selectedVendorAtom);
+
+  const setSelectedItemCallback = useCallback((item: Vendor) => {
+    setSelectedItem(item);
+    setModalVisable(true);
+  }, []);
 
   if (vendors.loading) {
     return (
@@ -140,14 +147,10 @@ const Vendors = () => {
               <VendorTile
                 key={item.id}
                 item={item}
-                onPress={() => {
-                  setSelectedItem(item);
-                  setModalVisable(true);
-                }
-                }
+                onPress={() => setSelectedItemCallback(item)}
               />
             )}
-            selectedItem={selectedItem}
+            itemAtom={selectedVendorAtom}
             tileLoading={vendors.loading}
           />
         </View>

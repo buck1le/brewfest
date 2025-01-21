@@ -9,15 +9,17 @@ type S3ImageProps = Omit<ImageProps, 'source'> & {
 const S3Image = memo(({ uri, style, ...restProps }: S3ImageProps) => {
   const url = `${BREW_FEST_IMAGE_HOST}${uri}`;
 
-  console.log("re-rendering image component");
-
   return (
     <Image
       style={style}
+      cachePolicy='memory-disk'
+      transition={300}
       source={{ uri: url }}
       {...restProps}
     />
   );
+}, (prevProps, nextProps) => {
+  return prevProps.uri === nextProps.uri;
 });
 
 export default S3Image;

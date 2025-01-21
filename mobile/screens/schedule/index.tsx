@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles, borderRadius } from './styles';
 import { ScheduleItem } from 'types/api-responses';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useScheduleAtom } from './atoms';
 import { TileColumn } from 'components/common/tiles';
@@ -54,6 +54,8 @@ const ScheduleLoadingSkeleton = () => {
   )
 }
 
+const selectedScheduleItemAtom = atom<ScheduleItem | undefined>(undefined);
+
 
 const Schedule = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
@@ -63,12 +65,12 @@ const Schedule = () => {
   }
 
   const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
-  const schedule_items = useAtomValue(scheduleAtom);
+  const scheduleItems = useAtomValue(scheduleAtom);
 
-  const [selectedItem, setSelectedItem] = useState<ScheduleItem | undefined>(undefined);
+  const setSelectedItem = useSetAtom(selectedScheduleItemAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  if (schedule_items.loading) {
+  if (scheduleItems.loading) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -82,7 +84,7 @@ const Schedule = () => {
     )
   }
 
-  if (schedule_items.error || !schedule_items.data) {
+  if (scheduleItems.error || !scheduleItems.data) {
     return
   }
 
@@ -91,7 +93,7 @@ const Schedule = () => {
       <View style={styles.eventList}>
         <View style={{ flex: 1 }}>
           <TileColumn
-            data={schedule_items.data}
+            data={scheduleItems.data}
             RenderModalComponent={({ item }: { item: ScheduleItem }) => (
               <ScheduleModal item={item} />
             )}
@@ -106,8 +108,8 @@ const Schedule = () => {
                 }
               />
             )}
-            selectedItem={selectedItem}
-            tileLoading={schedule_items.loading}
+            tileLoading={scheduleItems.loading}
+            itemAtom={selectedScheduleItemAtom}
           />
         </View>
 
