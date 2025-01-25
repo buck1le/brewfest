@@ -29,6 +29,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
+    width: width,
+    marginInline: 'auto',
     flex: 1,
   },
   skeletonContainer: {
