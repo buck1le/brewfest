@@ -19,8 +19,6 @@ export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   container: {
     flex: 1,
@@ -29,8 +27,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: width,
-    marginInline: 'auto',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
     flex: 1,
   },
   skeletonContainer: {

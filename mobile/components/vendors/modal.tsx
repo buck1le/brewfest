@@ -86,7 +86,14 @@ const VendorModal = ({ item }: VendorModalProps) => {
           }}>Featured Items</Text>
         </View>
         <View style={styles.inventoryListContainer}>
-          <InventoryList vendor={item} />
+          <View style={{
+            flex: 1,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <InventoryList vendor={item} />
+          </View>
         </View>
       </ScrollView>
     </>
@@ -109,8 +116,6 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
         marginTop: 10,
         gap: 15,
         marginBottom: 300,
-        alignItems: 'flex-start',
-        backgroundColor: 'transparent',
       }}
       columnWrapperStyle={{
         gap: 15,
@@ -125,8 +130,12 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
             uri={item.thumbnail}
             style={{
               borderRadius: 8,
-              width: (width / numColumns) - 20,
-              height: 200,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.4,
+              shadowRadius: 4,
+              width: 150,
+              height: 150,
             }}
             contentFit="cover"
           />

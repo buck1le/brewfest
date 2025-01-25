@@ -35,8 +35,8 @@ const ScheduleTile = ({
       />
       <View style={styles.textContainer}>
         <Text style={{
-          fontSize: 18,
-          fontWeight: 'bold',
+          fontFamily: "Poppins_700Bold",
+          fontSize: 15,
         }}>
           {item.title}
         </Text>
@@ -80,7 +80,7 @@ const TimeInfo = ({ startTime, endTime }: {
       }}>
         <Text style={{
           fontSize: 12,
-          fontWeight: 'bold',
+          fontFamily: 'Poppins_700Bold',
           marginRight: 5,
         }}
         >
@@ -88,6 +88,7 @@ const TimeInfo = ({ startTime, endTime }: {
         </Text>
         <Text style={{
           fontSize: 12,
+          fontFamily: 'Poppins_400Regular',
         }}>
           {extractDateFromTimestamp(startTime)} • {extractTimeFromTimestamp(startTime)}
         </Text>
@@ -96,7 +97,7 @@ const TimeInfo = ({ startTime, endTime }: {
       }}>
         <Text style={{
           fontSize: 12,
-          fontWeight: 'bold',
+          fontFamily: 'Poppins_700Bold',
           marginRight: 5,
         }}
         >
@@ -104,6 +105,7 @@ const TimeInfo = ({ startTime, endTime }: {
         </Text>
         <Text style={{
           fontSize: 12,
+          fontFamily: 'Poppins_400Regular',
         }}>
           {extractDateFromTimestamp(endTime)} • {extractTimeFromTimestamp(endTime)}
         </Text>

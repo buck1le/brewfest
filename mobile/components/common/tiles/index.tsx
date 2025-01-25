@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
+import { View, ScrollView, SafeAreaView, FlatList, Dimensions } from "react-native";
 import { Skeleton } from "moti/skeleton";
 
 import { borderRadius, styles } from "./styles";
@@ -7,6 +7,8 @@ import { MotiView } from "moti";
 import TileModal from "./modal";
 import { Atom, useAtom, useAtomValue } from "jotai";
 import { Suspense, useCallback } from "react";
+
+const width = Dimensions.get("window").width;
 
 const TileColumnSkeleton = () => {
   return (
@@ -191,6 +193,7 @@ const TileGrid = <T extends object>({
     <View
       style={{
         flex: 1,
+        marginInline: 10,
       }}
     >
       <TileModal
@@ -212,29 +215,35 @@ const TileGrid = <T extends object>({
             </ScrollView>
           </SafeAreaView>
         }>
-          <FlatList
-            style={{
-              width: '100%',
-            }}
-            columnWrapperStyle={{
-              gap: 10,
-              justifyContent: 'center',
-            }}
-            contentContainerStyle={{
-              gap: 10,
-              alignItems: 'flex-start',
-              width: '100%',
-              paddingBottom: 300,
-            }}
-            keyExtractor={keyExtractor}
-            scrollEnabled={true}
-            numColumns={2}
-            data={data}
-            renderItem={({ item }) => (
-              <RenderTileComponent item={item} />
-            )}
+          <View style={{
+            width: '100%',
+            flex: 1,
+          }}>
+            <FlatList
+              style={{
+                width: '100%',
+              }}
+              columnWrapperStyle={{
+                gap: 10,
+              }}
+              contentContainerStyle={{
+                gap: 10,
+                alignItems: 'flex-start',
+                flexGrow: 1,
+                paddingBottom: 300,
+              }}
+              keyExtractor={keyExtractor}
+              scrollEnabled={true}
+              showsVerticalScrollIndicator={false}
+              numColumns={2}
+              data={data}
+              renderItem={({ item }) => (
+                <RenderTileComponent item={item} />
+              )}
 
-          />
+            />
+
+          </View>
         </Suspense>
       </TileModal>
     </View>

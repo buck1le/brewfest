@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
   modal: {
     margin: 0,
     justifyContent: 'flex-end',
+    backgroundColor: 'red',
   },
   centeredView: {
     flex: 1,

@@ -24,13 +24,11 @@ const DrinkTile = memo(({ drink, onPress }: DrinkProps) => {
         flexDirection: 'column',
 
         // Two columns of tiles
-        width: width / 2 - 20,
+        width: width / 2 - 15,
         height: 200,
         borderRadius: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.4,
-        shadowRadius: 4,
+        boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
       }}
       onPress={onPress}
     >
