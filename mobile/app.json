@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "brew-fest-mobile",
+    "name": "Wild West Brew Fest",
     "slug": "brew-fest-mobile",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "newArchEnabled": true,
     "icon": "./assets/app_icon.png",

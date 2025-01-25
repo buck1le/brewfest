@@ -108,7 +108,9 @@ const InventoryList = ({ vendor }: { vendor: Vendor }) => {
       contentContainerStyle={{
         marginTop: 10,
         gap: 15,
-        marginBottom: 400,
+        marginBottom: 300,
+        alignItems: 'flex-start',
+        backgroundColor: 'transparent',
       }}
       columnWrapperStyle={{
         gap: 15,

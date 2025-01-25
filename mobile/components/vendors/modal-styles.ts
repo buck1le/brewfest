@@ -68,8 +68,6 @@ export const styles = StyleSheet.create({
   },
   inventoryListContainer: {
     width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   inventoryTilesContainer: {
     flexDirection: 'row',
