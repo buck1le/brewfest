@@ -29,6 +29,7 @@ pub async fn index(
 
     let schedule_items = event
         .find_related(ScheduleItems)
+        .order_by_asc(schedule_items::Column::StartDate)
         .all(database_connection)
         .await
         .map_err(|e| {
