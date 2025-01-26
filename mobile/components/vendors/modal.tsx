@@ -8,6 +8,8 @@ import { useInventoryAtom } from "components/common/tiles/atoms";
 import { useAtomValue } from "jotai";
 import S3Image from "components/common/image";
 import { useVendorImagesAtom } from "./atoms";
+import { ActivityIndicator } from "react-native";
+import { SafeAreaView } from "moti";
 
 const width = Dimensions.get("window").width;
 
@@ -20,6 +22,17 @@ const VendorModal = ({ item }: VendorModalProps) => {
 
   const vendorImagesAtom = useVendorImagesAtom(item.resources.images.href);
   const images = useAtomValue(vendorImagesAtom);
+
+  if (images.loading) {
+    return (
+      <SafeAreaView style={{
+        flex: 1,
+        marginTop: 100,
+      }}>
+        <ActivityIndicator size="large" color="grey" />
+      </SafeAreaView>
+    )
+  }
 
   if (!images.data) {
     return
