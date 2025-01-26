@@ -1,6 +1,6 @@
 import { ScheduleItem } from "types/api-responses";
 
-import { View, Text, ScrollView, Dimensions } from "react-native";
+import { View, Text, ScrollView, Dimensions, SafeAreaView, ActivityIndicator } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useRef } from "react";
 import { styles } from "./modal-styles";
@@ -19,6 +19,18 @@ const ScheduleModal = ({ item }: ScheduleModalProps) => {
 
   const scheduleItemImages = useScheduleItemImagesAtom(item.resources.images.href);
   const images = useAtomValue(scheduleItemImages);
+
+  if (images.loading) {
+    return (
+      <SafeAreaView style={{
+        flex: 1,
+        marginTop: 100,
+      }}>
+        <ActivityIndicator size="large" color="grey" />
+      </SafeAreaView>
+    )
+  }
+
 
   if (!images.data) {
     return
