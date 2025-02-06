@@ -35,7 +35,7 @@ struct Events: View {
                                         .redacted(reason: .placeholder)
                                 case .success(let image):
                                     VStack(spacing: 0) {
-                                        NavigationLink(destination: Vendors(event: event)) {
+                                        NavigationLink(destination: EventHome(event: event)) {
                                             image
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
