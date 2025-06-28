@@ -75,7 +75,7 @@ pub async fn create(
                     Err(e) => return e.into_response(),
                 }
             } else {
-                return (StatusCode::NOT_FOUND, "Vendor not found").into_response();
+                return (StatusCode::NOT_FOUND, "Event not found").into_response();
             }
         }
     }

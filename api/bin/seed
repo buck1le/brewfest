@@ -1,0 +1,96 @@
+#!/bin/bash
+
+EVENT_ID=1
+
+VENDORS_URL="https://brew-fest-api.fly.dev/api/events/${EVENT_ID}/vendors"
+
+# Array of realistic brewery names and their details
+declare -a breweries=(
+    "Hopworks Brewing|info@hopworks.com|A craft brewery specializing in IPAs and seasonal ales"
+    "River City Brewing|contact@rivercity.com|Traditional German-style brewery with modern twists"
+    "Summit Suds|hello@summitsuds.com|Mountain-inspired craft brewery focusing on bold flavors"
+    "Urban Draft House|beer@urbandraft.com|Contemporary brewery featuring experimental batches"
+    "Heritage Brewing Co.|sales@heritagebrews.com|Family-owned brewery celebrating local ingredients"
+)
+
+# Base coordinates for Austin area
+BASE_LAT=30.266666
+BASE_LON=-97.733330
+
+# Function to generate random phone number
+generate_phone() {
+    echo "$(( RANDOM % 900 + 100 ))$(( RANDOM % 900 + 100 ))$(( RANDOM % 10000 ))"
+}
+
+# Function to generate slight coordinate variation
+generate_coordinate_offset() {
+    echo "0.$(( RANDOM % 100 ))"
+}
+
+
+make_request() {
+    local url=$1
+    local json_data=$2
+    local success_message=$3
+
+    # Send POST request and capture response and status code
+    response=$(curl -s -w "\n%{http_code}" -X POST $url \
+        -H "Content-Type: application/json" \
+        -H "x-api-key: $API_KEY" \
+        -d "$json_data")
+    
+    # Extract status code from last line
+    status_code=$(echo "$response" | tail -n1)
+    # Extract response body (everything except the last line)
+    body=$(echo "$response" | sed '$d')
+    
+    if [ "$status_code" != "200" ]; then
+        echo "Error making request to: $url"
+        echo "Status code: $status_code"
+        echo "Response: $body"
+        return 1
+    else
+        echo "$success_message"
+        return 0
+    fi
+
+    sleep 1  # Add delay between requests
+}
+
+
+# Create vendors
+for brewery in "${breweries[@]}"; do
+    IFS="|" read -r name email description <<< "${brewery}"
+    
+    # Generate coordinate variations
+    lat_offset=$(generate_coordinate_offset)
+    lon_offset=$(generate_coordinate_offset)
+    latitude=$(echo "$BASE_LAT + $lat_offset" | bc)
+    longitude=$(echo "$BASE_LON - $lon_offset" | bc)
+    
+    # Generate phone number
+    phone=$(generate_phone)
+    
+    # Create JSON payload
+    json_data=$(cat <<EOF
+{
+    "name": "$name",
+    "email": "$email",
+    "phone": "$phone",
+    "operatingOutOf": "Austin",
+    "vendorType": "brewery",
+    "description": "$description",
+    "coordinates": {
+        "latitude": $latitude,
+        "longitude": $longitude
+    },
+    "category": "Beverage"
+}
+EOF
+)
+
+make_request $VENDORS_URL "$json_data" "Vendor created: $name"
+
+done
+
+

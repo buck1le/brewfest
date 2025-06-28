@@ -11,6 +11,7 @@ import { VendorModal, VendorTile } from 'components/vendors';
 import { useCallback, useState } from 'react';
 import { Skeleton } from "moti/skeleton";
 import { MotiView } from "moti";
+import { NoResultsInfo } from 'components/common/NoResultsInfo';
 
 const categories: Category[] = [
   {
@@ -87,7 +88,11 @@ const Vendors = () => {
   if (!selectedEvent) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <Text>Please select an event</Text>
+        <NoResultsInfo
+          iconName="search-outline"
+          title="No Event Selected"
+          message="Please select an event to view vendors."
+        />
       </SafeAreaView>
     )
   }
@@ -96,7 +101,7 @@ const Vendors = () => {
   const vendors = useAtomValue(vendorsAtom);
   const setModalVisable = useSetAtom(modalVisableAtom);
 
-  const setSelectedItem= useSetAtom(selectedVendorAtom);
+  const setSelectedItem = useSetAtom(selectedVendorAtom);
 
   const setSelectedItemCallback = useCallback((item: Vendor) => {
     setSelectedItem(item);
@@ -123,8 +128,24 @@ const Vendors = () => {
   }
 
   if (vendors.error || !vendors.data) {
-    return
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <NoResultsInfo
+          iconName="cloud-offline-outline"
+          title="Something Went Wrong"
+          message="We couldn't load the vendor information. Please try again later."
+        />
+      </SafeAreaView>
+    )
   }
+
+  const displayedVendors = selectedCategory
+    ? filterVedorByCategory(vendors.data, selectedCategory)
+    : vendors.data;
+
+  // 2. Determine if the original data was empty or just the filter result
+  const isFilterActive = !!selectedCategory;
+  const isInitialDataEmpty = vendors.data.length === 0
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -135,24 +156,32 @@ const Vendors = () => {
           selectedCategory={selectedCategory}
         />
         <View style={styles.content}>
-          <TileColumn
-            data={selectedCategory ?
-              filterVedorByCategory(vendors.data, selectedCategory)
-              : vendors.data
-            }
-            RenderModalComponent={({ item }: { item: Vendor }) => (
-              <VendorModal item={item} />
-            )}
-            RenderTileComponent={({ item }: { item: Vendor }) => (
-              <VendorTile
-                key={item.id}
-                item={item}
-                onPress={() => setSelectedItemCallback(item)}
-              />
-            )}
-            itemAtom={selectedVendorAtom}
-            tileLoading={vendors.loading}
-          />
+          {displayedVendors.length > 0 ? (
+            <TileColumn
+              data={displayedVendors}
+              RenderModalComponent={({ item }: { item: Vendor }) => (
+                <VendorModal item={item} />
+              )}
+              RenderTileComponent={({ item }: { item: Vendor }) => (
+                <VendorTile
+                  key={item.id}
+                  item={item}
+                  onPress={() => setSelectedItemCallback(item)}
+                />
+              )}
+              itemAtom={selectedVendorAtom}
+              tileLoading={vendors.loading} // This will be false here, but prop can remain
+            />
+          ) : (
+            <NoResultsInfo
+              title={isFilterActive ? `No ${selectedCategory} Vendors` : 'No Vendors Available'}
+              message={
+                isInitialDataEmpty
+                  ? "It looks like there are no vendors for this event yet. Check back soon!"
+                  : `Try selecting a different category to find what you're looking for.`
+              }
+            />
+          )}
         </View>
       </View>
     </SafeAreaView>
