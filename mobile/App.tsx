@@ -100,7 +100,13 @@ const App = () => {
         theme={{
           colors: {
             background: colors.primary,
+            primary: colors.primary,
+            card: colors.primary,
+            border: colors.primary,
+            notification: colors.primary,
+            text: colors.text,
           },
+          dark: true,
           fonts: {
             regular: {
               fontFamily: 'Montserrat-Regular',
@@ -117,7 +123,7 @@ const App = () => {
             bold: {
               fontFamily: 'Montserrat-Bold',
               fontWeight: 'normal',
-            }
+            },
           },
         }}
       >
