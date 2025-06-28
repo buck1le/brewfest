@@ -11,6 +11,7 @@ import { ScheduleTile } from 'components/schedule-items';
 import ScheduleModal from 'components/schedule-items/modal';
 import { Skeleton } from 'moti/skeleton';
 import { MotiView } from 'moti';
+import { NoResultsInfo } from 'components/common/NoResultsInfo';
 
 const ScheduleLoadingSkeleton = () => {
   return (
@@ -61,7 +62,15 @@ const Schedule = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
 
   if (!selectedEvent) {
-    return <Text>Please select an event</Text>
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <NoResultsInfo
+          iconName="calendar-outline"
+          title="No Event Selected"
+          message="Please go back and select an event to view its schedule."
+        />
+      </SafeAreaView>
+    );
   }
 
   const scheduleAtom = useScheduleAtom(selectedEvent.resources.schedule.href);
@@ -85,34 +94,48 @@ const Schedule = () => {
   }
 
   if (scheduleItems.error || !scheduleItems.data) {
-    return
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <NoResultsInfo
+          iconName="cloud-offline-outline"
+          title="Could Not Load Schedule"
+          message="We had trouble fetching the event schedule. Please check your connection and try again."
+        />
+      </SafeAreaView>
+    );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.eventList}>
         <View style={{ flex: 1 }}>
-          <TileColumn
-            data={scheduleItems.data}
-            RenderModalComponent={({ item }: { item: ScheduleItem }) => (
-              <ScheduleModal item={item} />
-            )}
-            RenderTileComponent={({ item }: { item: ScheduleItem }) => (
-              <ScheduleTile
-                key={item.id}
-                item={item}
-                onPress={() => {
-                  setSelectedItem(item);
-                  setModalVisable(true);
-                }
-                }
-              />
-            )}
-            tileLoading={scheduleItems.loading}
-            itemAtom={selectedScheduleItemAtom}
-          />
+          {scheduleItems.data.length > 0 ? (
+            <TileColumn
+              data={scheduleItems.data}
+              RenderModalComponent={({ item }: { item: ScheduleItem }) => (
+                <ScheduleModal item={item} />
+              )}
+              RenderTileComponent={({ item }: { item: ScheduleItem }) => (
+                <ScheduleTile
+                  key={item.id}
+                  item={item}
+                  onPress={() => {
+                    setSelectedItem(item);
+                    setModalVisable(true);
+                  }}
+                />
+              )}
+              tileLoading={scheduleItems.loading}
+              itemAtom={selectedScheduleItemAtom}
+            />
+          ) : (
+            <NoResultsInfo
+              iconName="time-outline"
+              title="No Schedule Available"
+              message="It looks like the schedule for this event hasn't been posted yet. Please check back later!"
+            />
+          )}
         </View>
-
       </View>
     </SafeAreaView>
   );
