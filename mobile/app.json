@@ -33,17 +33,20 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Poppins/Poppins-Regular.ttf"],
+          "fonts": [
+            "./assets/fonts/Poppins/Poppins-Regular.ttf"
+          ]
         }
       ],
       [
         "expo-splash-screen",
         {
-         "backgroundColor": "#232323",
+          "backgroundColor": "#232323",
           "image": "./assets/WWBF-KATYImage.png",
           "imageWidth": 200
         }
-      ]
+      ],
+      "expo-router"
     ]
   }
 }

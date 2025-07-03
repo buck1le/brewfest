@@ -8,6 +8,7 @@ import { styles } from './styles';
 import * as Haptics from 'expo-haptics';
 import { colors } from 'global_styles';
 import Brews from 'screens/brews';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const Tab = createBottomTabNavigator();
@@ -18,15 +19,18 @@ const TabTarBackground = () => {
   );
 }
 const MainTabNavigator = () => {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: colors.blue,
+          position: 'absolute',
           paddingTop: 10,
+          backgroundColor: colors.blue,
+          paddingBottom: insets.bottom,
 
-          // NOTE: So that the content scrolls behind the tab bar 
-          marginTop: -300
+          height: 70 + insets.bottom,
         },
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'white',

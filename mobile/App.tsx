@@ -25,6 +25,7 @@ import { modalVisableAtom } from "./atoms";
 import { View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { eventsAtom, useEventsAtom } from "screens/home/atoms";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 if (process.env.EXPO_PUBLIC_TEST_SERVER === "true") {
   server.listen({
@@ -95,7 +96,7 @@ const App = () => {
   }
 
   return (
-    <View onLayout={onLayoutRootView} style={{ flex: 1 }}>
+    <SafeAreaProvider onLayout={onLayoutRootView} style={{ flex: 1 }}>
       <NavigationContainer
         theme={{
           colors: {
@@ -147,7 +148,7 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       {modalVisable && <Overlay />}
-    </View>
+    </SafeAreaProvider>
   );
 }
 
