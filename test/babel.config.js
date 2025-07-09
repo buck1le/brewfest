@@ -1,6 +1,15 @@
-module.exports = function (api) {
+module.exports = function(api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: [
+      [ // Add this array structure if it's not already there
+        'babel-preset-expo', 
+        {
+          // Add this line
+          unstable_transformImportMeta: true 
+        }
+      ]
+    ],
   };
 };
+

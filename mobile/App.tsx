@@ -1,3 +1,6 @@
+import 'react-native-reanimated';
+import 'react-native-gesture-handler';
+
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native';
