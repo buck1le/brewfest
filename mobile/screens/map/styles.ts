@@ -23,8 +23,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   map: {
-    width: '100%',
-    height: screenHeight,
+    ...StyleSheet.absoluteFillObject,
   },
   bubble: {
     width: 140,

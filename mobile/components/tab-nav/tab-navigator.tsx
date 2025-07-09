@@ -9,6 +9,7 @@ import * as Haptics from 'expo-haptics';
 import { colors } from 'global_styles';
 import Brews from 'screens/brews';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Map from 'screens/map';
 
 
 const Tab = createBottomTabNavigator();
@@ -82,6 +83,20 @@ const MainTabNavigator = () => {
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
               name={focused ? 'calendar' : 'calendar-outline'}
+              size={size}
+              color={color}
+            />
+          ),
+          tabBarLabelStyle: styles.tabLabel,
+        })}
+      />
+      <Tab.Screen
+        name="Map"
+        component={Map}
+        options={() => ({
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={focused ? 'map' : 'map-outline'}
               size={size}
               color={color}
             />

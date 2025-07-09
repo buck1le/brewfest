@@ -1,10 +1,10 @@
 import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { MapMarker, Marker } from 'react-native-maps';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useVendorsAtom } from 'screens/vendors/atoms';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
@@ -21,9 +21,21 @@ import TileModal from 'components/common/tiles/modal';
 import { VendorModal } from 'components/vendors';
 import { Pressable } from 'react-native-gesture-handler';
 
+const debounce = <F extends (...args: any[]) => any>(func: F, delay: number) => {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<F>): void => {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
 const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
-  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
+  const [selectedMarker, setSelectedMarker] = useState<number>(0);
 
   const _map = useRef<MapView>(null);
   const _scrollView = useRef<ScrollView>(null);
@@ -39,174 +51,164 @@ const Map = () => {
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
   const vendors = useAtomValue(vendorsAtom);
 
-  let mapAnimation = new Animated.Value(0);
+  const { data: vendorsData, error: vendorsError, loading: vendorsLoading } = useAtomValue(vendorsAtom);
 
-  const onScroll = Animated.event(
-    [
-      {
-        nativeEvent: {
-          contentOffset: {
-            x: mapAnimation,
-          }
+  let mapAnimation = useRef(new Animated.Value(0)).current;
+
+  const animateMapToRegion = (index: number) => {
+    if (index >= 0 && vendorsData && index < vendorsData.length) {
+      const { coordinates } = vendorsData[index];
+      _map.current?.animateToRegion(
+        {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          latitudeDelta: SCROLL_ZOOM_LEVEL,
+          longitudeDelta: SCROLL_ZOOM_LEVEL,
         },
-      },
-    ],
-    {
-      useNativeDriver: true,
-      listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const scrollX = event.nativeEvent.contentOffset.x;
-        const index = Math.floor((scrollX + CARD_WIDTH / 2) / CARD_WIDTH);
-
-        setSelectedMarker(index);
-
-        if (index >= 0 && vendors.data && index < vendors.data.length) {
-          const { coordinates } = vendors.data[index];
-
-          _map.current?.animateToRegion(
-            {
-              latitude: coordinates.latitude,
-              longitude: coordinates.longitude,
-              latitudeDelta: SCROLL_ZOOM_LEVEL,
-              longitudeDelta: SCROLL_ZOOM_LEVEL,
-            },
-            ANIMATINO_DURATION
-          );
-        }
-      }
+        ANIMATINO_DURATION
+      );
     }
-  );
+  };
 
-  const onTilePress = (item: Vendor) => {
-    setSelectedItem(item);
+  const debouncedAnimateMapToRegion = useCallback(debounce(animateMapToRegion, 300), [vendorsData]);
+
+  const onMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const scrollX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(scrollX / (CARD_WIDTH + 20));
+
+    setSelectedMarker(index);
+    debouncedAnimateMapToRegion(index);
+  };
+
+  const onTilePress = (item: Vendor, index: number) => {
+    setSelectedMarker(index);
+    debouncedAnimateMapToRegion(index);
+    setSelectedItem(item); 
     setModalVisable(true);
   }
 
-  const onMarkerPress = (mapEventData: any) => {
-    console.log(typeof mapEventData)
+  const onMarkerPress = (markerIndex: number) => {
+    setSelectedMarker(markerIndex);
+    let x = markerIndex * (CARD_WIDTH + 20);
 
-    const markerID = mapEventData._targetInst.return.key;
-
-    let x = (markerID * CARD_WIDTH) + (markerID * 20);
     if (Platform.OS === 'ios') {
       x = x - SPACING_FOR_CARD_INSET;
     }
 
-    if (!_scrollView.current) {
-      return;
+    if (_scrollView.current) {
+      _scrollView.current.scrollTo({ x, y: 0, animated: true });
     }
+  };
 
-    _scrollView.current.scrollTo({ x: x, y: 0, animated: true });
-  }
 
   if (!selectedEvent) {
-    return <Text>Please select an event</Text>
+    return <Text>Please select an event</Text>;
   }
 
-  if (!vendors.data) {
-    return <Text>Error: {vendors.error}</Text>
+  if (vendorsLoading) {
+    return <Text>Loading vendors...</Text>;
+  }
+
+  if (vendorsError) {
+    return <Text>Error: {vendorsError}</Text>; // Access error message property
+  }
+
+  if (!vendorsData) {
+    return <Text>No vendors found for this event.</Text>;
   }
 
   return (
-    <SafeAreaView style={{
+    <View style={{
       flex: 1,
       backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
     }}>
       <MapView style={styles.map}
-        showsMyLocationButton={false}
+        showsMyLocationButton={true}
         loadingEnabled={true}
         ref={_map}
         pitchEnabled={false}
         initialRegion={{
           latitude: selectedEvent.coordinates.latitude,
           longitude: selectedEvent.coordinates.longitude,
-          latitudeDelta: 3,
-          longitudeDelta: 3,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
         }}
       >
-        <TileModal
-          item={selectedItem}
-          animationType="slide"
-          transparent={true}
-          visable={modalVisable}
-          onRequestClose={() => setModalVisable(false)}
-          RenderItem={({ item }: { item: Vendor }) => (
-            <VendorModal item={item} />
-          )}
-        >
-          {vendors.data && vendors.data.map((vendor, i) => {
-            return (
-              <Marker
-                key={i}
-                ref={ref => markerRefs.current[i] = ref}
-                tracksViewChanges={false}
-                coordinate={{
-                  latitude: vendor.coordinates.latitude,
-                  longitude: vendor.coordinates.longitude,
-                }}
-                onPress={(e) => onMarkerPress(e)}
-                pinColor={selectedMarker === i ? 'red' : 'blue'}
-              >
-              </Marker>
-            )
-          })}
-        </TileModal>
+        {vendorsData.map((vendor, index) => (
+          <Marker
+            key={index}
+            ref={(ref: MapMarker | null) => (markerRefs.current[index] = ref)}
+            tracksViewChanges={false}
+            coordinate={{
+              latitude: vendor.coordinates.latitude,
+              longitude: vendor.coordinates.longitude,
+            }}
+            onPress={() => onMarkerPress(index)}
+            pinColor={selectedMarker === index ? colors.blue : colors.primary} // Use theme colors
+          />
+        ))}
       </MapView>
-      <ScrollView
-        horizontal
-        scrollEventThrottle={1}
-        showsHorizontalScrollIndicator={false}
-        style={styles.chipsScrollView}
-        contentInset={{ // iOS only
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 20
-        }}
-        contentContainerStyle={{
-          paddingRight: Platform.OS === 'android' ? 20 : 0
-        }}
-      >
-      </ScrollView>
       <Animated.ScrollView
         ref={_scrollView}
         horizontal
         pagingEnabled
-        scrollEnabled={true}
-        scrollEventThrottle={1}
+        scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + 20}
+        onMomentumScrollEnd={onMomentumScrollEnd}
         snapToAlignment="center"
         style={styles.scrollView}
-        contentInset={{
+        contentInset={{ // iOS only
           top: 0,
           left: SPACING_FOR_CARD_INSET,
           bottom: 0,
-          right: SPACING_FOR_CARD_INSET
+          right: SPACING_FOR_CARD_INSET,
         }}
         contentContainerStyle={{
-          paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0
+          paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
         }}
-        onScroll={onScroll}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: mapAnimation } } }],
+          { useNativeDriver: true }
+        )}
       >
-        {vendors.data?.map((marker, index) => (
-          <Pressable style={styles.card}
-            onPress={() => onTilePress(marker)}
-            key={index}>
+        {vendorsData.map((vendor, index) => (
+          <Pressable
+            style={styles.card}
+            onPress={() => onTilePress(vendor, index)}
+            key={index}
+          >
             <S3Image
-              uri={marker.thumbnail}
+              uri={vendor.thumbnail}
               style={styles.cardImage}
-              contentFit='cover'
+              contentFit="cover"
             />
-            <View style={styles.textContent} >
-              <Text numberOfLines={1} style={styles.cardtitle}>{marker.name}</Text>
-              <Text numberOfLines={1} style={styles.cardDescription}>{marker.description}</Text>
+            <View style={styles.textContent}>
+              <Text numberOfLines={1} style={styles.cardtitle}>
+                {vendor.name}
+              </Text>
+              <Text numberOfLines={1} style={styles.cardDescription}>
+                {vendor.description}
+              </Text>
             </View>
           </Pressable>
         ))}
       </Animated.ScrollView>
-    </SafeAreaView>
+
+      <TileModal
+        item={selectedItem}
+        animationType="slide"
+        children={null}
+        transparent={true}
+        visable={modalVisable}
+        onRequestClose={() => setModalVisable(false)}
+        RenderItem={({ item }: { item: Vendor }) => (
+          <VendorModal item={item} />
+        )}
+      />
+    </View>
   );
 }
 
