@@ -1,10 +1,9 @@
-import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'; import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { MapMarker, Marker } from 'react-native-maps';
 import { useAtom, useAtomValue } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useVendorsAtom } from 'screens/vendors/atoms';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
@@ -33,13 +32,21 @@ const debounce = <F extends (...args: any[]) => any>(func: F, delay: number) => 
   };
 };
 
+function usePrevious(value: any) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
   const [selectedMarker, setSelectedMarker] = useState<number>(0);
 
+  const prevSelectedMarker = usePrevious(selectedMarker)
   const _map = useRef<MapView>(null);
   const _scrollView = useRef<ScrollView>(null);
-  const markerRefs = useRef<{ [key: number]: MapMarker | null }>({});
 
   const [selectedItem, setSelectedItem] = useState<Vendor | undefined>(undefined);
   const [modalVisable, setModalVisable] = useAtom(modalVisableAtom);
@@ -49,8 +56,6 @@ const Map = () => {
   }
 
   const vendorsAtom = useVendorsAtom(selectedEvent.resources.vendors.href);
-  const vendors = useAtomValue(vendorsAtom);
-
   const { data: vendorsData, error: vendorsError, loading: vendorsLoading } = useAtomValue(vendorsAtom);
 
   let mapAnimation = useRef(new Animated.Value(0)).current;
@@ -83,7 +88,7 @@ const Map = () => {
   const onTilePress = (item: Vendor, index: number) => {
     setSelectedMarker(index);
     debouncedAnimateMapToRegion(index);
-    setSelectedItem(item); 
+    setSelectedItem(item);
     setModalVisable(true);
   }
 
@@ -136,24 +141,31 @@ const Map = () => {
           longitudeDelta: 0.0421,
         }}
       >
-        {vendorsData.map((vendor, index) => (
-          <Marker
+        {vendorsData.map((vendor, index) => {
+          const isSelected = selectedMarker === index;
+          const wasSelected = prevSelectedMarker === index;
+          return (<Marker
             key={index}
-            ref={(ref: MapMarker | null) => (markerRefs.current[index] = ref)}
-            tracksViewChanges={false}
             coordinate={{
               latitude: vendor.coordinates.latitude,
               longitude: vendor.coordinates.longitude,
             }}
             onPress={() => onMarkerPress(index)}
-            pinColor={selectedMarker === index ? colors.blue : colors.primary} // Use theme colors
-          />
-        ))}
+            // Re-render only the markers whose selection state has changed
+            tracksViewChanges={isSelected || wasSelected}
+          >
+            {/* Custom view for the marker */}
+            <View style={[styles.markerWrap]}>
+              <View style={[styles.marker, isSelected && styles.markerSelected]} />
+            </View>
+          </Marker>
+          );
+        })}
       </MapView>
       <Animated.ScrollView
         ref={_scrollView}
         horizontal
-        pagingEnabled
+        decelerationRate="fast"
         scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
         snapToInterval={CARD_WIDTH + 20}
