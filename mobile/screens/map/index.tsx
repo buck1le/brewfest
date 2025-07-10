@@ -1,5 +1,5 @@
 import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'; import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { MapMarker, Marker } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 import { useAtom, useAtomValue } from 'jotai';
 import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
 import { useVendorsAtom } from 'screens/vendors/atoms';
