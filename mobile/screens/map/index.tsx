@@ -10,7 +10,6 @@ import {
   styles,
   CARD_WIDTH,
   ANIMATINO_DURATION,
-  SCROLL_ZOOM_LEVEL,
   SPACING_FOR_CARD_INSET
 } from './styles';
 import { colors } from 'global_styles';
@@ -44,6 +43,13 @@ const Map = () => {
   const selectedEvent = useAtomValue(selectedEventAtom);
   const [selectedMarker, setSelectedMarker] = useState<number>(0);
 
+  const [region, setRegion] = useState<Region>({
+    latitude: selectedEvent!.coordinates.latitude,
+    longitude: selectedEvent!.coordinates.longitude,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
   const prevSelectedMarker = usePrevious(selectedMarker)
   const _map = useRef<MapView>(null);
   const _scrollView = useRef<ScrollView>(null);
@@ -67,15 +73,15 @@ const Map = () => {
         {
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
-          latitudeDelta: SCROLL_ZOOM_LEVEL,
-          longitudeDelta: SCROLL_ZOOM_LEVEL,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta,
         },
         ANIMATINO_DURATION
       );
     }
   };
 
-  const debouncedAnimateMapToRegion = useCallback(debounce(animateMapToRegion, 300), [vendorsData]);
+  const debouncedAnimateMapToRegion = useCallback(debounce(animateMapToRegion, 300), [vendorsData, region]);
 
   const onMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollX = event.nativeEvent.contentOffset.x;
@@ -94,6 +100,8 @@ const Map = () => {
 
   const onMarkerPress = (markerIndex: number) => {
     setSelectedMarker(markerIndex);
+    debouncedAnimateMapToRegion(markerIndex);
+
     let x = markerIndex * (CARD_WIDTH + 20);
 
     if (Platform.OS === 'ios') {
@@ -103,6 +111,10 @@ const Map = () => {
     if (_scrollView.current) {
       _scrollView.current.scrollTo({ x, y: 0, animated: true });
     }
+  };
+
+  const onRegionChangeComplete = (newRegion: Region) => {
+    setRegion(newRegion);
   };
 
 
@@ -134,12 +146,8 @@ const Map = () => {
         loadingEnabled={true}
         ref={_map}
         pitchEnabled={false}
-        initialRegion={{
-          latitude: selectedEvent.coordinates.latitude,
-          longitude: selectedEvent.coordinates.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
+        initialRegion={region}
+        onRegionChangeComplete={onRegionChangeComplete}
       >
         {vendorsData.map((vendor, index) => {
           const isSelected = selectedMarker === index;
