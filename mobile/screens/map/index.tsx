@@ -33,7 +33,7 @@ const debounce = <F extends (...args: any[]) => any>(func: F, delay: number) => 
 };
 
 function usePrevious(value: any) {
-  const ref = useRef();
+  const ref = useRef<null | any>(null);
   useEffect(() => {
     ref.current = value;
   });

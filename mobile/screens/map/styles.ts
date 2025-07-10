@@ -96,7 +96,7 @@ export const styles = StyleSheet.create({
   scrollView: {
     position: "absolute",
     flexDirection: "row",
-    bottom: 0,
+    bottom: 80,
     left: 0,
     right: 0,
     paddingVertical: 10,
@@ -105,38 +105,40 @@ export const styles = StyleSheet.create({
     paddingRight: width - CARD_WIDTH,
   },
   card: {
-    padding: 10,
-    elevation: 2,
+    // padding: 10, // <-- REMOVED: Padding is now handled by textContent for better control
+    elevation: 5, // A subtle elevation for Android
     backgroundColor: "#FFF",
-    borderRadius: 10,
+    borderRadius: 15, // <-- INCREASED: A slightly rounder corner looks more modern
     marginHorizontal: 10,
+    // A softer, more professional shadow for iOS
     shadowColor: "#000",
-    shadowRadius: 5,
-    shadowOpacity: 1,
+    shadowRadius: 8, // <-- INCREASED: Diffuses the shadow
+    shadowOpacity: 0.15, // <-- DECREASED: Makes the shadow much more subtle
+    shadowOffset: { width: 0, height: 4 }, // A gentle offset
     height: CARD_HEIGHT,
     width: CARD_WIDTH,
     overflow: "hidden",
   },
   cardImage: {
     flex: 3,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 10,
     width: "100%",
-    height: "100%",
     alignSelf: "center",
   },
   textContent: {
     flex: 2,
-    padding: 10,
+    paddingHorizontal: 15, // Added more horizontal padding
+    paddingVertical: 2, // Adjusted vertical padding
+    justifyContent: 'center', // Vertically centers the text content
   },
   cardtitle: {
-    fontSize: 12,
-    // marginTop: 5,
+    fontSize: 16, // <-- INCREASED: Makes the title more prominent
     fontWeight: "bold",
+    marginBottom: 4, // Added space between title and description
+    color: '#333', // A dark gray is often softer than pure black
   },
   cardDescription: {
-    fontSize: 12,
-    color: "#444",
+    fontSize: 13, // <-- INCREASED: For better readability
+    color: "#666", // A lighter gray to de-emphasize from the title
   },
   markerWrap: {
     alignItems: "center",
