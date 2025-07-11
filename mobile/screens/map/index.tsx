@@ -1,7 +1,7 @@
 import { Animated, Platform, Text, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'; import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, Region } from 'react-native-maps';
-import { useAtom, useAtomValue } from 'jotai';
-import { modalVisableAtom, selectedEventAtom } from 'atoms/index';
+import { useAtomValue } from 'jotai';
+import { selectedEventAtom } from 'atoms/index';
 import { useVendorsAtom } from 'screens/vendors/atoms';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView } from 'react-native';
@@ -55,7 +55,7 @@ const Map = () => {
   const _scrollView = useRef<ScrollView>(null);
 
   const [selectedItem, setSelectedItem] = useState<Vendor | undefined>(undefined);
-  const [modalVisable, setModalVisable] = useAtom(modalVisableAtom);
+  const [modalVisable, setModalVisable] = useState(false);
 
   if (!selectedEvent) {
     return <Text>Please select an event</Text>
