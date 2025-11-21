@@ -46,8 +46,8 @@ const Map = () => {
   const [region, setRegion] = useState<Region>({
     latitude: selectedEvent!.coordinates.latitude,
     longitude: selectedEvent!.coordinates.longitude,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.025,
   });
 
   const prevSelectedMarker = usePrevious(selectedMarker)
