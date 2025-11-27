@@ -1,120 +1,152 @@
 import 'package:flutter/material.dart';
-import '../models/vendor.dart';
+import '../models/drink.dart';
+import '../repositories/mock_drink_repository.dart';
+import '../repositories/drink_repository.dart';
 import '../repositories/mock_vendor_repository.dart';
 import '../repositories/vendor_repository.dart';
 import '../repositories/favorites_repository.dart';
-import '../widgets/vendor_card.dart';
-import '../widgets/live_indicator.dart';
+import '../widgets/drink_card.dart';
 import '../widgets/vendor_detail_sheet.dart';
+import '../widgets/live_indicator.dart';
 import '../theme/app_theme.dart';
 
-enum VendorFilter { all, breweries, food }
+enum DrinkFilter { all, ipa, stout, paleAle, sour, other }
 
-enum SortOption { featured, name, booth }
+enum DrinkSortOption { featured, name, abv, price }
 
-class VendorsScreen extends StatefulWidget {
-  const VendorsScreen({super.key});
+class DrinksScreen extends StatefulWidget {
+  const DrinksScreen({super.key});
 
   @override
-  State<VendorsScreen> createState() => _VendorsScreenState();
+  State<DrinksScreen> createState() => _DrinksScreenState();
 }
 
-class _VendorsScreenState extends State<VendorsScreen> {
-  final VendorRepository _repository = MockVendorRepository();
+class _DrinksScreenState extends State<DrinksScreen> {
+  final DrinkRepository _repository = MockDrinkRepository();
+  final VendorRepository _vendorRepository = MockVendorRepository();
   final FavoritesRepository _favoritesRepository = FavoritesRepository();
-  List<Vendor> _vendors = [];
-  List<Vendor> _filteredVendors = [];
-  Set<String> _favoriteIds = {};
+  List<Drink> _drinks = [];
+  List<Drink> _filteredDrinks = [];
+  Set<String> _favoriteDrinkIds = {};
   bool _isLoading = true;
   String _searchQuery = '';
-  VendorFilter _selectedFilter = VendorFilter.all;
-  SortOption _sortOption = SortOption.featured;
+  DrinkFilter _selectedFilter = DrinkFilter.all;
+  DrinkSortOption _sortOption = DrinkSortOption.featured;
 
   @override
   void initState() {
     super.initState();
-    _loadVendors();
+    _loadDrinks();
   }
 
-  Future<void> _loadVendors() async {
+  Future<void> _loadDrinks() async {
     if (!mounted) return;
     setState(() => _isLoading = true);
-    final vendors = await _repository.getVendors();
+    final drinks = await _repository.getDrinks();
     final favorites = await _favoritesRepository.getFavorites();
     if (!mounted) return;
     setState(() {
-      _vendors = vendors;
-      _favoriteIds = favorites;
+      _drinks = drinks;
+      _favoriteDrinkIds = favorites.where((id) => id.startsWith('drink_')).toSet();
       _applyFiltersAndSort();
       _isLoading = false;
     });
   }
 
-  Future<void> _toggleFavorite(String vendorId) async {
-    await _favoritesRepository.toggleFavorite(vendorId);
+  Future<void> _toggleFavorite(String drinkId) async {
+    final favoriteId = 'drink_$drinkId';
+    await _favoritesRepository.toggleFavorite(favoriteId);
     final favorites = await _favoritesRepository.getFavorites();
     if (!mounted) return;
     setState(() {
-      _favoriteIds = favorites;
+      _favoriteDrinkIds = favorites.where((id) => id.startsWith('drink_')).toSet();
     });
   }
 
   void _applyFiltersAndSort() {
-    var filtered = _vendors;
+    var filtered = _drinks;
 
     // Apply filter
     switch (_selectedFilter) {
-      case VendorFilter.breweries:
-        filtered = filtered.where((v) => v.type == VendorType.brewery).toList();
+      case DrinkFilter.ipa:
+        filtered = filtered.where((d) => d.style.toLowerCase().contains('ipa')).toList();
         break;
-      case VendorFilter.food:
-        filtered = filtered.where((v) => v.type == VendorType.food).toList();
+      case DrinkFilter.stout:
+        filtered = filtered.where((d) => d.style.toLowerCase().contains('stout')).toList();
         break;
-      case VendorFilter.all:
+      case DrinkFilter.paleAle:
+        filtered = filtered.where((d) => d.style.toLowerCase().contains('pale')).toList();
+        break;
+      case DrinkFilter.sour:
+        filtered = filtered.where((d) => d.style.toLowerCase().contains('sour')).toList();
+        break;
+      case DrinkFilter.other:
+        filtered = filtered.where((d) {
+          final style = d.style.toLowerCase();
+          return !style.contains('ipa') &&
+              !style.contains('stout') &&
+              !style.contains('pale') &&
+              !style.contains('sour');
+        }).toList();
+        break;
+      case DrinkFilter.all:
         break;
     }
 
     // Apply search
     if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((v) {
+      filtered = filtered.where((d) {
         final query = _searchQuery.toLowerCase();
-        return v.name.toLowerCase().contains(query) ||
-            v.description.toLowerCase().contains(query) ||
-            v.tags.any((tag) => tag.toLowerCase().contains(query));
+        return d.name.toLowerCase().contains(query) ||
+            d.description.toLowerCase().contains(query) ||
+            d.vendorName.toLowerCase().contains(query) ||
+            d.style.toLowerCase().contains(query);
       }).toList();
     }
 
     // Apply sort
     switch (_sortOption) {
-      case SortOption.featured:
+      case DrinkSortOption.featured:
         filtered.sort((a, b) {
           if (a.isFeatured && !b.isFeatured) return -1;
           if (!a.isFeatured && b.isFeatured) return 1;
           return a.name.compareTo(b.name);
         });
         break;
-      case SortOption.name:
+      case DrinkSortOption.name:
         filtered.sort((a, b) => a.name.compareTo(b.name));
         break;
-      case SortOption.booth:
-        filtered.sort((a, b) => a.booth.compareTo(b.booth));
+      case DrinkSortOption.abv:
+        filtered.sort((a, b) {
+          final aAbv = double.tryParse(a.abv.replaceAll('%', '')) ?? 0;
+          final bAbv = double.tryParse(b.abv.replaceAll('%', '')) ?? 0;
+          return bAbv.compareTo(aAbv); // Descending
+        });
+        break;
+      case DrinkSortOption.price:
+        filtered.sort((a, b) {
+          final aPrice = a.price ?? 0;
+          final bPrice = b.price ?? 0;
+          return aPrice.compareTo(bPrice); // Ascending
+        });
         break;
     }
 
     setState(() {
-      _filteredVendors = filtered;
+      _filteredDrinks = filtered;
     });
   }
 
-  int get _totalVendorCount => _vendors.length;
+  int get _totalDrinkCount => _drinks.length;
 
-  int get _breweryCount => _vendors.where((v) => v.type == VendorType.brewery).length;
+  int get _ipaCount => _drinks.where((d) => d.style.toLowerCase().contains('ipa')).length;
 
-  int get _foodCount => _vendors.where((v) => v.type == VendorType.food).length;
+  int get _stoutCount => _drinks.where((d) => d.style.toLowerCase().contains('stout')).length;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       body: Column(
         children: [
           _buildHeader(),
@@ -125,11 +157,11 @@ class _VendorsScreenState extends State<VendorsScreen> {
                 children: [
                   _buildSearchBar(),
                   _buildFilterChips(),
-                  _buildVendorListHeader(),
+                  _buildDrinkListHeader(),
                   Expanded(
                     child: _isLoading
                         ? const Center(child: CircularProgressIndicator())
-                        : _buildVendorList(),
+                        : _buildDrinkList(),
                   ),
                 ],
               ),
@@ -157,43 +189,43 @@ class _VendorsScreenState extends State<VendorsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
-        children: [
-          // Logo
-          ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: Image.asset(
-              'assets/WWBF-KATYImage.png',
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Event info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Wild West Brewfest',
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        fontSize: 20,
-                      ),
+            children: [
+              // Logo
+              ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.asset(
+                  'assets/WWBF-KATYImage.png',
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  'Katy, TX • Oct 20',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
+              ),
+              const SizedBox(width: 12),
+              // Event info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Wild West Brewfest',
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            fontSize: 20,
+                          ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Katy, TX • Oct 20',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white70,
+                          ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              // Live indicator
+              const LiveIndicator(),
+            ],
           ),
-          // Live indicator
-          const LiveIndicator(),
-        ],
-      ),
         ),
       ),
     );
@@ -204,7 +236,7 @@ class _VendorsScreenState extends State<VendorsScreen> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: TextField(
         decoration: const InputDecoration(
-          hintText: 'Search vendors, food, styles...',
+          hintText: 'Search drinks, types, prices...',
           prefixIcon: Icon(Icons.search, color: AppTheme.textSecondary),
         ),
         onChanged: (value) {
@@ -224,39 +256,39 @@ class _VendorsScreenState extends State<VendorsScreen> {
       child: Row(
         children: [
           _buildFilterChip(
-            label: 'All Vendors',
+            label: 'All Drinks',
             icon: Icons.local_drink,
-            count: _totalVendorCount,
-            isSelected: _selectedFilter == VendorFilter.all,
+            count: _totalDrinkCount,
+            isSelected: _selectedFilter == DrinkFilter.all,
             onTap: () {
               setState(() {
-                _selectedFilter = VendorFilter.all;
+                _selectedFilter = DrinkFilter.all;
                 _applyFiltersAndSort();
               });
             },
           ),
           const SizedBox(width: 8),
           _buildFilterChip(
-            label: 'Breweries',
+            label: 'IPA',
             icon: Icons.sports_bar,
-            count: _breweryCount,
-            isSelected: _selectedFilter == VendorFilter.breweries,
+            count: _ipaCount,
+            isSelected: _selectedFilter == DrinkFilter.ipa,
             onTap: () {
               setState(() {
-                _selectedFilter = VendorFilter.breweries;
+                _selectedFilter = DrinkFilter.ipa;
                 _applyFiltersAndSort();
               });
             },
           ),
           const SizedBox(width: 8),
           _buildFilterChip(
-            label: 'Food',
-            icon: Icons.restaurant,
-            count: _foodCount,
-            isSelected: _selectedFilter == VendorFilter.food,
+            label: 'Stout',
+            icon: Icons.sports_bar,
+            count: _stoutCount,
+            isSelected: _selectedFilter == DrinkFilter.stout,
             onTap: () {
               setState(() {
-                _selectedFilter = VendorFilter.food;
+                _selectedFilter = DrinkFilter.stout;
                 _applyFiltersAndSort();
               });
             },
@@ -329,7 +361,7 @@ class _VendorsScreenState extends State<VendorsScreen> {
     );
   }
 
-  Widget _buildVendorListHeader() {
+  Widget _buildDrinkListHeader() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
       child: Row(
@@ -339,7 +371,7 @@ class _VendorsScreenState extends State<VendorsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Event Vendors',
+                'Festival Drinks',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               _isLoading
@@ -364,7 +396,7 @@ class _VendorsScreenState extends State<VendorsScreen> {
                       ),
                     )
                   : Text(
-                      '${_filteredVendors.length} available',
+                      '${_filteredDrinks.length} available',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
             ],
@@ -409,14 +441,16 @@ class _VendorsScreenState extends State<VendorsScreen> {
     );
   }
 
-  String _getSortOptionLabel(SortOption option) {
+  String _getSortOptionLabel(DrinkSortOption option) {
     switch (option) {
-      case SortOption.featured:
+      case DrinkSortOption.featured:
         return 'Featured';
-      case SortOption.name:
+      case DrinkSortOption.name:
         return 'Name (A-Z)';
-      case SortOption.booth:
-        return 'Booth Number';
+      case DrinkSortOption.abv:
+        return 'ABV';
+      case DrinkSortOption.price:
+        return 'Price';
     }
   }
 
@@ -457,21 +491,10 @@ class _VendorsScreenState extends State<VendorsScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              _buildSortOption(
-                context,
-                label: 'Featured',
-                option: SortOption.featured,
-              ),
-              _buildSortOption(
-                context,
-                label: 'Name (A-Z)',
-                option: SortOption.name,
-              ),
-              _buildSortOption(
-                context,
-                label: 'Booth Number',
-                option: SortOption.booth,
-              ),
+              _buildSortOption(context, label: 'Featured', option: DrinkSortOption.featured),
+              _buildSortOption(context, label: 'Name (A-Z)', option: DrinkSortOption.name),
+              _buildSortOption(context, label: 'ABV', option: DrinkSortOption.abv),
+              _buildSortOption(context, label: 'Price', option: DrinkSortOption.price),
               const SizedBox(height: 20),
             ],
           ),
@@ -480,7 +503,8 @@ class _VendorsScreenState extends State<VendorsScreen> {
     );
   }
 
-  Widget _buildSortOption(BuildContext context, {required String label, required SortOption option}) {
+  Widget _buildSortOption(BuildContext context,
+      {required String label, required DrinkSortOption option}) {
     final isSelected = _sortOption == option;
 
     return InkWell(
@@ -514,8 +538,8 @@ class _VendorsScreenState extends State<VendorsScreen> {
     );
   }
 
-  Widget _buildVendorList() {
-    if (_filteredVendors.isEmpty) {
+  Widget _buildDrinkList() {
+    if (_filteredDrinks.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -527,7 +551,7 @@ class _VendorsScreenState extends State<VendorsScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'No vendors found',
+              'No drinks found',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppTheme.textSecondary,
                   ),
@@ -539,32 +563,35 @@ class _VendorsScreenState extends State<VendorsScreen> {
 
     return ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: _filteredVendors.length,
+      itemCount: _filteredDrinks.length,
       itemBuilder: (context, index) {
-        final vendor = _filteredVendors[index];
-        return VendorCard(
-          vendor: vendor,
-          isFavorited: _favoriteIds.contains(vendor.id),
-          onTap: () => _showVendorDetail(vendor),
-          onFavoriteToggle: () => _toggleFavorite(vendor.id),
+        final drink = _filteredDrinks[index];
+        return DrinkCard(
+          drink: drink,
+          isFavorited: _favoriteDrinkIds.contains('drink_${drink.id}'),
+          onTap: () => _showVendorDetailFromDrink(drink),
+          onFavoriteToggle: () => _toggleFavorite(drink.id),
         );
       },
     );
   }
 
-  void _showVendorDetail(Vendor vendor) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.9,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        builder: (context, scrollController) => VendorDetailSheet(
-          vendor: vendor,
+  Future<void> _showVendorDetailFromDrink(Drink drink) async {
+    final vendor = await _vendorRepository.getVendorById(drink.vendorId);
+    if (vendor != null && mounted) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) => DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) => VendorDetailSheet(
+            vendor: vendor,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

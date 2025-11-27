@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'vendors_screen.dart';
+import 'drinks_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const VendorsScreen(),
-    const PlaceholderScreen(title: 'Drinks'),
+    const DrinksScreen(),
     const PlaceholderScreen(title: 'Map'),
     const PlaceholderScreen(title: 'Photos'),
     const PlaceholderScreen(title: 'Messages'),

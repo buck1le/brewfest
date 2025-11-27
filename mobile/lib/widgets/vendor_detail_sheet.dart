@@ -64,9 +64,11 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
                         PageView.builder(
                           controller: _pageController,
                           onPageChanged: (index) {
-                            setState(() {
-                              _currentPage = index;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                _currentPage = index;
+                              });
+                            }
                           },
                           itemCount: images.length,
                           itemBuilder: (context, index) {
