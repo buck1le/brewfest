@@ -12,6 +12,36 @@ class MockVendorRepository implements VendorRepository {
       imageUrl: 'https://images.unsplash.com/photo-1517153295259-74eb0b416cee',
       tags: ['IPA', 'Stout', 'Lager'],
       isFeatured: true,
+      location: 'Portland, OR',
+      images: [
+        'https://images.unsplash.com/photo-1517153295259-74eb0b416cee',
+        'https://images.unsplash.com/photo-1535958636474-b021ee887b13',
+        'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7',
+      ],
+      menuItems: [
+        MenuItem(
+          name: 'Cascade Hop IPA',
+          style: 'IPA',
+          abv: '7.2% ABV',
+          ibu: '68 IBU',
+          description: 'West Coast style IPA with bold citrus and pine notes',
+          isFeatured: true,
+        ),
+        MenuItem(
+          name: 'Midnight Stout',
+          style: 'Stout',
+          abv: '6.5% ABV',
+          ibu: '45 IBU',
+          description: 'Rich coffee and chocolate imperial stout',
+        ),
+        MenuItem(
+          name: 'Golden Lager',
+          style: 'Lager',
+          abv: '4.8% ABV',
+          ibu: '22 IBU',
+          description: 'Crisp and refreshing German-style lager',
+        ),
+      ],
     ),
     const Vendor(
       id: '2',
@@ -22,6 +52,21 @@ class MockVendorRepository implements VendorRepository {
       imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1',
       tags: ['Brisket', 'Ribs', 'Sides'],
       isFeatured: true,
+      location: 'Austin, TX',
+      images: [
+        'https://images.unsplash.com/photo-1555939594-58d7cb561ad1',
+        'https://images.unsplash.com/photo-1544025162-d76694265947',
+      ],
+      menuItems: [
+        MenuItem(
+          name: 'Smoked Brisket Plate',
+          description: 'Slow-smoked Texas-style brisket with classic sides',
+        ),
+        MenuItem(
+          name: 'Baby Back Ribs',
+          description: 'Fall-off-the-bone ribs with house BBQ sauce',
+        ),
+      ],
     ),
     const Vendor(
       id: '3',

@@ -4,12 +4,16 @@ import '../theme/app_theme.dart';
 
 class VendorCard extends StatelessWidget {
   final Vendor vendor;
+  final bool isFavorited;
   final VoidCallback? onTap;
+  final VoidCallback? onFavoriteToggle;
 
   const VendorCard({
     super.key,
     required this.vendor,
+    this.isFavorited = false,
     this.onTap,
+    this.onFavoriteToggle,
   });
 
   @override
@@ -142,11 +146,11 @@ class VendorCard extends StatelessWidget {
                         top: 0,
                         right: 0,
                         child: IconButton(
-                          icon: const Icon(Icons.star_border),
-                          color: AppTheme.textSecondary,
-                          onPressed: () {
-                            // TODO: Implement favorite toggle
-                          },
+                          icon: Icon(
+                            isFavorited ? Icons.star : Icons.star_border,
+                          ),
+                          color: isFavorited ? AppTheme.accentOrange : AppTheme.textSecondary,
+                          onPressed: onFavoriteToggle,
                         ),
                       ),
                     ],

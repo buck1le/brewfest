@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../models/vendor.dart';
 import '../repositories/mock_vendor_repository.dart';
 import '../repositories/vendor_repository.dart';
+import '../repositories/favorites_repository.dart';
 import '../widgets/vendor_card.dart';
 import '../widgets/live_indicator.dart';
+import '../widgets/vendor_detail_sheet.dart';
 import '../theme/app_theme.dart';
 
 enum VendorFilter { all, breweries, food }
@@ -19,8 +21,10 @@ class VendorsScreen extends StatefulWidget {
 
 class _VendorsScreenState extends State<VendorsScreen> {
   final VendorRepository _repository = MockVendorRepository();
+  final FavoritesRepository _favoritesRepository = FavoritesRepository();
   List<Vendor> _vendors = [];
   List<Vendor> _filteredVendors = [];
+  Set<String> _favoriteIds = {};
   bool _isLoading = true;
   String _searchQuery = '';
   VendorFilter _selectedFilter = VendorFilter.all;
@@ -35,10 +39,20 @@ class _VendorsScreenState extends State<VendorsScreen> {
   Future<void> _loadVendors() async {
     setState(() => _isLoading = true);
     final vendors = await _repository.getVendors();
+    final favorites = await _favoritesRepository.getFavorites();
     setState(() {
       _vendors = vendors;
+      _favoriteIds = favorites;
       _applyFiltersAndSort();
       _isLoading = false;
+    });
+  }
+
+  Future<void> _toggleFavorite(String vendorId) async {
+    await _favoritesRepository.toggleFavorite(vendorId);
+    final favorites = await _favoritesRepository.getFavorites();
+    setState(() {
+      _favoriteIds = favorites;
     });
   }
 
@@ -516,13 +530,30 @@ class _VendorsScreenState extends State<VendorsScreen> {
       padding: EdgeInsets.zero,
       itemCount: _filteredVendors.length,
       itemBuilder: (context, index) {
+        final vendor = _filteredVendors[index];
         return VendorCard(
-          vendor: _filteredVendors[index],
-          onTap: () {
-            // TODO: Navigate to vendor detail
-          },
+          vendor: vendor,
+          isFavorited: _favoriteIds.contains(vendor.id),
+          onTap: () => _showVendorDetail(vendor),
+          onFavoriteToggle: () => _toggleFavorite(vendor.id),
         );
       },
+    );
+  }
+
+  void _showVendorDetail(Vendor vendor) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) => VendorDetailSheet(
+          vendor: vendor,
+        ),
+      ),
     );
   }
 }
