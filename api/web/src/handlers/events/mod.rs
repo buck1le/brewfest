@@ -18,7 +18,7 @@ use crate::{
     common::events::load_event,
     presenters::events::{
         vendors::inventory::Presenter as VendorInventoryItemsPresenter, Coordinates, Partial,
-        Presenter as IndexPresenter,
+        Partial as EventPartial, Presenter as IndexPresenter,
     },
 };
 
@@ -71,13 +71,28 @@ pub async fn create(
     }
 }
 
+pub async fn show(
+    Extension(db): Extension<Arc<DatabaseConnection>>,
+    Path(event_id): Path<i32>,
+) -> impl IntoResponse {
+    match load_event(event_id, &db).await {
+        Ok(event) => Json(EventPartial::new(&event).render()).into_response(),
+        Err((status, msg)) => (status, msg).into_response(),
+    }
+}
+
 pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl IntoResponse {
     let database_connection = &*db;
 
     let events = events::Entity::find()
         .all(database_connection)
         .await
-        .unwrap();
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Database query error: {}", e),
+            )
+        })?;
 
     IndexPresenter::new(events).render()
 }
