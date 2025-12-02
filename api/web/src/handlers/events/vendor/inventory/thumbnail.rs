@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use entities::{sea_orm::*, vendor_inventory_items};
+use entities::{sea_orm::*, vendor_inventory_item};
 
 use crate::common::events::load_vendor_inventory_item;
 use crate::handlers::response::Response;
@@ -54,7 +54,7 @@ pub async fn create(
                 Err(e) => return e.into_response(),
             };
 
-            let mut inventory_item: vendor_inventory_items::ActiveModel = inventory_item.into();
+            let mut inventory_item: vendor_inventory_item::ActiveModel = inventory_item.into();
 
             inventory_item.thumbnail = Set(Some(s3_key));
 

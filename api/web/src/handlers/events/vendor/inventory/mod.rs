@@ -11,9 +11,9 @@ use crate::presenters::events::vendors::inventory::{
     Partial as VendorinventoryPartial, Presenter as VendorInventoryItemsPresenter,
 };
 
-use entities::{sea_orm::*, vendor_inventory_items};
+use entities::{sea_orm::*, vendor_inventory_item};
 
-use entities::vendor_inventory_items::Entity as VendorInventoryItems;
+use entities::vendor_inventory_item::Entity as VendorInventoryItems;
 
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
@@ -54,7 +54,7 @@ pub async fn create(
 
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
-    let new_item = vendor_inventory_items::ActiveModel {
+    let new_item = vendor_inventory_item::ActiveModel {
         name: Set(payload.name),
         category: Set(payload.category),
         vendor_id: Set(vendor.id),

@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use entities::schedule_items::{self, Entity as ScheduleItems};
+use entities::schedule_item::{self, Entity as ScheduleItems};
 use entities::sea_orm::*;
 
 use crate::handlers::response::Response;
@@ -60,7 +60,7 @@ pub async fn create(
             };
 
             if let Some(schedule_item) = schedule_item {
-                let mut schedule_item: schedule_items::ActiveModel = schedule_item.into();
+                let mut schedule_item: schedule_item::ActiveModel = schedule_item.into();
 
                 schedule_item.thumbnail = Set(Some(s3_key));
                 match schedule_item.update(&*db).await.map_err(|e| {

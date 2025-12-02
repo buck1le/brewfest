@@ -5,7 +5,7 @@ use serde::Serialize;
 use sqlx::types::chrono::Utc;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize)]
-#[sea_orm(table_name = "vendors")]
+#[sea_orm(table_name = "vendor")]
 #[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
@@ -27,34 +27,34 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::vendor_images::Entity")]
+    #[sea_orm(has_many = "super::vendor_image::Entity")]
     VendorImages,
     #[sea_orm(
-        belongs_to = "super::events::Entity",
+        belongs_to = "super::event::Entity",
         from = "Column::EventId",
-        to = "super::events::Column::Id",
+        to = "super::event::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
     Events,
-    #[sea_orm(has_many = "super::vendor_inventory_items::Entity")]
+    #[sea_orm(has_many = "super::vendor_inventory_item::Entity")]
     VendorInventoryItems,
     
 }
 
-impl Related<super::vendor_images::Entity> for Entity {
+impl Related<super::vendor_image::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::VendorImages.def()
     }
 }
 
-impl Related<super::events::Entity> for Entity {
+impl Related<super::event::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Events.def()
     }
 }
 
-impl Related<super::vendor_inventory_items::Entity> for Entity {
+impl Related<super::vendor_inventory_item::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::VendorInventoryItems.def()
     }

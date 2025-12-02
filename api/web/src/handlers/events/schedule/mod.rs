@@ -10,7 +10,7 @@ use entities::*;
 
 use serde::Deserialize;
 
-use entities::schedule_items::Entity as ScheduleItems;
+use entities::schedule_item::Entity as ScheduleItems;
 
 use entities::sea_orm::*;
 use std::sync::Arc;
@@ -29,7 +29,7 @@ pub async fn index(
 
     let schedule_items = event
         .find_related(ScheduleItems)
-        .order_by_asc(schedule_items::Column::StartDate)
+        .order_by_asc(schedule_item::Column::StartDate)
         .all(database_connection)
         .await
         .map_err(|e| {
@@ -87,7 +87,7 @@ pub async fn create(
     let start_date_time = parse_date(&payload.start_date)?;
     let end_date_time = parse_date(&payload.end_date)?;
 
-    let new_item = schedule_items::ActiveModel {
+    let new_item = schedule_item::ActiveModel {
         title: Set(payload.title.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),

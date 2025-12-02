@@ -2,7 +2,7 @@ use serde::Serialize;
 use serde_json::Value;
 
 pub struct Partial<'a> {
-    inventory_item: &'a entities::vendor_inventory_items::Model,
+    inventory_item: &'a entities::vendor_inventory_item::Model,
 }
 
 pub mod presenter;
@@ -33,7 +33,7 @@ struct VendorInventoryItemResponse {
 }
 
 impl<'a> Partial<'a> {
-    pub fn new(inventory_item: &'a entities::vendor_inventory_items::Model) -> Self {
+    pub fn new(inventory_item: &'a entities::vendor_inventory_item::Model) -> Self {
         Self { inventory_item }
     }
 

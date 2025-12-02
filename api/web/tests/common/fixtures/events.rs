@@ -1,5 +1,5 @@
 use migration::sea_orm::{DatabaseConnection, Set, ActiveModelTrait};
-use entities::events;
+use entities::event;
 
 // seed event data 
 pub async fn seed_events(db: &DatabaseConnection) -> anyhow::Result<()> {
@@ -12,7 +12,7 @@ pub async fn seed_events(db: &DatabaseConnection) -> anyhow::Result<()> {
     let mut results = Vec::new();
 
     for (name, start, end) in events_data {
-        let event = events::ActiveModel {
+        let event = event::ActiveModel {
             name: Set(name.to_string()),
             description: Set(format!("{} - A great brewing festival", name)),
             start_date: Set(chrono::NaiveDate::parse_from_str(start, "%Y-%m-%d").unwrap()),

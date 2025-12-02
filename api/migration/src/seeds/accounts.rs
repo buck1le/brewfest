@@ -10,7 +10,7 @@ impl MigrationTrait for Migration {
         let db = manager.get_connection();
 
         let events_insert_sql = r#"
-            INSERT INTO accounts (name, description)
+            INSERT INTO account (name, description)
             VALUES ($1, $2)
         "#;
 
@@ -34,7 +34,7 @@ impl MigrationTrait for Migration {
         let db = manager.get_connection();
 
         let events_delete_sql = r#"
-            DELETE FROM accounts
+            DELETE FROM account
             WHERE name = $1
         "#;
 

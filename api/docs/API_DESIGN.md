@@ -78,7 +78,6 @@ Retrieve information about the current festival event.
     "location": {
       "city": "Katy",
       "state": "TX",
-      "venue": "Katy Park",
       "address": "123 Festival Ln, Katy, TX 77494",
       "coordinates": {
         "lat": 29.7858,

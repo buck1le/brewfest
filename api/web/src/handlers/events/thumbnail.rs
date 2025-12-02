@@ -9,8 +9,8 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use entities::events::Entity as Events;
-use entities::{sea_orm::*, events};
+use entities::event::Entity as Events;
+use entities::{sea_orm::*, event};
 
 use crate::handlers::response::Response;
 
@@ -60,7 +60,7 @@ pub async fn create(
             };
 
             if let Some(event) = event {
-                let mut event: events::ActiveModel = event.into();
+                let mut event: event::ActiveModel = event.into();
 
                 event.thumbnail = Set(Some(s3_key));
                 match event.update(&*db).await.map_err(|e| {

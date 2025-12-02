@@ -4,11 +4,11 @@ use serde_json::Value;
 use crate::presenters::events::Partial as EventsPartial;
 
 pub struct Presenter {
-    events: Vec<entities::events::Model>,
+    events: Vec<entities::event::Model>,
 }
 
 impl Presenter {
-    pub fn new(events: Vec<entities::events::Model>) -> Self {
+    pub fn new(events: Vec<entities::event::Model>) -> Self {
         Self { events }
     }
 

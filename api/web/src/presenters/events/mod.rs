@@ -8,7 +8,7 @@ pub mod vendors;
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {
-    event: &'a entities::events::Model,
+    event: &'a entities::event::Model,
 }
 
 #[derive(Serialize)]
@@ -47,7 +47,7 @@ pub struct Coordinates {
 }
 
 impl<'a> Partial<'a> {
-    pub fn new(event: &'a entities::events::Model) -> Self {
+    pub fn new(event: &'a entities::event::Model) -> Self {
         Self { event }
     }
 

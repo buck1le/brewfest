@@ -21,6 +21,7 @@ mod m20241227_163654_create_vendor_inventory;
 mod m20241231_223437_add_coordinates_to_event;
 mod m20250113_003852_add_type_to_vendor;
 mod m20250118_034811_add_event_id_to_inventory_item;
+mod m20251202_214900_rename_tables_to_singular;
 
 pub struct Migrator;
 
@@ -51,6 +52,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20241231_223437_add_coordinates_to_event::Migration),
             Box::new(m20250113_003852_add_type_to_vendor::Migration),
             Box::new(m20250118_034811_add_event_id_to_inventory_item::Migration),
+            Box::new(m20251202_214900_rename_tables_to_singular::Migration),
         ];
         // Migrations for development database here
         base_migrations.push(Box::new(seeds::accounts::Migration));

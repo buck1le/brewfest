@@ -6,7 +6,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
-use entities::vendors::Entity as Vendors;
+use entities::vendor::Entity as Vendors;
 
 use crate::auth::ExtractApiKey;
 use crate::common::events::{load_event, load_vendor};
@@ -34,7 +34,7 @@ pub async fn index(
         Some(vendor_type) => {
             event
                 .find_related(Vendors)
-                .filter(vendors::Column::VendorType.eq(vendor_type))
+                .filter(vendor::Column::VendorType.eq(vendor_type))
                 .all(database_connection)
                 .await
         }
@@ -101,7 +101,7 @@ pub async fn create(
 ) -> impl IntoResponse {
     let database_connection = &*db;
 
-    let new_item = vendors::ActiveModel {
+    let new_item = vendor::ActiveModel {
         name: Set(payload.name),
         email: Set(payload.email),
         phone: Set(payload.phone),

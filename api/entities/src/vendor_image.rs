@@ -2,15 +2,15 @@
 
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::{events, schedule_items, sea_orm::*};
+use crate::{event, sea_orm::*, vendor};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "schedule_images")]
+#[sea_orm(table_name = "vendor_image")]
 #[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
-    pub schedule_item_id: i32,
+    pub vendor_id: i32,
     pub url: String,
     pub text: String,
 }
@@ -18,51 +18,51 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::schedule_items::Entity",
-        from = "Column::ScheduleItemId",
-        to = "super::schedule_items::Column::Id",
+        belongs_to = "super::vendor::Entity",
+        from = "Column::VendorId",
+        to = "super::vendor::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
-    ScheduleItems,
+    Vendors,
 }
 
-impl Related<super::schedule_items::Entity> for Entity {
+impl Related<super::vendor::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ScheduleItems.def()
+        Relation::Vendors.def()
     }
 }
 
 impl ActiveModelBehavior for ActiveModel {}
 
 impl Entity {
-    pub fn new_active_model(schedule_item_id: i32, key: &str, text: &str) -> ActiveModel {
+    pub fn new_active_model(vendor_id: i32, key: &str, text: &str) -> ActiveModel {
         ActiveModel {
-            schedule_item_id: Set(schedule_item_id),
+            vendor_id: Set(vendor_id),
             url: Set(key.to_string()),
             text: Set(text.to_string()),
             ..Default::default()
         }
     }
 
-    pub async fn create_schedule_image(
+    pub async fn create_vendor_image(
         db: &DatabaseConnection,
         event_id: i32,
-        schedule_item_id: i32,
+        vendor_id: i32,
         key: &str,
         text: &str,
     ) -> Result<(), DbErr> {
-        events::Entity::find_by_id(event_id)
+        event::Entity::find_by_id(event_id)
             .one(db)
             .await?
             .ok_or(DbErr::RecordNotFound(String::from("Event not found")))?
-            .find_related(schedule_items::Entity)
-            .filter(schedule_items::Column::Id.eq(schedule_item_id))
+            .find_related(vendor::Entity)
+            .filter(vendor::Column::Id.eq(vendor_id))
             .one(db)
             .await?
-            .ok_or(DbErr::RecordNotFound(String::from("Schedule item not found")))?;
+            .ok_or(DbErr::RecordNotFound(String::from("Vendor not found")))?;
 
-        let new_image = Self::new_active_model(schedule_item_id, key, text);
+        let new_image = Self::new_active_model(vendor_id, key, text);
 
         Self::insert(new_image).exec(db).await?;
         Ok(())

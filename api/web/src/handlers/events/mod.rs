@@ -9,8 +9,8 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
-use entities::vendor_inventory_items::Entity as VendorInventoryItems;
-use entities::vendors::Entity as Vendors;
+use entities::vendor_inventory_item::Entity as VendorInventoryItems;
+use entities::vendor::Entity as Vendors;
 use entities::*;
 
 use crate::{
@@ -52,7 +52,7 @@ pub async fn create(
     let start_date_time = parse_date(&payload.start_date)?;
     let end_date_time = parse_date(&payload.end_date)?;
 
-    let new_item = events::ActiveModel {
+    let new_item = event::ActiveModel {
         name: Set(payload.name.clone()),
         description: Set(payload.description.clone()),
         start_date: Set(start_date_time),
@@ -84,7 +84,7 @@ pub async fn show(
 pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl IntoResponse {
     let database_connection = &*db;
 
-    let events = events::Entity::find()
+    let events = event::Entity::find()
         .all(database_connection)
         .await
         .map_err(|e| {
@@ -113,7 +113,7 @@ pub async fn inventory(
 
     let vendors_and_events = event
         .find_related(Vendors)
-        .filter(vendors::Column::VendorType.eq(vendor_type))
+        .filter(entities::vendor::Column::VendorType.eq(vendor_type))
         .find_with_related(VendorInventoryItems)
         .all(database_connection)
         .await

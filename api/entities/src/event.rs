@@ -2,9 +2,8 @@
 use sea_orm::{entity::prelude::*};
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "events")]
+#[sea_orm(table_name = "event")]
 #[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
@@ -12,27 +11,27 @@ pub struct Model {
     pub name: String,
     pub description: String,
     pub start_date: chrono::NaiveDate,
+    pub end_date: chrono::NaiveDate,
     pub latitude: f64,
     pub longitude: f64,
-    pub end_date: chrono::NaiveDate,
     pub thumbnail: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::vendors::Entity")]
+    #[sea_orm(has_many = "super::vendor::Entity")]
     Vendors,
-    #[sea_orm(has_many = "super::schedule_items::Entity")]
+    #[sea_orm(has_many = "super::schedule_item::Entity")]
     ScheduleItems,
 }
 
-impl Related<super::vendors::Entity> for Entity {
+impl Related<super::vendor::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Vendors.def()
     }
 }
 
-impl Related<super::schedule_items::Entity> for Entity {
+impl Related<super::schedule_item::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::ScheduleItems.def()
     }

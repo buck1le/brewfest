@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "vendor_inventory_items")]
+#[sea_orm(table_name = "vendor_inventory_item")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -17,16 +17,16 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::vendors::Entity",
+        belongs_to = "super::vendor::Entity",
         from = "Column::VendorId",
-        to = "super::vendors::Column::Id",
+        to = "super::vendor::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
     Vendors,
 }
 
-impl Related<super::vendors::Entity> for Entity {
+impl Related<super::vendor::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Vendors.def()
     }

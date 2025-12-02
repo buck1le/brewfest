@@ -4,11 +4,11 @@ use serde_json::Value;
 use crate::presenters::events::schedule::images::Partial as ImagePartial;
 
 pub struct Presenter {
-    images: Vec<entities::schedule_images::Model>,
+    images: Vec<entities::schedule_image::Model>,
 }
 
 impl Presenter {
-    pub fn new(images: Vec<entities::schedule_images::Model>) -> Self {
+    pub fn new(images: Vec<entities::schedule_image::Model>) -> Self {
         Self { images }
     }
 

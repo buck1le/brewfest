@@ -4,7 +4,7 @@ use axum::{
     response::IntoResponse,
     Extension,
 };
-use entities::schedule_images::Entity as ScheduleImage;
+use entities::schedule_image::Entity as ScheduleImage;
 use images::{upload, S3};
 use std::sync::Arc;
 use tracing::info;
@@ -16,7 +16,7 @@ use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
 
 use entities::sea_orm::*;
 
-use entities::schedule_images::Entity as ScheduleImages;
+use entities::schedule_image::Entity as ScheduleImages;
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,

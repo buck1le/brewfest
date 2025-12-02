@@ -15,7 +15,7 @@ use crate::presenters::events::vendors::images::Presenter as ImagePresenter;
 
 use entities::sea_orm::*;
 
-use entities::vendor_images::Entity as VendorImages;
+use entities::vendor_image::Entity as VendorImages;
 
 pub async fn create(
     Extension(aws_s3_client): Extension<Arc<S3>>,

@@ -5,11 +5,11 @@ pub mod presenter;
 pub use presenter::Presenter;
 
 pub struct Partial {
-    image: entities::vendor_images::Model,
+    image: entities::vendor_image::Model,
 }
 
 impl Partial {
-    pub fn new(image: entities::vendor_images::Model) -> Self {
+    pub fn new(image: entities::vendor_image::Model) -> Self {
         Self { image }
     }
 

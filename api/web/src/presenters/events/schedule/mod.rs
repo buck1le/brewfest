@@ -7,7 +7,7 @@ pub mod presenter;
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {
-    schedule_item: &'a entities::schedule_items::Model,
+    schedule_item: &'a entities::schedule_item::Model,
 }
 
 #[derive(Serialize)]
@@ -39,7 +39,7 @@ struct ResourceLink {
 }
 
 impl<'a> Partial<'a> {
-    pub fn new(schedule_item: &'a entities::schedule_items::Model) -> Self {
+    pub fn new(schedule_item: &'a entities::schedule_item::Model) -> Self {
         Self { schedule_item }
     }
 

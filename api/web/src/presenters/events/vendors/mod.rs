@@ -8,7 +8,7 @@ pub mod presenter;
 pub use presenter::Presenter;
 
 pub struct Partial<'a> {
-    vendor: &'a entities::vendors::Model,
+    vendor: &'a entities::vendor::Model,
 }
 
 #[derive(Serialize)]
@@ -52,7 +52,7 @@ struct ResourceLink {
 }
 
 impl<'a> Partial<'a> {
-    pub fn new(vendor: &'a entities::vendors::Model) -> Self {
+    pub fn new(vendor: &'a entities::vendor::Model) -> Self {
         Self { vendor }
     }
 

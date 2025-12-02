@@ -4,11 +4,11 @@ use serde_json::Value;
 use crate::presenters::events::vendors::inventory::Partial as VendorInventoryPartial;
 
 pub struct Presenter<'a> {
-    inventory_items: &'a Vec<entities::vendor_inventory_items::Model>,
+    inventory_items: &'a Vec<entities::vendor_inventory_item::Model>,
 }
 
 impl <'a> Presenter <'a> {
-    pub fn new(inventory_items: &'a Vec<entities::vendor_inventory_items::Model>) -> Self {
+    pub fn new(inventory_items: &'a Vec<entities::vendor_inventory_item::Model>) -> Self {
         Self { inventory_items }
     }
 

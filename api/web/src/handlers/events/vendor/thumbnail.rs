@@ -9,7 +9,7 @@ use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
 
-use entities::{sea_orm::*, vendors};
+use entities::{sea_orm::*, vendor};
 
 use crate::common::events::load_vendor;
 use crate::handlers::response::Response;
@@ -54,7 +54,7 @@ pub async fn create(
                 Err(e) => return e.into_response(),
             };
 
-            let mut vendor: vendors::ActiveModel = vendor.into();
+            let mut vendor: vendor::ActiveModel = vendor.into();
 
             vendor.thumbnail = Set(Some(s3_key));
             match vendor.update(&*db).await {
