@@ -1,3 +1,4 @@
+use crate::common::fixtures::Fixtures;
 use web_server::routers;
 
 use std::{net::SocketAddr, sync::Arc, time::Duration};
@@ -75,18 +76,19 @@ impl TestApp {
             .min_connections(1)
             .connect_timeout(Duration::from_secs(5));
 
-        let db_pool = Database::connect(opt).await?;
+        let db_pool = Arc::new(Database::connect(opt).await?);
 
         debug!("Connected to database");
 
         std::env::set_var("S3_BUCKET", "my-test-bucket");
         std::env::set_var("S3_FOLDER", "test");
 
-        migration::Migrator::up(&db_pool, None).await?;
+        migration::Migrator::up(&*db_pool, None).await?;
+        Fixtures::new(db_pool.clone()).seed().await?;
 
         let routes_all = Router::new()
             .merge(routers::routes())
-            .layer(Extension(Arc::new(db_pool.clone())))
+            .layer(Extension(db_pool.clone()))
             .layer(Extension(Arc::new(S3::new().await?)));
 
         tokio::spawn(async move {
@@ -98,7 +100,7 @@ impl TestApp {
         Ok(Self {
             client: reqwest::Client::new(),
             addr,
-            db_pool: Arc::new(db_pool),
+            db_pool,
             _container: Arc::new(node.into()),
         })
     }
