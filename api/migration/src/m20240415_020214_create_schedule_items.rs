@@ -9,21 +9,21 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(ScheduleItems::Table)
+                    .table(ScheduleItem::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(ScheduleItems::Id)
+                        ColumnDef::new(ScheduleItem::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(ScheduleItems::Title).string().not_null())
-                    .col(ColumnDef::new(ScheduleItems::Description).string().not_null())
-                    .col(ColumnDef::new(ScheduleItems::StartDate).date_time().not_null())
-                    .col(ColumnDef::new(ScheduleItems::EndDate).date_time().not_null())
-                    .col(ColumnDef::new(ScheduleItems::CreatedAt).date_time().not_null())
-                    .col(ColumnDef::new(ScheduleItems::UpdatedAt).date_time().not_null())
+                    .col(ColumnDef::new(ScheduleItem::Title).string().not_null())
+                    .col(ColumnDef::new(ScheduleItem::Description).string().not_null())
+                    .col(ColumnDef::new(ScheduleItem::StartDate).date_time().not_null())
+                    .col(ColumnDef::new(ScheduleItem::EndDate).date_time().not_null())
+                    .col(ColumnDef::new(ScheduleItem::CreatedAt).date_time().not_null())
+                    .col(ColumnDef::new(ScheduleItem::UpdatedAt).date_time().not_null())
                     .to_owned(),
             )
             .await
@@ -31,13 +31,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(ScheduleItems::Table).to_owned())
+            .drop_table(Table::drop().table(ScheduleItem::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum ScheduleItems {
+enum ScheduleItem {
     Table,
     Id,
     Title,

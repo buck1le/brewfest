@@ -1,0 +1,23 @@
+[tools]
+"rust" = { version = "1.91.1", components = "rustfmt,clippy" }
+
+[env]
+DATABASE_URL = "postgres://postgres@127.0.0.1:5432/brewfest"
+S3_BUCKET = "brewfest-dev"
+S3_FOLDER = "dev"
+
+[tasks.migrate]
+description = "Run database migrations"
+run = "cd migration && cargo run"
+
+[tasks.migrate-create]
+description = "Create a new migration"
+run = "sea-orm-cli migrate generate"
+
+[tasks.dev]
+description = "Run the development server"
+run = "cargo run"
+
+[tasks.test]
+description = "Run tests"
+run = "cargo test"

@@ -9,20 +9,20 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Vendors::Table)
+                    .table(Vendor::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Vendors::Id)
+                        ColumnDef::new(Vendor::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Vendors::Name).string().not_null())
-                    .col(ColumnDef::new(Vendors::Email).string().not_null())
-                    .col(ColumnDef::new(Vendors::Phone).string().not_null())
-                    .col(ColumnDef::new(Vendors::CreatedAt).date_time().not_null())
-                    .col(ColumnDef::new(Vendors::UpdatedAt).date_time().not_null())
+                    .col(ColumnDef::new(Vendor::Name).string().not_null())
+                    .col(ColumnDef::new(Vendor::Email).string().not_null())
+                    .col(ColumnDef::new(Vendor::Phone).string().not_null())
+                    .col(ColumnDef::new(Vendor::CreatedAt).date_time().not_null())
+                    .col(ColumnDef::new(Vendor::UpdatedAt).date_time().not_null())
                     .to_owned(),
             )
             .await
@@ -30,13 +30,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Vendors::Table).to_owned())
+            .drop_table(Table::drop().table(Vendor::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Id,
     Name,

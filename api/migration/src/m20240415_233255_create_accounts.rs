@@ -9,17 +9,17 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Accounts::Table)
+                    .table(Account::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Accounts::Id)
+                        ColumnDef::new(Account::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Accounts::Name).string().not_null())
-                    .col(ColumnDef::new(Accounts::Description).string())
+                    .col(ColumnDef::new(Account::Name).string().not_null())
+                    .col(ColumnDef::new(Account::Description).string())
                     .to_owned(),
             )
             .await
@@ -27,13 +27,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Accounts::Table).to_owned())
+            .drop_table(Table::drop().table(Account::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Accounts {
+enum Account {
     Table,
     Id,
     Name,
