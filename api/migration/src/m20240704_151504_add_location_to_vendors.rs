@@ -9,13 +9,13 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
+                    .table(Vendor::Table)
                     .add_column(
-                        ColumnDef::new(Vendors::Latitude)
+                        ColumnDef::new(Vendor::Latitude)
                             .double(),
                     )
                     .add_column(
-                        ColumnDef::new(Vendors::Longitude)
+                        ColumnDef::new(Vendor::Longitude)
                             .double(),
                     )
                     .to_owned(),
@@ -27,9 +27,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .drop_column(Vendors::Latitude)
-                    .drop_column(Vendors::Longitude)
+                    .table(Vendor::Table)
+                    .drop_column(Vendor::Latitude)
+                    .drop_column(Vendor::Longitude)
                     .to_owned(),
             )
             .await
@@ -37,7 +37,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Latitude,
     Longitude,

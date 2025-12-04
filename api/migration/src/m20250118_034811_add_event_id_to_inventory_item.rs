@@ -9,8 +9,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(VendorInventoryItems::Table)
-                    .add_column(ColumnDef::new(VendorInventoryItems::EventId).integer().not_null())
+                    .table(VendorInventoryItem::Table)
+                    .add_column(ColumnDef::new(VendorInventoryItem::EventId).integer().not_null())
                     .to_owned(),
             )
             .await
@@ -20,8 +20,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(VendorInventoryItems::Table)
-                    .drop_column(VendorInventoryItems::EventId)
+                    .table(VendorInventoryItem::Table)
+                    .drop_column(VendorInventoryItem::EventId)
                     .to_owned(),
             )
             .await
@@ -29,7 +29,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum VendorInventoryItems {
+enum VendorInventoryItem {
     Table,
     EventId,
 }

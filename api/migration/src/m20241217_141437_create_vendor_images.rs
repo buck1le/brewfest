@@ -10,26 +10,26 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(VendorImages::Table)
+                    .table(VendorImage::Table)
                     .col(
-                        ColumnDef::new(VendorImages::Id)
+                        ColumnDef::new(VendorImage::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
                     .col(
-                        ColumnDef::new(VendorImages::VendorId)
+                        ColumnDef::new(VendorImage::VendorId)
                             .integer()
                             .not_null()
                     )
                     .col(
-                        ColumnDef::new(VendorImages::Url)
+                        ColumnDef::new(VendorImage::Url)
                             .string()
                             .not_null()
                     )
                     .col(
-                        ColumnDef::new(VendorImages::Text)
+                        ColumnDef::new(VendorImage::Text)
                             .string()
                             .not_null()
                             .default("".to_string())
@@ -42,8 +42,8 @@ impl MigrationTrait for Migration {
         manager.create_foreign_key(
             ForeignKey::create()
                 .name("FK_vendor_images_vendor")
-                .from(VendorImages::Table, VendorImages::VendorId)
-                .to(Vendors::Table, Vendors::Id)
+                .from(VendorImage::Table, VendorImage::VendorId)
+                .to(Vendor::Table, Vendor::Id)
                 .on_delete(ForeignKeyAction::Cascade)
                 .on_update(ForeignKeyAction::Cascade)
                 .to_owned(),
@@ -52,20 +52,20 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(VendorImages::Table).to_owned())
+            .drop_table(Table::drop().table(VendorImage::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Id,
 }
 
 
 #[derive(DeriveIden)]
-enum VendorImages {
+enum VendorImage {
     Table,
     Id,
     VendorId,

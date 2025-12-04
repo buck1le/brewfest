@@ -9,9 +9,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .add_column(ColumnDef::new(Vendors::Description).string().not_null())
-                    .modify_column(ColumnDef::new(Vendors::Category).not_null())
+                    .table(Vendor::Table)
+                    .add_column(ColumnDef::new(Vendor::Description).string().not_null())
+                    .modify_column(ColumnDef::new(Vendor::Category).not_null())
                     .to_owned(),
             )
             .await
@@ -21,9 +21,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .drop_column(Vendors::Description)
-                    .modify_column(ColumnDef::new(Vendors::Category).null())
+                    .table(Vendor::Table)
+                    .drop_column(Vendor::Description)
+                    .modify_column(ColumnDef::new(Vendor::Category).null())
                     .to_owned(),
             )
             .await
@@ -31,7 +31,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Description,
     Category,

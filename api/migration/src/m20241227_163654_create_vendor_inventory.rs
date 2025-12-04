@@ -9,31 +9,31 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(VendorInventoryItems::Table)
+                    .table(VendorInventoryItem::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(VendorInventoryItems::Id)
+                        ColumnDef::new(VendorInventoryItem::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
                     .col(
-                        ColumnDef::new(VendorInventoryItems::Name)
+                        ColumnDef::new(VendorInventoryItem::Name)
                             .string()
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(VendorInventoryItems::Category)
+                        ColumnDef::new(VendorInventoryItem::Category)
                             .string()
                             .not_null(),
                     )
                     .col(
-                        ColumnDef::new(VendorInventoryItems::VendorId)
+                        ColumnDef::new(VendorInventoryItem::VendorId)
                             .integer()
                             .not_null(),
                     )
-                    .col(ColumnDef::new(VendorInventoryItems::Thumbnail).string())
+                    .col(ColumnDef::new(VendorInventoryItem::Thumbnail).string())
                     .to_owned(),
             )
             .await?;
@@ -42,8 +42,8 @@ impl MigrationTrait for Migration {
             .create_foreign_key(
                 ForeignKey::create()
                     .name("FK_vendor_inventory_items_vendors")
-                    .from(VendorInventoryItems::Table, VendorInventoryItems::VendorId)
-                    .to(Vendors::Table, Vendors::Id)
+                    .from(VendorInventoryItem::Table, VendorInventoryItem::VendorId)
+                    .to(Vendor::Table, Vendor::Id)
                     .on_delete(ForeignKeyAction::Cascade)
                     .on_update(ForeignKeyAction::Cascade)
                     .to_owned(),
@@ -53,13 +53,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(VendorInventoryItems::Table).to_owned())
+            .drop_table(Table::drop().table(VendorInventoryItem::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum VendorInventoryItems {
+enum VendorInventoryItem {
     Table,
     Id,
     Name,
@@ -69,7 +69,7 @@ enum VendorInventoryItems {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Id,
 }

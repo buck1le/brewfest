@@ -10,8 +10,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Events::Table)
-                    .add_column(ColumnDef::new(Events::Image).string())
+                    .table(Event::Table)
+                    .add_column(ColumnDef::new(Event::Image).string())
                     .to_owned(),
             )
             .await
@@ -21,8 +21,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 sea_query::Table::alter()
-                .table(Events::Table)
-                .drop_column(Events::Image)
+                .table(Event::Table)
+                .drop_column(Event::Image)
                 .to_owned()
             )
             .await
@@ -30,7 +30,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Events {
+enum Event {
     Table,
     Image,
 }

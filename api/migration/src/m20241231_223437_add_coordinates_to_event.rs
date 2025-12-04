@@ -9,9 +9,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Events::Table)
-                    .add_column(ColumnDef::new(Events::Latitude).double().not_null())
-                    .add_column(ColumnDef::new(Events::Longitude).double().not_null())
+                    .table(Event::Table)
+                    .add_column(ColumnDef::new(Event::Latitude).double().not_null())
+                    .add_column(ColumnDef::new(Event::Longitude).double().not_null())
                     .to_owned(),
             )
             .await
@@ -21,9 +21,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Events::Table)
-                    .drop_column(Events::Latitude)
-                    .drop_column(Events::Longitude)
+                    .table(Event::Table)
+                    .drop_column(Event::Latitude)
+                    .drop_column(Event::Longitude)
                     .to_owned(),
             )
             .await
@@ -31,7 +31,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Events {
+enum Event {
     Table,
     Latitude,
     Longitude

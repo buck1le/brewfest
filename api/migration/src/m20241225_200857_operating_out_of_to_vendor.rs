@@ -9,8 +9,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .add_column(ColumnDef::new(Vendors::OperatingOutOf).string().not_null())
+                    .table(Vendor::Table)
+                    .add_column(ColumnDef::new(Vendor::OperatingOutOf).string().not_null())
                     .to_owned(),
             )
             .await
@@ -20,8 +20,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .drop_column(Vendors::OperatingOutOf)
+                    .table(Vendor::Table)
+                    .drop_column(Vendor::OperatingOutOf)
                     .to_owned(),
             )
             .await
@@ -29,7 +29,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     OperatingOutOf,
 }

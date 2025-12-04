@@ -9,9 +9,9 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
+                    .table(ScheduleItem::Table)
                     .add_column(
-                        ColumnDef::new(ScheduleItems::Image)
+                        ColumnDef::new(ScheduleItem::Image)
                             .string()
                     )
                     .to_owned(),
@@ -23,8 +23,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .drop_column(ScheduleItems::Image)
+                    .table(ScheduleItem::Table)
+                    .drop_column(ScheduleItem::Image)
                     .to_owned(),
             )
             .await
@@ -32,7 +32,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum ScheduleItems {
+enum ScheduleItem {
     Table,
     Image
 }

@@ -9,8 +9,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .add_column(ColumnDef::new(Vendors::Thumbnail).string())
+                    .table(Vendor::Table)
+                    .add_column(ColumnDef::new(Vendor::Thumbnail).string())
                     .to_owned(),
             )
             .await?;
@@ -18,19 +18,19 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .add_column(ColumnDef::new(ScheduleItems::Thumbnail).string())
+                    .table(ScheduleItem::Table)
+                    .add_column(ColumnDef::new(ScheduleItem::Thumbnail).string())
                     .to_owned(),
             )
             .await?;
 
-        // Remove the image field on Vendor and ScheduleItems
+        // Remove the image field on Vendor and ScheduleItem
 
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .drop_column(Vendors::Image)
+                    .table(Vendor::Table)
+                    .drop_column(Vendor::Image)
                     .to_owned(),
             )
             .await?;
@@ -38,8 +38,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .drop_column(ScheduleItems::Image)
+                    .table(ScheduleItem::Table)
+                    .drop_column(ScheduleItem::Image)
                     .to_owned(),
             )
             .await
@@ -49,8 +49,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .drop_column(ScheduleItems::Thumbnail)
+                    .table(ScheduleItem::Table)
+                    .drop_column(ScheduleItem::Thumbnail)
                     .to_owned(),
             )
             .await?;
@@ -58,8 +58,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .drop_column(ScheduleItems::Thumbnail)
+                    .table(ScheduleItem::Table)
+                    .drop_column(ScheduleItem::Thumbnail)
                     .to_owned(),
             )
             .await?;
@@ -67,8 +67,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .add_column(ColumnDef::new(Vendors::Image).string())
+                    .table(Vendor::Table)
+                    .add_column(ColumnDef::new(Vendor::Image).string())
                     .to_owned(),
             )
             .await?;
@@ -76,8 +76,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(ScheduleItems::Table)
-                    .add_column(ColumnDef::new(ScheduleItems::Image).string())
+                    .table(ScheduleItem::Table)
+                    .add_column(ColumnDef::new(ScheduleItem::Image).string())
                     .to_owned(),
             )
             .await
@@ -85,14 +85,14 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     Image,
     Thumbnail,
 }
 
 #[derive(DeriveIden)]
-enum ScheduleItems {
+enum ScheduleItem {
     Table,
     Image,
     Thumbnail,

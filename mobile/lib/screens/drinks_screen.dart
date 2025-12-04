@@ -186,46 +186,83 @@ class _DrinksScreenState extends State<DrinksScreen> {
       ),
       child: SafeArea(
         bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              // Logo
-              ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: Image.asset(
-                  'assets/WWBF-KATYImage.png',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Event info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Wild West Brewfest',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            fontSize: 20,
-                          ),
+        child: Stack(
+          children: [
+            // Main header content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  // Logo
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.asset(
+                      'assets/WWBF-KATYImage.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Katy, TX • Oct 20',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white70,
-                          ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Event info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Wild West Brewfest',
+                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                fontSize: 20,
+                              ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Katy, TX • Oct 20',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.white70,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Live indicator
+                        const LiveIndicator(),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // Live indicator
-              const LiveIndicator(),
-            ],
-          ),
+            ),
+            // Notification bell - positioned absolutely in top right
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: AppTheme.accentOrange,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppTheme.primaryNavy,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

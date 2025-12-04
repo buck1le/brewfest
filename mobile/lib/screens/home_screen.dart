@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const DrinksScreen(),
     const PlaceholderScreen(title: 'Map'),
     const PlaceholderScreen(title: 'Photos'),
-    const PlaceholderScreen(title: 'Messages'),
+    const PlaceholderScreen(title: 'Store'),
   ];
 
   @override
@@ -63,10 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   index: 3,
                 ),
                 _buildNavItem(
-                  icon: Icons.message,
-                  label: 'Messages',
+                  icon: Icons.storefront,
+                  label: 'Store',
                   index: 4,
-                  hasNotification: true,
                 ),
               ],
             ),

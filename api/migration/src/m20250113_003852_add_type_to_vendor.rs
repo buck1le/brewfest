@@ -9,8 +9,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .add_column(ColumnDef::new(Vendors::VendorType).string())
+                    .table(Vendor::Table)
+                    .add_column(ColumnDef::new(Vendor::VendorType).string())
                     .to_owned(),
             )
             .await
@@ -20,8 +20,8 @@ impl MigrationTrait for Migration {
         manager
             .alter_table(
                 Table::alter()
-                    .table(Vendors::Table)
-                    .drop_column(Vendors::VendorType)
+                    .table(Vendor::Table)
+                    .drop_column(Vendor::VendorType)
                     .to_owned(),
             )
             .await
@@ -29,7 +29,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Vendors {
+enum Vendor {
     Table,
     VendorType,
 }
