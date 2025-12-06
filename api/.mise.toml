@@ -2,12 +2,16 @@
 "rust" = { version = "1.91.1", components = "rustfmt,clippy" }
 
 [env]
-DATABASE_URL = "postgres://postgres@127.0.0.1:5432/brewfest"
+DATABASE_URL = "postgres://admin:password@127.0.0.1:5432/brewfest"
 S3_BUCKET = "brewfest-dev"
 S3_FOLDER = "dev"
 
 [tasks.migrate]
-description = "Run database migrations"
+description = "Run database migrations with seed data (dev mode)"
+run = "cd migration && cargo run --features dev"
+
+[tasks.migrate-prod]
+description = "Run database migrations without seed data (production)"
 run = "cd migration && cargo run"
 
 [tasks.migrate-create]
@@ -16,7 +20,7 @@ run = "sea-orm-cli migrate generate"
 
 [tasks.dev]
 description = "Run the development server"
-run = "cargo run"
+run = "cargo run --features dev"
 
 [tasks.test]
 description = "Run tests"

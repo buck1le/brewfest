@@ -91,7 +91,7 @@ Retrieve information about the current festival event.
     "vendor_count": 24,
     "drink_count": 150,
     "description": "Annual craft beer festival featuring local breweries and food vendors",
-    "image_url": "https://cdn.brewfest.com/events/wwbf-katy.jpg"
+    "thumbnail": "https://cdn.brewfest.com/events/wwbf-katy.jpg"
   },
   "resources": {
     "self": "https://api.brewfest.com/v1/events/evt_123",

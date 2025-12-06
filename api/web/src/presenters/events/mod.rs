@@ -19,7 +19,7 @@ struct EventResponse {
     description: String,
     start_date: String,
     end_date: String,
-    coordinates: Coordinates,
+    location: Location,
     thumbnail: Option<String>,
     resources: Resources,
 }
@@ -37,6 +37,15 @@ struct Resources {
 #[serde(rename_all = "camelCase")]
 struct ResourceLink {
     href: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Location {
+    city: String,
+    state: String,
+    address: String,
+    coordinates: Coordinates,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -58,9 +67,14 @@ impl<'a> Partial<'a> {
             description: self.event.description.clone(),
             start_date: self.event.start_date.to_string(),
             end_date: self.event.end_date.to_string(),
-            coordinates: Coordinates {
-                latitude: self.event.latitude,
-                longitude: self.event.longitude,
+            location: Location {
+                city: self.event.city.clone(),
+                state: self.event.state.clone(),
+                address: self.event.address.clone(),
+                coordinates: Coordinates {
+                    latitude: self.event.latitude,
+                    longitude: self.event.longitude,
+                },
             },
             thumbnail: self.event.thumbnail.clone(),
             resources: Resources {
@@ -75,7 +89,7 @@ impl<'a> Partial<'a> {
                 },
                 brews: ResourceLink {
                     href: format!("/events/{}/inventory?vendor_type=brewery", self.event.id),
-                }
+                },
             },
         };
 

@@ -19,6 +19,9 @@ serde = "1.0.203"
 serde_json = "1.0.117"
 web-server = { path = "web" }
 
+[features]
+dev = ["web-server/dev"]
+
 [dev-dependencies]
 # -- Quick dev
 httpc-test = "0.1.1"

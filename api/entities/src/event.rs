@@ -14,6 +14,9 @@ pub struct Model {
     pub end_date: chrono::NaiveDate,
     pub latitude: f64,
     pub longitude: f64,
+    pub city: String,
+    pub state: String,
+    pub address: String,
     pub thumbnail: Option<String>,
 }
 

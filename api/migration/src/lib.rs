@@ -21,7 +21,7 @@ mod m20241227_163654_create_vendor_inventory;
 mod m20241231_223437_add_coordinates_to_event;
 mod m20250113_003852_add_type_to_vendor;
 mod m20250118_034811_add_event_id_to_inventory_item;
-mod m20251202_235545_create_location_table;
+mod m20251206_035118_add_location_attributes_to_event;
 
 pub struct Migrator;
 
@@ -30,6 +30,7 @@ mod seeds;
 #[async_trait::async_trait]
 impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
+        #[allow(unused_mut)]
         let mut base_migrations: Vec<Box<dyn MigrationTrait>> = vec![
             Box::new(m20220101_000001_create_vendors::Migration),
             Box::new(m20240415_020214_create_schedule_items::Migration),
@@ -52,9 +53,15 @@ impl MigratorTrait for Migrator {
             Box::new(m20241231_223437_add_coordinates_to_event::Migration),
             Box::new(m20250113_003852_add_type_to_vendor::Migration),
             Box::new(m20250118_034811_add_event_id_to_inventory_item::Migration),
+            Box::new(m20251206_035118_add_location_attributes_to_event::Migration),
         ];
+
         // Migrations for development database here
-        base_migrations.push(Box::new(seeds::accounts::Migration));
+        #[cfg(feature = "dev")]
+        {
+            base_migrations.push(Box::new(seeds::accounts::Migration));
+            base_migrations.push(Box::new(seeds::events::Migration));
+        }
 
         base_migrations
     }
