@@ -23,6 +23,9 @@ pub struct Model {
     pub event_id: i32,
     pub category: Option<String>,
     pub thumbnail: Option<String>,
+    pub booth: Option<String>,
+    pub is_featured: bool,
+    pub tags: Vec<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -3,19 +3,19 @@ use serde_json::Value;
 
 use crate::presenters::events::vendors::Partial as VendorPartial;
 
-pub struct Presenter<'a> {
-    vendors: &'a Vec<entities::vendor::Model>,
+pub struct Presenter {
+    vendors: Vec<entities::vendor::Model>,
 }
 
-impl <'a> Presenter <'a> {
-    pub fn new(vendors: &'a Vec<entities::vendor::Model>) -> Self {
+impl Presenter {
+    pub fn new(vendors: Vec<entities::vendor::Model>) -> Self {
         Self { vendors }
     }
 
-    pub fn render(&self) -> Result<impl IntoResponse, (StatusCode, String)> {
+    pub fn render(self) -> Result<impl IntoResponse, (StatusCode, String)> {
         let item_json: Vec<Value> = self
             .vendors
-            .iter()
+            .into_iter()
             .map(|item| {
                 VendorPartial::new(item).render()
             })

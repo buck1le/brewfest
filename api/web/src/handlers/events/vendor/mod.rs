@@ -6,7 +6,8 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
-use entities::vendor::Entity as Vendors;
+use entities::vendor::Entity as Vendor;
+use entities::vendor_image::Entity as VendorImage;
 
 use crate::auth::ExtractApiKey;
 use crate::common::events::{load_event, load_vendor};
@@ -33,21 +34,16 @@ pub async fn index(
     let vendors = match vendor_type.vendor_type {
         Some(vendor_type) => {
             event
-                .find_related(Vendors)
+                .find_related(Vendor)
                 .filter(vendor::Column::VendorType.eq(vendor_type))
                 .all(database_connection)
                 .await
         }
-        None => {
-            event
-                .find_related(Vendors)
-                .all(database_connection)
-                .await
-        }
+        None => event.find_related(Vendor).all(database_connection).await,
     };
 
     match vendors {
-        Ok(vendors) => VendorPresenter::new(&vendors).render(),
+        Ok(vendors) => VendorPresenter::new(vendors).render(),
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to fetch vendors: {}", e),
@@ -138,6 +134,22 @@ pub async fn show(
         vendor_id,
     }): Path<ShowParams>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
+    let database_connection = &*db;
+
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
-    Ok(Json(VendorPartial::new(&vendor).render()).into_response())
+
+    let vendor_images = vendor
+        .find_related(VendorImage)
+        .all(database_connection)
+        .await
+        .map_err({
+            |e| {
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Failed to fetch images: {}", e),
+                )
+            }
+        })?;
+
+    Ok(Json(VendorPartial::with_images(vendor, vendor_images).render()).into_response())
 }

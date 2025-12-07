@@ -15,7 +15,7 @@ entities = { path = "../entities" }
 tracing = "0.1.40"
 
 [dependencies.sea-orm-migration]
-version = "0.12.0"
+version = "0.12.15"
 features = [
   "runtime-tokio-native-tls",  # `ASYNC_RUNTIME` feature
   "sqlx-postgres",         # `DATABASE_DRIVER` feature

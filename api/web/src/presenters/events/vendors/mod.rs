@@ -7,8 +7,21 @@ pub mod presenter;
 
 pub use presenter::Presenter;
 
-pub struct Partial<'a> {
-    vendor: &'a entities::vendor::Model,
+use entities::vendor_image::Model as VendorImage;
+use entities::vendor::Model as Vendor;
+
+pub struct Partial {
+    vendor: Vendor,
+    images: Option<Vec<VendorImage>>,
+}
+
+impl Partial {
+    pub fn with_images(vendor: Vendor, images: Vec<VendorImage>) -> Self {
+        Self {
+            vendor,
+            images: Some(images),
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -16,83 +29,56 @@ pub struct Partial<'a> {
 struct VendorResponse {
     id: i32,
     name: String,
-    email: String,
-    phone: String,
-    description: String,
+    #[serde(rename = "type")]
     vendor_type: Option<String>,
-    created_at: String,
-    updated_at: String,
-    event_id: i32,
+    booth: Option<String>,
+    description: String,
+    location: String,
     thumbnail: Option<String>,
-    operating_out_of: String,
-    coordinates: Coordinates,
-    category: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    images: Option<Vec<String>>,
+    tags: Vec<String>,
+    is_featured: bool,
     resources: Resources,
 }
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct Coordinates {
-    latitude: f64,
-    longitude: f64,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 struct Resources {
-    images: ResourceLink,
-    thumbnail: ResourceLink,
-    inventory: ResourceLink,
+    #[serde(rename = "self")]
+    self_link: String,
+    drinks: String,
+    favorite: String,
 }
 
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct ResourceLink {
-    href: String,
-}
-
-impl<'a> Partial<'a> {
-    pub fn new(vendor: &'a entities::vendor::Model) -> Self {
-        Self { vendor }
+impl Partial {
+    pub fn new(vendor: entities::vendor::Model) -> Self {
+        Self { 
+            vendor,
+            images: None
+        }
     }
 
-    pub fn render(&self) -> Value {
+    pub fn render(self) -> Value {
+        let image_urls = self.images.map(|images| {
+            images.into_iter().map(|image| image.url).collect()
+        });
+
         let response = VendorResponse {
             id: self.vendor.id,
-            name: self.vendor.name.clone(),
-            email: self.vendor.email.clone(),
-            description: self.vendor.description.clone(),
-            phone: self.vendor.phone.clone(),
-            vendor_type: self.vendor.vendor_type.clone(),
-            created_at: self.vendor.created_at.to_string(),
-            updated_at: self.vendor.updated_at.to_string(),
-            thumbnail: self.vendor.thumbnail.clone(),
-            category: self.vendor.category.clone(),
-            event_id: self.vendor.event_id,
-            operating_out_of: self.vendor.operating_out_of.clone(),
-            coordinates: Coordinates {
-                latitude: self.vendor.latitude,
-                longitude: self.vendor.longitude,
-            },
+            name: self.vendor.name,
+            vendor_type: self.vendor.vendor_type,
+            booth: self.vendor.booth,
+            description: self.vendor.description,
+            location: self.vendor.operating_out_of,
+            thumbnail: self.vendor.thumbnail,
+            images: image_urls,
+            tags: self.vendor.tags,
+            is_featured: self.vendor.is_featured,
             resources: Resources {
-                images: ResourceLink {
-                    href: format!(
-                        "/events/{}/vendors/{}/images",
-                        self.vendor.event_id, self.vendor.id
-                    ),
-                },
-                thumbnail: ResourceLink {
-                    href: format!(
-                        "/events/{}/vendors/{}/thumbnail",
-                        self.vendor.event_id, self.vendor.id
-                    ),
-                },
-                inventory: ResourceLink {
-                    href: format!(
-                        "/events/{}/vendors/{}/inventory",
-                        self.vendor.event_id, self.vendor.id
-                    ),
-                },
+                self_link: format!("/v1/vendors/{}", self.vendor.id),
+                drinks: format!("/v1/vendors/{}/drinks", self.vendor.id),
+                favorite: format!("/v1/users/me/favorites/vendors/{}", self.vendor.id),
             },
         };
 
