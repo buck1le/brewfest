@@ -55,6 +55,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250113_003852_add_type_to_vendor::Migration),
             Box::new(m20250118_034811_add_event_id_to_inventory_item::Migration),
             Box::new(m20251206_035118_add_location_attributes_to_event::Migration),
+            Box::new(m20251206_155509_add_vendor_fields::Migration),
         ];
 
         // Migrations for development database here

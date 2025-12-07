@@ -5,5 +5,5 @@ use events::events_routes;
 
 pub fn routes() -> Router {
     Router::new()
-        .nest("/api/events", events_routes())
+        .nest("/api/v1/events", events_routes())
 }

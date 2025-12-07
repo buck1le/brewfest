@@ -27,10 +27,11 @@ struct EventResponse {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Resources {
-    schedule: ResourceLink,
-    vendors: ResourceLink,
-    thumbnail: ResourceLink,
-    brews: ResourceLink,
+    self_link: String,
+    schedule: String,
+    vendors: String,
+    drinks: String,
+    map: String,
 }
 
 #[derive(Serialize)]
@@ -78,18 +79,11 @@ impl<'a> Partial<'a> {
             },
             thumbnail: self.event.thumbnail.clone(),
             resources: Resources {
-                schedule: ResourceLink {
-                    href: format!("/events/{}/schedule", self.event.id),
-                },
-                vendors: ResourceLink {
-                    href: format!("/events/{}/vendors", self.event.id),
-                },
-                thumbnail: ResourceLink {
-                    href: format!("/events/{}/thumbnail", self.event.id),
-                },
-                brews: ResourceLink {
-                    href: format!("/events/{}/inventory?vendor_type=brewery", self.event.id),
-                },
+                self_link: format!("/api/v1/events/{}", self.event.id),
+                vendors: format!("/api/v1/events/{}/vendors", self.event.id),
+                drinks: format!("/api/v1/events/{}/inventory?vendor_type=brewery", self.event.id),
+                schedule: format!("/api/v1/events/{}/schedule", self.event.id),
+                map: format!("/api/v1/events/{}/map", self.event.id),
             },
         };
 
