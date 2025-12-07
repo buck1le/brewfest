@@ -117,7 +117,12 @@ pub async fn inventory(
         .find_with_related(VendorInventoryItems)
         .all(database_connection)
         .await
-        .unwrap();
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Database query error: {}", e),
+            )
+        })?;
 
     let inventory = vendors_and_events
         .into_iter()

@@ -41,7 +41,7 @@ impl<'a> Partial<'a> {
         let response = VendorInventoryItemResponse {
             id: self.inventory_item.id,
             name: self.inventory_item.name.clone(),
-            category: self.inventory_item.category.clone(),
+            category: self.inventory_item.category.to_string(),
             thumbnail: self.inventory_item.thumbnail.clone(),
             vendor_id: self.inventory_item.vendor_id,
             resources: Resources {

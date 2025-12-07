@@ -63,6 +63,8 @@ impl MigratorTrait for Migrator {
         {
             base_migrations.push(Box::new(seeds::accounts::Migration));
             base_migrations.push(Box::new(seeds::events::Migration));
+            base_migrations.push(Box::new(seeds::vendors::Migration));
+            base_migrations.push(Box::new(seeds::vendor_inventory::Migration));
         }
 
         base_migrations

@@ -54,9 +54,16 @@ pub async fn create(
 
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
+    let category = payload.category.try_into().map_err(|e| {
+        (
+            StatusCode::BAD_REQUEST,
+            format!("Invalid category: {}", e),
+        )
+    })?;
+
     let new_item = vendor_inventory_item::ActiveModel {
         name: Set(payload.name),
-        category: Set(payload.category),
+        category: Set(category),
         vendor_id: Set(vendor.id),
         event_id: Set(event_id),
         ..Default::default() // sets the other fields such as ID
