@@ -18,7 +18,10 @@ class VendorsScreen extends StatefulWidget {
   State<VendorsScreen> createState() => _VendorsScreenState();
 }
 
-class _VendorsScreenState extends State<VendorsScreen> {
+class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // Keeps state alive when switching tabs
+
   final VendorRepository _repository = ApiVendorRepository(
     baseUrl: 'http://localhost:8080/api/v1',
     eventId: 1, // TODO: Make this dynamic based on the selected event
@@ -36,8 +39,14 @@ class _VendorsScreenState extends State<VendorsScreen> {
   @override
   void initState() {
     super.initState();
-    print('🚀 [VendorsScreen] Initializing...');
+    print('🚀 [VendorsScreen] initState called - this should only happen ONCE!');
     _loadVendors();
+  }
+
+  @override
+  void dispose() {
+    print('💀 [VendorsScreen] dispose called - screen is being destroyed');
+    super.dispose();
   }
 
   Future<void> _loadVendors() async {
@@ -138,6 +147,8 @@ class _VendorsScreenState extends State<VendorsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     return Scaffold(
       body: Column(
         children: [
@@ -145,17 +156,20 @@ class _VendorsScreenState extends State<VendorsScreen> {
           Expanded(
             child: SafeArea(
               top: false,
-              child: Column(
-                children: [
-                  _buildSearchBar(),
-                  _buildFilterChips(),
-                  _buildVendorListHeader(),
-                  Expanded(
-                    child: _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _buildVendorList(),
-                  ),
-                ],
+              child: RefreshIndicator(
+                onRefresh: _loadVendors,
+                child: Column(
+                  children: [
+                    _buildSearchBar(),
+                    _buildFilterChips(),
+                    _buildVendorListHeader(),
+                    Expanded(
+                      child: _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : _buildVendorList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -577,24 +591,42 @@ class _VendorsScreenState extends State<VendorsScreen> {
 
   Widget _buildVendorList() {
     if (_filteredVendors.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: AppTheme.textSecondary.withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No vendors found',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppTheme.textSecondary,
+      // Wrap in ListView to make it scrollable for RefreshIndicator
+      return ListView(
+        children: [
+          SizedBox(
+            height: 400,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.search_off,
+                    size: 64,
+                    color: AppTheme.textSecondary.withValues(alpha: 0.5),
                   ),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage ?? 'No vendors found',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppTheme.textSecondary,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      'Pull down to retry',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppTheme.textSecondary,
+                          ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
