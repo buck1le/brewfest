@@ -18,7 +18,7 @@ struct ResourceLink {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Resources {
-    vendor: ResourceLink,
+    vendor: String,
 }
 
 #[derive(Serialize)]
@@ -45,12 +45,10 @@ impl<'a> Partial<'a> {
             thumbnail: self.inventory_item.thumbnail.clone(),
             vendor_id: self.inventory_item.vendor_id,
             resources: Resources {
-                vendor: ResourceLink {
-                    href: format!(
-                        "/events/{}/vendors/{}",
-                        self.inventory_item.event_id, self.inventory_item.vendor_id
-                    ),
-                },
+                vendor: format!(
+                    "/api/v1/events/{}/vendors/{}",
+                    self.inventory_item.event_id, self.inventory_item.vendor_id
+                ),
             },
         };
 

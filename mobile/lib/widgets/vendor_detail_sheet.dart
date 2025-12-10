@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/vendor.dart';
 import '../theme/app_theme.dart';
 
-class VendorDetailSheet extends StatefulWidget {
+class VendorDetailSheet extends StatelessWidget {
   final Vendor vendor;
 
   const VendorDetailSheet({
@@ -11,25 +11,7 @@ class VendorDetailSheet extends StatefulWidget {
   });
 
   @override
-  State<VendorDetailSheet> createState() => _VendorDetailSheetState();
-}
-
-class _VendorDetailSheetState extends State<VendorDetailSheet> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final images = widget.vendor.images.isNotEmpty
-        ? widget.vendor.images
-        : [widget.vendor.imageUrl];
-
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -56,60 +38,30 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image carousel
-                  SizedBox(
-                    height: 300,
-                    child: Stack(
-                      children: [
-                        PageView.builder(
-                          controller: _pageController,
-                          onPageChanged: (index) {
-                            if (mounted) {
-                              setState(() {
-                                _currentPage = index;
-                              });
-                            }
-                          },
-                          itemCount: images.length,
-                          itemBuilder: (context, index) {
-                            return Image.network(
-                              images[index],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.image, size: 64, color: Colors.grey),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        if (images.length > 1)
-                          Positioned(
-                            bottom: 16,
-                            left: 0,
-                            right: 0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                images.length,
-                                (index) => Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _currentPage == index
-                                        ? Colors.white
-                                        : Colors.white.withValues(alpha: 0.5),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
+                  // Vendor image
+                  if (vendor.thumbnail != null)
+                    SizedBox(
+                      height: 250,
+                      width: double.infinity,
+                      child: Image.network(
+                        vendor.thumbnail!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.image, size: 64, color: Colors.grey),
+                          );
+                        },
+                      ),
+                    )
+                  else
+                    Container(
+                      height: 250,
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: Icon(Icons.image, size: 64, color: Colors.grey),
+                      ),
                     ),
-                  ),
 
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -118,7 +70,7 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
                       children: [
                         // Vendor name
                         Text(
-                          widget.vendor.name,
+                          vendor.name,
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -126,53 +78,54 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
                         ),
                         const SizedBox(height: 8),
 
-                        // Type and booth
+                        // Category and booth
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
+                            if (vendor.category != null)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.backgroundColor,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  vendor.category!.toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
                               ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.backgroundColor,
-                                borderRadius: BorderRadius.circular(6),
+                            if (vendor.category != null && vendor.booth != null)
+                              const SizedBox(width: 12),
+                            if (vendor.booth != null)
+                              Text(
+                                'Booth ${vendor.booth}',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: AppTheme.textSecondary,
+                                    ),
                               ),
-                              child: Text(
-                                widget.vendor.typeLabel,
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
+                          ],
+                        ),
+
+                        // Operating out of (location)
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 18,
+                              color: AppTheme.textSecondary,
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 4),
                             Text(
-                              'Booth ${widget.vendor.booth}',
+                              vendor.operatingOutOf,
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: AppTheme.textSecondary,
                                   ),
                             ),
                           ],
                         ),
-
-                        // Location
-                        if (widget.vendor.location != null) ...[
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 18,
-                                color: AppTheme.textSecondary,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                widget.vendor.location!,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: AppTheme.textSecondary,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ],
 
                         const SizedBox(height: 20),
 
@@ -186,27 +139,80 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          widget.vendor.description,
+                          vendor.description,
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 height: 1.5,
                               ),
                         ),
 
-                        // Menu items section
-                        if (widget.vendor.menuItems.isNotEmpty) ...[
-                          const SizedBox(height: 24),
+                        // Tags
+                        if (vendor.tags.isNotEmpty) ...[
+                          const SizedBox(height: 20),
                           Text(
-                            widget.vendor.type == VendorType.brewery
-                                ? 'On Tap (${widget.vendor.menuItems.length})'
-                                : 'Menu Items',
+                            'Specialties',
                             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 20,
                                 ),
                           ),
                           const SizedBox(height: 12),
-                          ...widget.vendor.menuItems.map((item) => _buildMenuItem(item)),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: vendor.tags.map((tag) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.backgroundColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: AppTheme.borderColor),
+                                ),
+                                child: Text(
+                                  tag,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: AppTheme.textPrimary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ],
+
+                        // Contact info
+                        const SizedBox(height: 20),
+                        Text(
+                          'Contact',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
+                              ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            const Icon(Icons.email, size: 18, color: AppTheme.textSecondary),
+                            const SizedBox(width: 8),
+                            Text(
+                              vendor.email,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Icon(Icons.phone, size: 18, color: AppTheme.textSecondary),
+                            const SizedBox(width: 8),
+                            Text(
+                              vendor.phone,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -241,83 +247,6 @@ class _VendorDetailSheetState extends State<VendorDetailSheet> {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenuItem(MenuItem item) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  item.name,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ),
-              if (item.isFeatured)
-                const Icon(
-                  Icons.star,
-                  color: AppTheme.accentOrange,
-                  size: 20,
-                ),
-            ],
-          ),
-          if (item.style != null || item.abv != null || item.ibu != null) ...[
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                if (item.style != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppTheme.backgroundColor,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      item.style!,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            fontSize: 11,
-                          ),
-                    ),
-                  ),
-                if (item.abv != null) ...[
-                  const SizedBox(width: 8),
-                  Text(
-                    item.abv!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                          fontSize: 13,
-                        ),
-                  ),
-                ],
-                if (item.ibu != null) ...[
-                  const SizedBox(width: 4),
-                  Text(
-                    '• ${item.ibu!}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                          fontSize: 13,
-                        ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-          const SizedBox(height: 4),
-          Text(
-            item.description,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
           ),
         ],
       ),

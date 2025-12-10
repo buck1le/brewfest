@@ -27,17 +27,13 @@ struct EventResponse {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Resources {
+    #[serde(rename = "self")]
     self_link: String,
     schedule: String,
     vendors: String,
+    inventory: String,
     drinks: String,
     map: String,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct ResourceLink {
-    href: String,
 }
 
 #[derive(Serialize)]
@@ -81,6 +77,7 @@ impl<'a> Partial<'a> {
             resources: Resources {
                 self_link: format!("/api/v1/events/{}", self.event.id),
                 vendors: format!("/api/v1/events/{}/vendors", self.event.id),
+                inventory: format!("/api/v1/events/{}/inventory", self.event.id),
                 drinks: format!("/api/v1/events/{}/inventory?vendor_type=brewery", self.event.id),
                 schedule: format!("/api/v1/events/{}/schedule", self.event.id),
                 map: format!("/api/v1/events/{}/map", self.event.id),

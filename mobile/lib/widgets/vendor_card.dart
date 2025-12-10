@@ -33,16 +33,21 @@ class VendorCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
-                      vendor.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.image, color: Colors.grey),
-                        );
-                      },
-                    ),
+                    vendor.thumbnail != null
+                        ? Image.network(
+                            vendor.thumbnail!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                child: const Icon(Icons.image, color: Colors.grey),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.image, color: Colors.grey),
+                          ),
                     if (vendor.isFeatured)
                       Positioned(
                         top: 8,
@@ -81,28 +86,31 @@ class VendorCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        // Type and booth
+                        // Category and booth
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
+                            if (vendor.category != null)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.backgroundColor,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  vendor.category!.toUpperCase(),
+                                  style: Theme.of(context).textTheme.labelMedium,
+                                ),
                               ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.backgroundColor,
-                                borderRadius: BorderRadius.circular(4),
+                            if (vendor.category != null && vendor.booth != null)
+                              const SizedBox(width: 8),
+                            if (vendor.booth != null)
+                              Text(
+                                '• Booth ${vendor.booth}',
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                              child: Text(
-                                vendor.typeLabel,
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '• Booth ${vendor.booth}',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
                           ],
                         ),
                         const SizedBox(height: 8),

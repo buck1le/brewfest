@@ -47,7 +47,7 @@ struct VendorResponse {
 struct Resources {
     #[serde(rename = "self")]
     self_link: String,
-    drinks: String,
+    inventory: String,
     favorite: String,
 }
 
@@ -77,7 +77,7 @@ impl Partial {
             is_featured: self.vendor.is_featured,
             resources: Resources {
                 self_link: format!("/v1/vendors/{}", self.vendor.id),
-                drinks: format!("/v1/vendors/{}/drinks", self.vendor.id),
+                inventory: format!("/v1/vendors/{}/inventory", self.vendor.id),
                 favorite: format!("/v1/users/me/favorites/vendors/{}", self.vendor.id),
             },
         };
