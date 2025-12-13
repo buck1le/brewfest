@@ -16,7 +16,12 @@ run = "cd migration && cargo run"
 
 [tasks.migrate-create]
 description = "Create a new migration"
-run = "sea-orm-cli migrate generate"
+usage = '''
+  arg "<name>" help="Name of the migration"
+'''
+run = '''
+  sea-orm-cli migrate generate ${usage_name?}
+'''
 
 [tasks.dev]
 description = "Run the development server"

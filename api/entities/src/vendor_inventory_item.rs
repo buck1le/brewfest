@@ -8,16 +8,8 @@ use strum::Display;
 #[sea_orm(rs_type = "String", db_type = "Text")]
 #[strum(serialize_all = "snake_case")]
 pub enum InventoryCategory {
-    #[sea_orm(string_value = "beer")]
-    Beer,
-    #[sea_orm(string_value = "cider")]
-    Cider,
-    #[sea_orm(string_value = "wine")]
-    Wine,
-    #[sea_orm(string_value = "spirits")]
-    Spirits,
-    #[sea_orm(string_value = "non_alcoholic")]
-    NonAlcoholic,
+    #[sea_orm(string_value = "drink")]
+    Drink,
     #[sea_orm(string_value = "food")]
     Food,
     #[sea_orm(string_value = "merchandise")]
@@ -29,11 +21,7 @@ impl TryFrom<&str> for InventoryCategory {
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         match s {
-            "beer" => Ok(InventoryCategory::Beer),
-            "cider" => Ok(InventoryCategory::Cider),
-            "wine" => Ok(InventoryCategory::Wine),
-            "spirits" => Ok(InventoryCategory::Spirits),
-            "non_alcoholic" => Ok(InventoryCategory::NonAlcoholic),
+            "drink" => Ok(InventoryCategory::Drink),
             "food" => Ok(InventoryCategory::Food),
             "merchandise" => Ok(InventoryCategory::Merchandise),
             _ => Err(format!(
@@ -59,6 +47,7 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub category: InventoryCategory,
+    pub subcategory: Option<String>,
     pub vendor_id: i32,
     pub event_id: i32,
     pub thumbnail: Option<String>,

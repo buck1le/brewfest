@@ -23,6 +23,7 @@ mod m20250113_003852_add_type_to_vendor;
 mod m20250118_034811_add_event_id_to_inventory_item;
 mod m20251206_035118_add_location_attributes_to_event;
 mod m20251206_155509_add_vendor_fields;
+mod m20251212_023114_add_subcat_to_inventory_item;
 
 pub struct Migrator;
 
@@ -56,6 +57,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20250118_034811_add_event_id_to_inventory_item::Migration),
             Box::new(m20251206_035118_add_location_attributes_to_event::Migration),
             Box::new(m20251206_155509_add_vendor_fields::Migration),
+            Box::new(m20251212_023114_add_subcat_to_inventory_item::Migration),
         ];
 
         // Migrations for development database here
