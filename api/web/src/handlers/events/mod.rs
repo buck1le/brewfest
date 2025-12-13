@@ -9,8 +9,8 @@ use serde::Deserialize;
 use std::sync::Arc;
 
 use entities::sea_orm::*;
-use entities::vendor_inventory_item::Entity as VendorInventoryItems;
 use entities::vendor::Entity as Vendors;
+use entities::vendor_inventory_item::Entity as VendorInventoryItems;
 use entities::*;
 
 use crate::{
@@ -98,25 +98,30 @@ pub async fn index(Extension(db): Extension<Arc<DatabaseConnection>>) -> impl In
 }
 
 #[derive(Deserialize)]
-pub struct VendorType {
+pub struct InventoryQueryParams {
+    category: Option<String>,
     vendor_type: Option<String>,
 }
 
 pub async fn inventory(
     Extension(db): Extension<Arc<DatabaseConnection>>,
-    Query(VendorType { vendor_type }): Query<VendorType>,
+    Query(InventoryQueryParams {
+        vendor_type,
+        category,
+    }): Query<InventoryQueryParams>,
     Path(event_id): Path<i32>,
 ) -> impl IntoResponse {
     let database_connection = &*db;
 
     let event = load_event(event_id, &db).await?;
 
-    let mut query = event.find_related(Vendors);
-    if let Some(vt) = vendor_type {
-        query = query.filter(entities::vendor::Column::VendorType.eq(vt));
-    }
-
-    let vendors_and_events = query
+    let vendors_and_events = event.find_related(Vendors)
+        .apply_if(Some(vendor_type), |query, vt| {
+            query.filter(entities::vendor::Column::VendorType.eq(vt))
+        })
+        .apply_if(Some(category), |query, category| {
+            query.filter(entities::vendor_inventory_item::Column::Category.eq(category))
+        })
         .find_with_related(VendorInventoryItems)
         .all(database_connection)
         .await
