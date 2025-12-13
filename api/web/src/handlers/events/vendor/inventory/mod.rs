@@ -1,6 +1,13 @@
 pub mod thumbnail;
 
-use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Json};
+use axum::{
+    extract::Path, 
+    http::StatusCode, 
+    response::IntoResponse, 
+    Extension, 
+    Json,
+    extract::Query
+};
 
 use serde::Deserialize;
 use std::sync::Arc;
@@ -15,8 +22,14 @@ use entities::{sea_orm::*, vendor_inventory_item};
 
 use entities::vendor_inventory_item::Entity as VendorInventoryItems;
 
+#[derive(Deserialize)]
+pub struct InventoryQueryParams {
+    category: Option<String>,
+}
+
 pub async fn index(
     Extension(db): Extension<Arc<DatabaseConnection>>,
+    Query(params): Query<InventoryQueryParams>,
     Path((event_id, vendor_id)): Path<(i32, i32)>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let database_connection = &*db;
@@ -25,6 +38,9 @@ pub async fn index(
 
     let inventory = vendor
         .find_related(VendorInventoryItems)
+        .apply_if(params.category, |query, category| {
+            query.filter(entities::vendor_inventory_item::Column::Category.eq(category))
+        })
         .all(database_connection)
         .await
         .map_err(|e| {

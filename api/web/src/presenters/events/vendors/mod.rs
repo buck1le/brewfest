@@ -48,7 +48,6 @@ struct Resources {
     #[serde(rename = "self")]
     self_link: String,
     inventory: String,
-    favorite: String,
 }
 
 impl Partial {
@@ -76,9 +75,8 @@ impl Partial {
             tags: self.vendor.tags,
             is_featured: self.vendor.is_featured,
             resources: Resources {
-                self_link: format!("/v1/vendors/{}", self.vendor.id),
-                inventory: format!("/v1/vendors/{}/inventory", self.vendor.id),
-                favorite: format!("/v1/users/me/favorites/vendors/{}", self.vendor.id),
+                self_link: format!("/api/v1/events/{}/vendors/{}", self.vendor.event_id, self.vendor.id),
+                inventory: format!("/api/v1/events/{}/vendors/{}/inventory", self.vendor.event_id, self.vendor.id),
             },
         };
 
