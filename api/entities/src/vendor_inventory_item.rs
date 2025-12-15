@@ -25,7 +25,7 @@ impl TryFrom<&str> for InventoryCategory {
             "food" => Ok(InventoryCategory::Food),
             "merchandise" => Ok(InventoryCategory::Merchandise),
             _ => Err(format!(
-                "Invalid category '{}'. Valid options: beer, cider, wine, spirits, non_alcoholic, food, merchandise",
+                "Invalid category '{}'. Valid options:  drink, food, merchandise",
                 s
             )),
         }
@@ -47,7 +47,7 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub category: InventoryCategory,
-    pub subcategory: Option<String>,
+    pub inventory_item_type: Option<String>,
     pub vendor_id: i32,
     pub event_id: i32,
     pub thumbnail: Option<String>,

@@ -27,6 +27,7 @@ struct VendorInventoryItemResponse {
     id: i32,
     name: String,
     category: String,
+    inventory_item_type: Option<String>,
     vendor_id: i32,
     thumbnail: Option<String>,
     resources: Resources,
@@ -42,6 +43,7 @@ impl<'a> Partial<'a> {
             id: self.inventory_item.id,
             name: self.inventory_item.name.clone(),
             category: self.inventory_item.category.to_string(),
+            inventory_item_type: self.inventory_item.inventory_item_type.clone(),
             thumbnail: self.inventory_item.thumbnail.clone(),
             vendor_id: self.inventory_item.vendor_id,
             resources: Resources {

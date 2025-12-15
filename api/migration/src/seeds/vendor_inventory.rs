@@ -11,16 +11,16 @@ impl MigrationTrait for Migration {
         // Inventory items: (name, category, vendor_name, event_name, thumbnail)
         let inventory_items = vec![
             // Hopworks Urban Brewery (Portland Spring Brewfest)
-            ("Hopworks IPA", "beer", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/hopworks-ipa.jpg")),
-            ("Velvet ESB", "beer", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/velvet-esb.jpg")),
-            ("Totally Radler", "beer", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", None),
-            ("Organic Pale Ale", "beer", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", None),
+            ("Hopworks IPA", "drink", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/hopworks-ipa.jpg")),
+            ("Velvet ESB", "drink", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/velvet-esb.jpg")),
+            ("Totally Radler", "drink", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", None),
+            ("Organic Pale Ale", "drink", "Hopworks Urban Brewery", "Portland Spring Brewfest 2025", None),
 
             // Deschutes Brewery (Portland Spring Brewfest)
-            ("Black Butte Porter", "beer", "Deschutes Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/black-butte.jpg")),
-            ("Fresh Squeezed IPA", "beer", "Deschutes Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/fresh-squeezed.jpg")),
-            ("Mirror Pond Pale Ale", "beer", "Deschutes Brewery", "Portland Spring Brewfest 2025", None),
-            ("Obsidian Stout", "beer", "Deschutes Brewery", "Portland Spring Brewfest 2025", None),
+            ("Black Butte Porter", "drink", "Deschutes Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/black-butte.jpg")),
+            ("Fresh Squeezed IPA", "drink", "Deschutes Brewery", "Portland Spring Brewfest 2025", Some("https://example.com/fresh-squeezed.jpg")),
+            ("Mirror Pond Pale Ale", "drink", "Deschutes Brewery", "Portland Spring Brewfest 2025", None),
+            ("Obsidian Stout", "drink", "Deschutes Brewery", "Portland Spring Brewfest 2025", None),
 
             // The Rolling Pin Food Truck (Portland Spring Brewfest)
             ("Pastrami Sandwich", "food", "The Rolling Pin Food Truck", "Portland Spring Brewfest 2025", Some("https://example.com/pastrami.jpg")),
@@ -33,16 +33,16 @@ impl MigrationTrait for Migration {
             ("Bottle Opener Keychain", "merchandise", "BrewGear Co", "Portland Spring Brewfest 2025", None),
 
             // Fremont Brewing (Seattle Summer Beer Festival)
-            ("Summer Ale", "beer", "Fremont Brewing", "Seattle Summer Beer Festival 2025", Some("https://example.com/summer-ale.jpg")),
-            ("Universale Pale Ale", "beer", "Fremont Brewing", "Seattle Summer Beer Festival 2025", None),
-            ("Lush IPA", "beer", "Fremont Brewing", "Seattle Summer Beer Festival 2025", Some("https://example.com/lush-ipa.jpg")),
-            ("B-Bomb", "beer", "Fremont Brewing", "Seattle Summer Beer Festival 2025", None),
+            ("Summer Ale", "drink", "Fremont Brewing", "Seattle Summer Beer Festival 2025", Some("https://example.com/summer-ale.jpg")),
+            ("Universale Pale Ale", "drink", "Fremont Brewing", "Seattle Summer Beer Festival 2025", None),
+            ("Lush IPA", "drink", "Fremont Brewing", "Seattle Summer Beer Festival 2025", Some("https://example.com/lush-ipa.jpg")),
+            ("B-Bomb", "drink", "Fremont Brewing", "Seattle Summer Beer Festival 2025", None),
 
             // Pike Brewing Company (Seattle Summer Beer Festival)
-            ("Pike IPA", "beer", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", Some("https://example.com/pike-ipa.jpg")),
-            ("Kilt Lifter", "beer", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
-            ("Naughty Nellie", "beer", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
-            ("Space Needle Golden Ale", "beer", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
+            ("Pike IPA", "drink", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", Some("https://example.com/pike-ipa.jpg")),
+            ("Kilt Lifter", "drink", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
+            ("Naughty Nellie", "drink", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
+            ("Space Needle Golden Ale", "drink", "Pike Brewing Company", "Seattle Summer Beer Festival 2025", None),
 
             // Pacific Pretzels (Seattle Summer Beer Festival)
             ("Traditional Bavarian Pretzel", "food", "Pacific Pretzels", "Seattle Summer Beer Festival 2025", Some("https://example.com/bavarian-pretzel.jpg")),
@@ -50,16 +50,16 @@ impl MigrationTrait for Migration {
             ("Cinnamon Sugar Pretzel", "food", "Pacific Pretzels", "Seattle Summer Beer Festival 2025", None),
 
             // Ninkasi Brewing Company (Oregon Fall Harvest Brewfest)
-            ("Tricerahops IPA", "beer", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/tricerahops.jpg")),
-            ("Total Domination IPA", "beer", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/total-dom.jpg")),
-            ("Fresh Hop IPA", "beer", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", None),
-            ("Oktoberfest Lager", "beer", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", None),
+            ("Tricerahops IPA", "drink", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/tricerahops.jpg")),
+            ("Total Domination IPA", "drink", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/total-dom.jpg")),
+            ("Fresh Hop IPA", "drink", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", None),
+            ("Oktoberfest Lager", "drink", "Ninkasi Brewing Company", "Oregon Fall Harvest Brewfest 2025", None),
 
             // Oakshire Brewing (Oregon Fall Harvest Brewfest)
-            ("Amber Ale", "beer", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/amber-ale.jpg")),
-            ("Watershed IPA", "beer", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", None),
-            ("Hellshire I", "beer", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", None),
-            ("Overcast Espresso Stout", "beer", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/overcast.jpg")),
+            ("Amber Ale", "drink", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/amber-ale.jpg")),
+            ("Watershed IPA", "drink", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", None),
+            ("Hellshire I", "drink", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", None),
+            ("Overcast Espresso Stout", "drink", "Oakshire Brewing", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/overcast.jpg")),
 
             // Farm Fresh Bites (Oregon Fall Harvest Brewfest)
             ("Farm Burger with Fries", "food", "Farm Fresh Bites", "Oregon Fall Harvest Brewfest 2025", Some("https://example.com/farm-burger.jpg")),
@@ -67,16 +67,16 @@ impl MigrationTrait for Migration {
             ("Oregon Apple Crisp", "food", "Farm Fresh Bites", "Oregon Fall Harvest Brewfest 2025", None),
 
             // 33 Acres Brewing Company (Vancouver Winter Ale Festival)
-            ("33 Acres of Darkness", "beer", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", Some("https://example.com/darkness.jpg")),
-            ("33 Acres of Ocean", "beer", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
-            ("33 Acres of Life", "beer", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
-            ("33 Acres of Sunshine", "beer", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
+            ("33 Acres of Darkness", "drink", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", Some("https://example.com/darkness.jpg")),
+            ("33 Acres of Ocean", "drink", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
+            ("33 Acres of Life", "drink", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
+            ("33 Acres of Sunshine", "drink", "33 Acres Brewing Company", "Vancouver Winter Ale Festival 2025", None),
 
             // Parallel 49 Brewing (Vancouver Winter Ale Festival)
-            ("Tricycle Radler", "beer", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", Some("https://example.com/tricycle.jpg")),
-            ("Filthy Dirty IPA", "beer", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", None),
-            ("Craft Lager", "beer", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", None),
-            ("Russian Imperial Stout", "beer", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", Some("https://example.com/russian-stout.jpg")),
+            ("Tricycle Radler", "drink", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", Some("https://example.com/tricycle.jpg")),
+            ("Filthy Dirty IPA", "drink", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", None),
+            ("Craft Lager", "drink", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", None),
+            ("Russian Imperial Stout", "drink", "Parallel 49 Brewing", "Vancouver Winter Ale Festival 2025", Some("https://example.com/russian-stout.jpg")),
         ];
 
         for (name, category, vendor_name, event_name, thumbnail) in inventory_items {

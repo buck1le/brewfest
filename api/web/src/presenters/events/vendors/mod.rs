@@ -31,6 +31,7 @@ struct VendorResponse {
     name: String,
     #[serde(rename = "type")]
     vendor_type: Option<String>,
+    category: Option<String>,
     booth: Option<String>,
     description: String,
     location: String,
@@ -69,6 +70,7 @@ impl Partial {
             vendor_type: self.vendor.vendor_type,
             booth: self.vendor.booth,
             description: self.vendor.description,
+            category: self.vendor.category,
             location: self.vendor.operating_out_of,
             thumbnail: self.vendor.thumbnail,
             images: image_urls,

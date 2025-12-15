@@ -31,9 +31,20 @@ pub async fn index(
 
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
+    // Convert category string to enum if provided
+    let category_enum: Option<vendor_inventory_item::InventoryCategory> = if let Some(cat_str) = params.category {
+        Some(
+            cat_str
+                .try_into()
+                .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid category: {}", e)))?,
+        )
+    } else {
+        None
+    };
+
     let inventory = vendor
         .find_related(VendorInventoryItems)
-        .apply_if(params.category, |query, category| {
+        .apply_if(category_enum, |query, category| {
             query.filter(entities::vendor_inventory_item::Column::Category.eq(category))
         })
         .all(database_connection)
