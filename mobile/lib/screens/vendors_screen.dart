@@ -7,7 +7,7 @@ import '../widgets/live_indicator.dart';
 import '../widgets/vendor_detail_sheet.dart';
 import '../theme/app_theme.dart';
 
-enum VendorFilter { all, breweries, food }
+enum VendorFilter { all, beverage, food, merchandise }
 
 enum SortOption { featured, name, booth }
 
@@ -92,11 +92,14 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
 
     // Apply filter
     switch (_selectedFilter) {
-      case VendorFilter.breweries:
-        filtered = filtered.where((v) => v.category?.toLowerCase() == 'brewery').toList();
+      case VendorFilter.beverage:
+        filtered = filtered.where((v) => v.category?.toLowerCase() == 'beverage').toList();
         break;
       case VendorFilter.food:
         filtered = filtered.where((v) => v.category?.toLowerCase() == 'food').toList();
+        break;
+      case VendorFilter.merchandise:
+        filtered = filtered.where((v) => v.category?.toLowerCase() == 'merchandise').toList();
         break;
       case VendorFilter.all:
         break;
@@ -141,9 +144,11 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
 
   int get _totalVendorCount => _vendors.length;
 
-  int get _breweryCount => _vendors.where((v) => v.category?.toLowerCase() == 'brewery').length;
+  int get _beverageCount => _vendors.where((v) => v.category?.toLowerCase() == 'beverage').length;
 
   int get _foodCount => _vendors.where((v) => v.category?.toLowerCase() == 'food').length;
+
+  int get _merchandiseCount => _vendors.where((v) => v.category?.toLowerCase() == 'merchandise').length;
 
   @override
   Widget build(BuildContext context) {
@@ -312,13 +317,13 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
           ),
           const SizedBox(width: 8),
           _buildFilterChip(
-            label: 'Breweries',
+            label: 'Beverage',
             icon: Icons.sports_bar,
-            count: _breweryCount,
-            isSelected: _selectedFilter == VendorFilter.breweries,
+            count: _beverageCount,
+            isSelected: _selectedFilter == VendorFilter.beverage,
             onTap: () {
               setState(() {
-                _selectedFilter = VendorFilter.breweries;
+                _selectedFilter = VendorFilter.beverage;
                 _applyFiltersAndSort();
               });
             },
@@ -332,6 +337,19 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
             onTap: () {
               setState(() {
                 _selectedFilter = VendorFilter.food;
+                _applyFiltersAndSort();
+              });
+            },
+          ),
+          const SizedBox(width: 8),
+          _buildFilterChip(
+            label: 'Merchandise',
+            icon: Icons.shopping_bag,
+            count: _merchandiseCount,
+            isSelected: _selectedFilter == VendorFilter.merchandise,
+            onTap: () {
+              setState(() {
+                _selectedFilter = VendorFilter.merchandise;
                 _applyFiltersAndSort();
               });
             },
