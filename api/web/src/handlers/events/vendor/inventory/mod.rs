@@ -1,12 +1,7 @@
 pub mod thumbnail;
 
 use axum::{
-    extract::Path, 
-    http::StatusCode, 
-    response::IntoResponse, 
-    Extension, 
-    Json,
-    extract::Query
+    extract::Path, extract::Query, http::StatusCode, response::IntoResponse, Extension, Json,
 };
 
 use serde::Deserialize;
@@ -70,12 +65,10 @@ pub async fn create(
 
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
-    let category = payload.category.try_into().map_err(|e| {
-        (
-            StatusCode::BAD_REQUEST,
-            format!("Invalid category: {}", e),
-        )
-    })?;
+    let category = payload
+        .category
+        .try_into()
+        .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid category: {}", e)))?;
 
     let new_item = vendor_inventory_item::ActiveModel {
         name: Set(payload.name),

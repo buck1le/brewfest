@@ -115,7 +115,8 @@ pub async fn inventory(
 
     let event = load_event(event_id, &db).await?;
 
-    let vendors_and_events = event.find_related(Vendors)
+    let vendors_and_events = event
+        .find_related(Vendors)
         .apply_if(Some(vendor_type), |query, vt| {
             query.filter(entities::vendor::Column::VendorType.eq(vt))
         })
