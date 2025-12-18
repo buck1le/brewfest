@@ -3,8 +3,24 @@
 
 [env]
 DATABASE_URL = "postgres://admin:password@127.0.0.1:5432/brewfest"
+
+# S3 Configuration
+S3_REGION = "us-east-2"
 S3_BUCKET = "brewfest-dev"
-S3_FOLDER = "dev"
+S3_FOLDER = "images"
+
+# AWS Credentials (for local development with LocalStack/MinIO)
+AWS_ACCESS_KEY_ID = "test"
+AWS_SECRET_ACCESS_KEY = "test"
+AWS_REGION = "us-east-1"
+AWS_ENDPOINT_URL = "http://localhost:4566"
+
+# Force path-style URLs for LocalStack (s3.amazonaws.com/bucket instead of bucket.s3.amazonaws.com)
+AWS_S3_FORCE_PATH_STYLE = "true"
+
+# Optional: Customize image resize dimensions (defaults are 800x600)
+# MAX_IMAGE_WIDTH = "800"
+# MAX_IMAGE_HEIGHT = "600"
 
 [tasks.migrate]
 description = "Run database migrations with seed data (dev mode)"
@@ -30,3 +46,15 @@ run = "cargo run --features dev"
 [tasks.test]
 description = "Run tests"
 run = "cargo test"
+
+[tasks.setup-s3]
+description = "Setup LocalStack S3 bucket"
+run = "./scripts/setup-localstack.sh"
+
+[tasks.start]
+description = "Start development environment (docker + migrations + s3 setup)"
+run = """
+  docker-compose up -d
+  ./scripts/setup-localstack.sh
+  mise run migrate
+"""

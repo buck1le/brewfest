@@ -1,4 +1,3 @@
-use aws_config::BehaviorVersion;
 use aws_sdk_s3::Client as S3Client;
 use aws_sdk_s3::{
     error::SdkError,
@@ -107,15 +106,32 @@ impl S3 {
         Self: Sized,
     {
         Box::pin(async {
-            let s3_config = aws_config::load_defaults(BehaviorVersion::latest()).await;
+            // Support custom endpoints for LocalStack/MinIO
+            let config_loader = aws_config::defaults(aws_config::BehaviorVersion::latest());
 
-            let client = Arc::new(S3Client::new(&s3_config));
+            let config_loader = if let Ok(endpoint) = std::env::var("AWS_ENDPOINT_URL") {
+                info!("Using custom S3 endpoint: {}", endpoint);
+                config_loader.endpoint_url(endpoint)
+            } else {
+                config_loader
+            };
+
+            let s3_config = config_loader.load().await;
+
+            // Configure S3 client with path-style URLs for LocalStack
+            let mut s3_config_builder = aws_sdk_s3::config::Builder::from(&s3_config);
+
+            if std::env::var("AWS_S3_FORCE_PATH_STYLE").unwrap_or_default() == "true" {
+                info!("Using path-style S3 URLs");
+                s3_config_builder = s3_config_builder.force_path_style(true);
+            }
+
+            let client = Arc::new(S3Client::from_conf(s3_config_builder.build()));
+
             let bucket_name = std::env::var("S3_BUCKET")
-                .map_err(|_| UploadError::EnvVarMissing("S3_BUCKET".to_string()))
-                .unwrap();
+                .map_err(|_| UploadError::EnvVarMissing("S3_BUCKET".to_string()))?;
             let folder_name = std::env::var("S3_FOLDER")
-                .map_err(|_| UploadError::EnvVarMissing("S3_FOLDER".to_string()))
-                .unwrap();
+                .map_err(|_| UploadError::EnvVarMissing("S3_FOLDER".to_string()))?;
 
             Ok(Self {
                 client,
