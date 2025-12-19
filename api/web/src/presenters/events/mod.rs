@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::utils::s3_url;
+
 pub mod presenter;
 pub mod schedule;
 pub mod vendors;
@@ -73,7 +75,7 @@ impl<'a> Partial<'a> {
                     longitude: self.event.longitude,
                 },
             },
-            thumbnail: self.event.thumbnail.clone(),
+            thumbnail: s3_url::key_to_url(self.event.thumbnail.clone()),
             resources: Resources {
                 self_link: format!("/api/v1/events/{}", self.event.id),
                 vendors: format!("/api/v1/events/{}/vendors", self.event.id),

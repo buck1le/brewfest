@@ -1,6 +1,8 @@
 use serde::Serialize;
 use serde_json::Value;
 
+use crate::utils::s3_url;
+
 pub mod images;
 pub mod inventory;
 pub mod presenter;
@@ -72,7 +74,7 @@ impl Partial {
             description: self.vendor.description,
             category: self.vendor.category,
             location: self.vendor.operating_out_of,
-            thumbnail: self.vendor.thumbnail,
+            thumbnail: s3_url::key_to_url(self.vendor.thumbnail),
             images: image_urls,
             tags: self.vendor.tags,
             is_featured: self.vendor.is_featured,

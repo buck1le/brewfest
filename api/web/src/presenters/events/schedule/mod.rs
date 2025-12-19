@@ -1,6 +1,8 @@
 use serde::Serialize;
 use serde_json::Value;
 
+use crate::utils::s3_url;
+
 pub mod images;
 pub mod presenter;
 
@@ -53,7 +55,7 @@ impl<'a> Partial<'a> {
             created_at: self.schedule_item.created_at.to_string(),
             updated_at: self.schedule_item.updated_at.to_string(),
             event_id: self.schedule_item.event_id,
-            thumbnail: self.schedule_item.thumbnail.clone(),
+            thumbnail: s3_url::key_to_url(self.schedule_item.thumbnail.clone()),
             resources: Resources {
                 images: ResourceLink {
                     href: format!(

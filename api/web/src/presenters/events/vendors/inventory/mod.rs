@@ -1,6 +1,8 @@
 use serde::Serialize;
 use serde_json::Value;
 
+use crate::utils::s3_url;
+
 pub struct Partial<'a> {
     inventory_item: &'a entities::vendor_inventory_item::Model,
 }
@@ -44,7 +46,7 @@ impl<'a> Partial<'a> {
             name: self.inventory_item.name.clone(),
             category: self.inventory_item.category.to_string(),
             inventory_item_type: self.inventory_item.inventory_item_type.clone(),
-            thumbnail: self.inventory_item.thumbnail.clone(),
+            thumbnail: s3_url::key_to_url(self.inventory_item.thumbnail.clone()),
             vendor_id: self.inventory_item.vendor_id,
             resources: Resources {
                 vendor: format!(
