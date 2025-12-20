@@ -23,11 +23,12 @@ class VendorCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        child: IntrinsicHeight(
+        child: SizedBox(
+          height: 160,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Vendor image with featured indicator
+              // Vendor thumbnail image with featured indicator
               SizedBox(
                 width: 120,
                 child: Stack(
@@ -113,38 +114,48 @@ class VendorCard extends StatelessWidget {
                               ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        // Description
-                        Text(
-                          vendor.description,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        // Tags
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 4,
-                          children: vendor.tags.map((tag) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppTheme.backgroundColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: AppTheme.borderColor),
-                              ),
-                              child: Text(
-                                tag,
-                                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: AppTheme.textPrimary,
+                        const SizedBox(height: 6),
+                        // Description and Tags in Expanded to fit available space
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Description
+                              Expanded(
+                                child: Text(
+                                  vendor.description,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                            );
-                          }).toList(),
+                              const SizedBox(height: 6),
+                              // Tags
+                              Wrap(
+                                spacing: 6,
+                                runSpacing: 4,
+                                children: vendor.tags.take(3).map((tag) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.backgroundColor,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(color: AppTheme.borderColor),
+                                    ),
+                                    child: Text(
+                                      tag,
+                                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                        color: AppTheme.textPrimary,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

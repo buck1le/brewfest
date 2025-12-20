@@ -16,6 +16,7 @@ class Vendor {
   final String? booth;
   final bool isFeatured;
   final List<String> tags;
+  final List<String> images;
 
   const Vendor({
     required this.id,
@@ -35,6 +36,7 @@ class Vendor {
     this.booth,
     required this.isFeatured,
     required this.tags,
+    this.images = const [],
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) {
@@ -63,6 +65,7 @@ class Vendor {
         booth: json['booth'] as String?,
         isFeatured: json['is_featured'] as bool? ?? false,
         tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+        images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       );
     } catch (e, stackTrace) {
       print('💥 [Vendor] Error parsing JSON: $e');
@@ -91,6 +94,7 @@ class Vendor {
       'booth': booth,
       'is_featured': isFeatured,
       'tags': tags,
+      'images': images,
     };
   }
 
@@ -112,6 +116,7 @@ class Vendor {
     String? booth,
     bool? isFeatured,
     List<String>? tags,
+    List<String>? images,
   }) {
     return Vendor(
       id: id ?? this.id,
@@ -131,6 +136,7 @@ class Vendor {
       booth: booth ?? this.booth,
       isFeatured: isFeatured ?? this.isFeatured,
       tags: tags ?? this.tags,
+      images: images ?? this.images,
     );
   }
 

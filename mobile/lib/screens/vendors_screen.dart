@@ -161,20 +161,20 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
           Expanded(
             child: SafeArea(
               top: false,
-              child: RefreshIndicator(
-                onRefresh: _loadVendors,
-                child: Column(
-                  children: [
-                    _buildSearchBar(),
-                    _buildFilterChips(),
-                    _buildVendorListHeader(),
-                    Expanded(
+              child: Column(
+                children: [
+                  _buildSearchBar(),
+                  _buildFilterChips(),
+                  _buildVendorListHeader(),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: _loadVendors,
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : _buildVendorList(),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
