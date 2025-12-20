@@ -7,7 +7,6 @@ use std::sync::Arc;
 
 use entities::sea_orm::*;
 use entities::vendor::Entity as Vendor;
-use entities::vendor_image::Entity as VendorImage;
 
 use crate::auth::ExtractApiKey;
 use crate::common::events::{load_event, load_vendor};
@@ -42,13 +41,38 @@ pub async fn index(
         None => event.find_related(Vendor).all(database_connection).await,
     };
 
-    match vendors {
-        Ok(vendors) => VendorPresenter::new(vendors).render(),
-        Err(e) => Err((
+    let vendors = vendors.map_err(|e| {
+        (
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to fetch vendors: {}", e),
-        )),
+        )
+    })?;
+
+    let vendor_ids: Vec<i32> = vendors.iter().map(|v| v.id).collect();
+
+    let all_images = entities::vendor_image::Entity::find()
+        .filter(entities::vendor_image::Column::VendorId.is_in(vendor_ids))
+        .all(database_connection)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to fetch images: {}", e),
+            )
+        })?;
+
+    // Group images by vendor_id
+    let mut images_by_vendor: std::collections::HashMap<i32, Vec<entities::vendor_image::Model>> =
+        std::collections::HashMap::new();
+
+    for image in all_images {
+        images_by_vendor
+            .entry(image.vendor_id)
+            .or_default()
+            .push(image);
     }
+
+    VendorPresenter::new(vendors, images_by_vendor).render()
 }
 
 #[derive(Deserialize)]
@@ -113,7 +137,11 @@ pub async fn create(
 
     // Insert the new item into the database and handle potential errors
     match new_item.insert(database_connection).await {
-        Ok(inserted_item) => Ok(Json(VendorPartial::new(inserted_item).render())),
+        Ok(inserted_item) => {
+            // New vendor has no images yet
+            let rendered = VendorPartial::new(inserted_item, vec![]).render();
+            Ok(Json(rendered))
+        }
         Err(e) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to insert item: {}", e),
@@ -138,18 +166,19 @@ pub async fn show(
 
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
-    let vendor_images = vendor
-        .find_related(VendorImage)
+    // Load vendor images
+    let vendor_images = entities::vendor_image::Entity::find()
+        .filter(entities::vendor_image::Column::VendorId.eq(vendor_id))
         .all(database_connection)
         .await
-        .map_err({
-            |e| {
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Failed to fetch images: {}", e),
-                )
-            }
+        .map_err(|e| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to fetch images: {}", e),
+            )
         })?;
 
-    Ok(Json(VendorPartial::with_images(vendor, vendor_images).render()).into_response())
+    let rendered = VendorPartial::new(vendor, vendor_images).render();
+
+    Ok(Json(rendered).into_response())
 }

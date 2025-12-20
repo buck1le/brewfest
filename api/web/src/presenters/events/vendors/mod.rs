@@ -9,21 +9,12 @@ pub mod presenter;
 
 pub use presenter::Presenter;
 
-use entities::vendor_image::Model as VendorImage;
 use entities::vendor::Model as Vendor;
+use entities::vendor_image::Model as VendorImage;
 
 pub struct Partial {
     vendor: Vendor,
-    images: Option<Vec<VendorImage>>,
-}
-
-impl Partial {
-    pub fn with_images(vendor: Vendor, images: Vec<VendorImage>) -> Self {
-        Self {
-            vendor,
-            images: Some(images),
-        }
-    }
+    images: Vec<VendorImage>,
 }
 
 #[derive(Serialize)]
@@ -38,8 +29,7 @@ struct VendorResponse {
     description: String,
     location: String,
     thumbnail: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    images: Option<Vec<String>>,
+    images: Vec<String>,
     tags: Vec<String>,
     is_featured: bool,
     resources: Resources,
@@ -54,17 +44,15 @@ struct Resources {
 }
 
 impl Partial {
-    pub fn new(vendor: entities::vendor::Model) -> Self {
-        Self { 
-            vendor,
-            images: None
-        }
+    pub fn new(vendor: Vendor, images: Vec<VendorImage>) -> Self {
+        Self { vendor, images }
     }
 
     pub fn render(self) -> Value {
-        let image_urls = self.images.map(|images| {
-            images.into_iter().map(|image| image.url).collect()
-        });
+        let image_urls: Vec<String> = self.images
+            .into_iter()
+            .map(|image| s3_url::generate_s3_url(&image.url))
+            .collect();
 
         let response = VendorResponse {
             id: self.vendor.id,
@@ -79,8 +67,14 @@ impl Partial {
             tags: self.vendor.tags,
             is_featured: self.vendor.is_featured,
             resources: Resources {
-                self_link: format!("/api/v1/events/{}/vendors/{}", self.vendor.event_id, self.vendor.id),
-                inventory: format!("/api/v1/events/{}/vendors/{}/inventory", self.vendor.event_id, self.vendor.id),
+                self_link: format!(
+                    "/api/v1/events/{}/vendors/{}",
+                    self.vendor.event_id, self.vendor.id
+                ),
+                inventory: format!(
+                    "/api/v1/events/{}/vendors/{}/inventory",
+                    self.vendor.event_id, self.vendor.id
+                ),
             },
         };
 

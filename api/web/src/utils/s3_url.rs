@@ -6,7 +6,7 @@ pub fn key_to_url(key: Option<String>) -> Option<String> {
 }
 
 /// Generates a public URL for an S3 object key
-fn generate_s3_url(key: &str) -> String {
+pub fn generate_s3_url(key: &str) -> String {
     let bucket = std::env::var("S3_BUCKET").unwrap_or_else(|_| "brewfest-dev".to_string());
 
     if let Ok(endpoint) = std::env::var("AWS_ENDPOINT_URL") {

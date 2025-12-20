@@ -10,7 +10,6 @@ pub fn routes() -> Router {
         .route("/", post(vendor::create))
         .route("/:vendor_id", get(vendor::show))
         .route("/:vendor_id/images", post(image::create))
-        .route("/:vendor_id/images", get(image::index))
         .route("/:vendor_id/thumbnail", post(thumbnail::create))
         .nest("/:vendor_id/inventory", inventory::routes())
 }
