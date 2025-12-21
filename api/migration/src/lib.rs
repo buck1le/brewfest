@@ -25,6 +25,9 @@ mod m20251206_035118_add_location_attributes_to_event;
 mod m20251206_155509_add_vendor_fields;
 mod m20251212_023114_add_subcat_to_inventory_item;
 mod m20251215_010039_rename_subcategory_to_inventory_item_type;
+mod m20251221_160401_create_device_token_table;
+mod m20251221_160431_create_notification_table;
+mod m20251221_160458_create_notification_delivery_table;
 
 pub struct Migrator;
 
@@ -60,6 +63,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20251206_155509_add_vendor_fields::Migration),
             Box::new(m20251212_023114_add_subcat_to_inventory_item::Migration),
             Box::new(m20251215_010039_rename_subcategory_to_inventory_item_type::Migration),
+            Box::new(m20251221_160401_create_device_token_table::Migration),
+            Box::new(m20251221_160431_create_notification_table::Migration),
+            Box::new(m20251221_160458_create_notification_delivery_table::Migration),
         ];
 
         // Migrations for development database here

@@ -39,6 +39,10 @@ run = '''
   sea-orm-cli migrate generate ${usage_name?}
 '''
 
+[tasks.generate-entities]
+description = "Generate SeaORM entities from database schema"
+run = "cd entities && sea-orm-cli generate entity -o src --with-serde both"
+
 [tasks.dev]
 description = "Run the development server"
 run = "cargo run --features dev"

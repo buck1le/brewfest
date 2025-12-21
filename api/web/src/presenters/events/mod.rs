@@ -41,9 +41,9 @@ struct Resources {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct Location {
-    city: String,
-    state: String,
-    address: String,
+    city: Option<String>,
+    state: Option<String>,
+    address: Option<String>,
     coordinates: Coordinates,
 }
 

@@ -13,12 +13,6 @@ pub use presenter::Presenter;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-struct ResourceLink {
-    href: String,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
 struct Resources {
     vendor: String,
 }

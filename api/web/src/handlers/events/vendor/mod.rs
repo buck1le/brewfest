@@ -89,14 +89,14 @@ enum VendorCategory {
     Service,
 }
 
-impl From<VendorCategory> for Option<String> {
-    fn from(category: VendorCategory) -> Option<String> {
-        Some(match category {
+impl From<VendorCategory> for String {
+    fn from(category: VendorCategory) -> String {
+        match category {
             VendorCategory::Food => "food".to_string(),
             VendorCategory::Beverage => "beverage".to_string(),
             VendorCategory::Merchandise => "merchandise".to_string(),
             VendorCategory::Service => "service".to_string(),
-        })
+        }
     }
 }
 
@@ -126,8 +126,8 @@ pub async fn create(
         email: Set(payload.email),
         phone: Set(payload.phone),
         vendor_type: Set(Some(payload.vendor_type)),
-        latitude: Set(payload.coordinates.latitude),
-        longitude: Set(payload.coordinates.longitude),
+        latitude: Set(Some(payload.coordinates.latitude)),
+        longitude: Set(Some(payload.coordinates.longitude)),
         category: Set(payload.category.into()),
         operating_out_of: Set(payload.operating_out_of),
         description: Set(payload.description),

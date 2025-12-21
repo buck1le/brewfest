@@ -62,12 +62,12 @@ pub enum Relation {
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
-    Vendors,
+    Vendor,
 }
 
 impl Related<super::vendor::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Vendors.def()
+        Relation::Vendor.def()
     }
 }
 

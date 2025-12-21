@@ -60,7 +60,7 @@ impl Partial {
             vendor_type: self.vendor.vendor_type,
             booth: self.vendor.booth,
             description: self.vendor.description,
-            category: self.vendor.category,
+            category: Some(self.vendor.category),
             location: self.vendor.operating_out_of,
             thumbnail: s3_url::key_to_url(self.vendor.thumbnail),
             images: image_urls,

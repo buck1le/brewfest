@@ -15,6 +15,7 @@ use crate::handlers::response::Response;
 use crate::presenters::events::schedule::images::Presenter as ImagePresenter;
 
 use entities::sea_orm::*;
+use entities::extensions::ScheduleImageExt;
 
 use entities::schedule_image::Entity as ScheduleImages;
 

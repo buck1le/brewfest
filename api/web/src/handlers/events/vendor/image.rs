@@ -14,6 +14,7 @@ use crate::handlers::response::Response;
 use crate::presenters::events::vendors::images::Presenter as ImagePresenter;
 
 use entities::sea_orm::*;
+use entities::extensions::VendorImageExt;
 
 use entities::vendor_image::Entity as VendorImages;
 
