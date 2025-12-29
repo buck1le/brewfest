@@ -22,6 +22,10 @@ AWS_S3_FORCE_PATH_STYLE = "true"
 # MAX_IMAGE_WIDTH = "800"
 # MAX_IMAGE_HEIGHT = "600"
 
+# Configuration for Firebase FCM
+FCM_PROJECT_ID = "brewf-fest-dev"
+FCM_SERVICE_ACCOUNT_KEY = "./config/firebase-service-account.json"
+
 [tasks.migrate]
 description = "Run database migrations with seed data (dev mode)"
 run = "cd migration && cargo run --features dev"
