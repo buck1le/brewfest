@@ -62,6 +62,4 @@ impl Related<super::vendor_inventory_item::Entity> for Entity {
     }
 }
 
-// Use the timestamp behavior macro to automatically handle created_at and updated_at
-// This line will NOT be overwritten by entity generation
-crate::impl_timestamp_behavior!(ActiveModel, created_at, updated_at);
+impl ActiveModelBehavior for ActiveModel {}

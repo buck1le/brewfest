@@ -28,6 +28,7 @@ mod m20251215_010039_rename_subcategory_to_inventory_item_type;
 mod m20251221_160401_create_device_token_table;
 mod m20251221_160431_create_notification_table;
 mod m20251221_160458_create_notification_delivery_table;
+mod m20251230_144835_create_event_subscription_table;
 
 pub struct Migrator;
 
@@ -66,6 +67,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20251221_160401_create_device_token_table::Migration),
             Box::new(m20251221_160431_create_notification_table::Migration),
             Box::new(m20251221_160458_create_notification_delivery_table::Migration),
+            Box::new(m20251230_144835_create_event_subscription_table::Migration),
         ];
 
         // Migrations for development database here

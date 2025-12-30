@@ -17,3 +17,4 @@ pub mod schedule_image;
 pub mod vendor;
 pub mod vendor_image;
 pub mod vendor_inventory_item;
+pub mod event_subscription;

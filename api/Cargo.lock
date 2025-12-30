@@ -5669,6 +5669,7 @@ dependencies = [
  "httpc-test",
  "images",
  "migration",
+ "notifications",
  "once_cell",
  "reqwest",
  "serde",

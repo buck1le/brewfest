@@ -6,6 +6,7 @@ import '../widgets/vendor_card.dart';
 import '../widgets/live_indicator.dart';
 import '../widgets/vendor_detail_sheet.dart';
 import '../theme/app_theme.dart';
+import 'notifications_screen.dart';
 
 enum VendorFilter { all, beverage, food, merchandise }
 
@@ -246,31 +247,41 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
             Positioned(
               top: 16,
               right: 16,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Icon(
-                    Icons.notifications_outlined,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                  Positioned(
-                    top: 2,
-                    right: 2,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: AppTheme.accentOrange,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: AppTheme.primaryNavy,
-                          width: 2,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationsScreen(),
+                    ),
+                  );
+                },
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      Icons.notifications_outlined,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    Positioned(
+                      top: 2,
+                      right: 2,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentOrange,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppTheme.primaryNavy,
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

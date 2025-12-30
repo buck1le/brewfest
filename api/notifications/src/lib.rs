@@ -1,5 +1,6 @@
 mod service;
 
-pub use service::NotificationsService;
+pub use service::NotificationService;
 
-pub use entities::{device_token, notification, notification_delivery};
+// Re-export entities for convenience
+pub use entities::{device_token, event_subscription, notification, notification_delivery};

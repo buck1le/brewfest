@@ -4,6 +4,7 @@ use axum::{
     extract::Path, extract::Query, http::StatusCode, response::IntoResponse, Extension, Json,
 };
 
+use entities::extensions::InventoryCategory;
 use serde::Deserialize;
 use std::sync::Arc;
 
@@ -32,7 +33,7 @@ pub async fn index(
     let vendor = load_vendor(event_id, vendor_id, &db).await?;
 
     // Convert category string to enum if provided
-    let category_enum: Option<vendor_inventory_item::InventoryCategory> = if let Some(cat_str) = params.category {
+    let category_enum: Option<InventoryCategory> = if let Some(cat_str) = params.category {
         Some(
             cat_str
                 .try_into()

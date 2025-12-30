@@ -5,6 +5,7 @@ pub mod prelude;
 pub mod account;
 pub mod device_token;
 pub mod event;
+pub mod event_subscription;
 pub mod notification;
 pub mod notification_delivery;
 pub mod schedule_image;

@@ -9,6 +9,7 @@ edition = "2021"
 migration = { path = "../migration", features = [] }
 entities = { path = "../entities" }
 images = { path = "../images" }
+notifications = { path = "../notifications" }
 
 axum = { version= "0.7.4", features = ["macros", "multipart"] }
 tower-http = { version = "0.5", features = ["fs"] }

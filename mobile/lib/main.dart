@@ -1,8 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 import 'theme/app_theme.dart';
+import 'services/notification_service.dart';
+import 'repositories/notification_repository.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ [Main] Firebase initialized');
+  } catch (e) {
+    print('⚠️ [Main] Firebase initialization failed: $e');
+    print('⚠️ [Main] Notifications will not work until Firebase is configured');
+  }
+
+  // Initialize notification service
+  try {
+    final notificationService = NotificationService();
+    final repository = ApiNotificationRepository(
+      baseUrl: 'http://localhost:8080/api/v1',
+    );
+
+    await notificationService.initialize(
+      repository: repository,
+      onNotificationTapped: (message) {
+        print('🔔 [Main] Notification tapped: ${message.messageId}');
+        // TODO: Navigate to relevant screen based on notification data
+      },
+      onForegroundNotification: (message) {
+        print('🔔 [Main] Foreground notification: ${message.notification?.title}');
+      },
+    );
+    print('✅ [Main] Notification service initialized');
+  } catch (e) {
+    print('⚠️ [Main] Notification service initialization failed: $e');
+  }
+
   runApp(const MyApp());
 }
 

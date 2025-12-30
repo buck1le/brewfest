@@ -3,6 +3,7 @@
 pub use super::account::Entity as Account;
 pub use super::device_token::Entity as DeviceToken;
 pub use super::event::Entity as Event;
+pub use super::event_subscription::Entity as EventSubscription;
 pub use super::notification::Entity as Notification;
 pub use super::notification_delivery::Entity as NotificationDelivery;
 pub use super::schedule_image::Entity as ScheduleImage;

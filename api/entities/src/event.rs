@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "event")]
-#[serde(rename_all = "camelCase")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -25,10 +24,18 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::event_subscription::Entity")]
+    EventSubscription,
     #[sea_orm(has_many = "super::schedule_item::Entity")]
     ScheduleItem,
     #[sea_orm(has_many = "super::vendor::Entity")]
     Vendor,
+}
+
+impl Related<super::event_subscription::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EventSubscription.def()
+    }
 }
 
 impl Related<super::schedule_item::Entity> for Entity {

@@ -1,7 +1,9 @@
 use axum::{extract::Path, http::StatusCode, response::IntoResponse, Extension, Json};
 use entities::*;
+use notifications::NotificationService;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use tracing::{error, info};
 
 use entities::sea_orm::*;
 use entities::device_token::Entity as DeviceToken;
@@ -161,4 +163,88 @@ pub async fn unregister(
     } else {
         Err((StatusCode::NOT_FOUND, "Device token not found".to_string()))
     }
+}
+
+/// Request body for subscribing to an event
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SubscribeToEventRequest {
+    /// Device token ID (from register endpoint response)
+    pub device_token_id: i32,
+    /// Event ID to subscribe to
+    pub event_id: i32,
+}
+
+/// POST /device-tokens/subscribe
+/// Subscribe a device to receive notifications for an event
+pub async fn subscribe_to_event(
+    Extension(notification_service): Extension<Arc<NotificationService>>,
+    Json(payload): Json<SubscribeToEventRequest>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    notification_service
+        .subscribe_device(payload.device_token_id, payload.event_id)
+        .await
+        .map_err(|e| {
+            error!("Failed to subscribe device: {}", e);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to subscribe: {}", e),
+            )
+        })?;
+
+    info!(
+        "Device {} subscribed to event {}",
+        payload.device_token_id, payload.event_id
+    );
+
+    Ok((StatusCode::OK, Json(serde_json::json!({
+        "message": "Successfully subscribed to event notifications"
+    }))))
+}
+
+/// Request body for sending a test notification
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendTestNotificationRequest {
+    /// Event ID to send notification for
+    pub event_id: i32,
+    /// Notification title
+    pub title: String,
+    /// Notification body
+    pub body: String,
+}
+
+/// POST /device-tokens/test-notification
+/// Send a test notification to all devices subscribed to an event
+pub async fn send_test_notification(
+    Extension(notification_service): Extension<Arc<NotificationService>>,
+    Json(payload): Json<SendTestNotificationRequest>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    info!(
+        "Sending test notification to event {}: {}",
+        payload.event_id, payload.title
+    );
+
+    let notification = notification_service
+        .notify_event_attendees(
+            payload.event_id,
+            &payload.title,
+            &payload.body,
+            "test_notification",
+            None,
+            None,
+        )
+        .await
+        .map_err(|e| {
+            error!("Failed to send test notification: {}", e);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Failed to send notification: {}", e),
+            )
+        })?;
+
+    Ok((StatusCode::OK, Json(serde_json::json!({
+        "message": "Test notification sent",
+        "notification_id": notification.id
+    }))))
 }

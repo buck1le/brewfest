@@ -1,6 +1,7 @@
 use axum::{Extension, Router};
 use dotenvy::dotenv;
 use migration::{sea_orm::Database, Migrator, MigratorTrait};
+use notifications::NotificationService;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tracing::{debug, info};
@@ -36,10 +37,23 @@ async fn start() -> anyhow::Result<()> {
     let db = Arc::new(db);
     let aws_s3_client = Arc::new(s3);
 
+    // Initialize NotificationService
+    let fcm_service_account_path = std::env::var("FCM_SERVICE_ACCOUNT_KEY")
+        .unwrap_or_else(|_| "./config/firebase-service-account.json".to_string());
+
+    let notification_service = Arc::new(
+        NotificationService::new(fcm_service_account_path, db.clone())
+            .await
+            .expect("Failed to initialize NotificationService")
+    );
+
+    info!("NotificationService initialized successfully");
+
     let routes_all = Router::new()
         .merge(routers::routes())
         .layer(Extension(db))
-        .layer(Extension(aws_s3_client));
+        .layer(Extension(aws_s3_client))
+        .layer(Extension(notification_service));
 
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
