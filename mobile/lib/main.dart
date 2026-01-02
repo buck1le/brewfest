@@ -24,7 +24,7 @@ void main() async {
   try {
     final notificationService = NotificationService();
     final repository = ApiNotificationRepository(
-      baseUrl: 'http://localhost:8080/api/v1',
+      baseUrl: 'https://brew-fest-api.fly.dev/api/v1',
     );
 
     await notificationService.initialize(

@@ -7,7 +7,7 @@ class DeviceToken {
   final bool isActive;
   final DateTime? lastUsedAt;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
   const DeviceToken({
     required this.id,
@@ -18,7 +18,7 @@ class DeviceToken {
     required this.isActive,
     this.lastUsedAt,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory DeviceToken.fromJson(Map<String, dynamic> json) {
@@ -33,7 +33,9 @@ class DeviceToken {
           ? DateTime.parse(json['lastUsedAt'] as String)
           : null,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 
@@ -47,7 +49,7 @@ class DeviceToken {
       'isActive': isActive,
       'lastUsedAt': lastUsedAt?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 }
@@ -86,8 +88,8 @@ class EventSubscriptionRequest {
 
   Map<String, dynamic> toJson() {
     return {
-      'device_token_id': deviceTokenId,
-      'event_id': eventId,
+      'deviceTokenId': deviceTokenId,
+      'eventId': eventId,
     };
   }
 }

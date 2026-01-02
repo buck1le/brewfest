@@ -4,6 +4,9 @@
 [env]
 DATABASE_URL = "postgres://admin:password@127.0.0.1:5432/brewfest"
 
+# Run seed migrations (set to "true" for development, "false" or unset for production)
+RUN_SEEDS = "true"
+
 # S3 Configuration
 S3_REGION = "us-east-2"
 S3_BUCKET = "brewfest-dev"
@@ -23,16 +26,16 @@ AWS_S3_FORCE_PATH_STYLE = "true"
 # MAX_IMAGE_HEIGHT = "600"
 
 # Configuration for Firebase FCM
-FCM_PROJECT_ID = "brewf-fest-dev"
+FCM_PROJECT_ID = "brew-fest-dev"
 FCM_SERVICE_ACCOUNT_KEY = "./config/firebase-service-account.json"
 
 [tasks.migrate]
-description = "Run database migrations with seed data (dev mode)"
-run = "cd migration && cargo run --features dev"
+description = "Run database migrations (seeds controlled by RUN_SEEDS env var)"
+run = "cd migration && cargo run"
 
 [tasks.migrate-prod]
-description = "Run database migrations without seed data (production)"
-run = "cd migration && cargo run"
+description = "Run database migrations without seed data (RUN_SEEDS=false)"
+run = "cd migration && RUN_SEEDS=false cargo run"
 
 [tasks.migrate-create]
 description = "Create a new migration"
@@ -49,7 +52,7 @@ run = "cd entities && sea-orm-cli generate entity -o src --with-serde both"
 
 [tasks.dev]
 description = "Run the development server"
-run = "cargo run --features dev"
+run = "cargo run"
 
 [tasks.test]
 description = "Run tests"
@@ -65,4 +68,98 @@ run = """
   docker-compose up -d
   ./scripts/setup-localstack.sh
   mise run migrate
+"""
+
+[tasks.fly-check]
+description = "Check fly.io setup and credentials"
+run = """
+  if ! command -v flyctl &> /dev/null; then
+    echo "❌ flyctl not found. Install it with: brew install flyctl"
+    exit 1
+  fi
+
+  if [ ! -f "config/firebase-service-account.json" ]; then
+    echo "❌ Firebase service account not found at config/firebase-service-account.json"
+    exit 1
+  fi
+
+  echo "✅ flyctl installed"
+  echo "✅ Firebase credentials found"
+  flyctl status --app brew-fest-api || echo "⚠️  App not deployed yet"
+"""
+
+[tasks.fly-set-secrets]
+description = "Upload secrets to fly.io (DATABASE_URL, FCM credentials, S3 config)"
+run = """
+  echo "📤 Setting fly.io secrets..."
+
+  # FCM Configuration
+  flyctl secrets set FCM_SERVICE_ACCOUNT="$(cat config/firebase-service-account.json)" --app brew-fest-api
+
+  # Enable seed migrations for development deployment
+  flyctl secrets set RUN_SEEDS='true' --app brew-fest-api
+
+  # Database (you'll need to update this with your actual fly.io postgres URL)
+  echo "⚠️  Remember to set DATABASE_URL for production database"
+  echo "   flyctl secrets set DATABASE_URL='postgres://...' --app brew-fest-api"
+
+  # S3 Configuration (update with your production S3 credentials)
+  echo "⚠️  Remember to set production S3 credentials:"
+  echo "   flyctl secrets set AWS_ACCESS_KEY_ID='...' --app brew-fest-api"
+  echo "   flyctl secrets set AWS_SECRET_ACCESS_KEY='...' --app brew-fest-api"
+  echo "   flyctl secrets set S3_BUCKET='brewfest-prod' --app brew-fest-api"
+  echo "   flyctl secrets set S3_REGION='us-east-2' --app brew-fest-api"
+
+  echo ""
+  echo "💡 For production, set RUN_SEEDS to false:"
+  echo "   flyctl secrets set RUN_SEEDS='false' --app <production-app-name>"
+
+  echo "✅ Secrets set successfully"
+"""
+
+[tasks.fly-deploy]
+description = "Deploy to fly.io"
+run = """
+  echo "🚀 Deploying to fly.io..."
+  flyctl deploy --app brew-fest-api
+  echo "✅ Deployment complete!"
+  echo ""
+  echo "Your API: https://brew-fest-api.fly.dev"
+  echo "Test: curl https://brew-fest-api.fly.dev/api/v1/events"
+"""
+
+[tasks.fly-logs]
+description = "View fly.io logs"
+run = "flyctl logs --app brew-fest-api"
+
+[tasks.fly-ssh]
+description = "SSH into fly.io machine"
+run = "flyctl ssh console --app brew-fest-api"
+
+[tasks.fly-db-connect]
+description = "Connect to fly.io postgres database (psql shell)"
+run = "flyctl postgres connect -a brew-fest-api-database"
+
+[tasks.fly-status]
+description = "Check fly.io app status"
+run = "flyctl status --app brew-fest-api"
+
+[tasks.fly-db-reset]
+description = "Reset fly.io database (drops all tables)"
+run = """
+  echo "⚠️  WARNING: This will DROP ALL TABLES in your fly.io database!"
+  echo "Press Ctrl+C to cancel, or Enter to continue..."
+  read
+  echo "🗑️  Dropping all tables..."
+  flyctl postgres connect -a brew-fest-api-database < scripts/reset-database.sql
+  echo "✅ Database reset complete. Run migrations next:"
+  echo "   flyctl ssh console -a brew-fest-api -C 'cd /app && ./brew-fest-api'"
+"""
+
+[tasks.deploy]
+description = "Complete deployment workflow (check → set-secrets → deploy)"
+run = """
+  mise run fly-check
+  mise run fly-set-secrets
+  mise run fly-deploy
 """

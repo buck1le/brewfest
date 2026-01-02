@@ -35,7 +35,9 @@ class ApiNotificationRepository implements NotificationRepository {
       print('📱 [Notification API] Response Status: ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        print('📱 [Notification API] Response Body: ${response.body}');
         final data = jsonDecode(response.body) as Map<String, dynamic>;
+        print('📱 [Notification API] Parsed JSON: $data');
         print('✅ [Notification API] Device token registered successfully');
         return DeviceToken.fromJson(data);
       } else {
@@ -112,7 +114,7 @@ class ApiNotificationRepository implements NotificationRepository {
     final uri = Uri.parse('$baseUrl/device-tokens/test-notification');
 
     final requestBody = {
-      'event_id': eventId,
+      'eventId': eventId,
       'title': title,
       'body': body,
     };

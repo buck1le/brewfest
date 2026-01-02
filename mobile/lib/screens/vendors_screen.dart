@@ -24,7 +24,7 @@ class _VendorsScreenState extends State<VendorsScreen> with AutomaticKeepAliveCl
   bool get wantKeepAlive => true; // Keeps state alive when switching tabs
 
   final VendorRepository _repository = ApiVendorRepository(
-    baseUrl: 'http://localhost:8080/api/v1',
+    baseUrl: 'https://brew-fest-api.fly.dev/api/v1',
     eventId: 1, // TODO: Make this dynamic based on the selected event
   );
   final FavoritesRepository _favoritesRepository = FavoritesRepositoryImpl();

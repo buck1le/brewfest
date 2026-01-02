@@ -1,6 +1,5 @@
 use axum::{Extension, Router};
-use dotenvy::dotenv;
-use migration::{sea_orm::Database, Migrator, MigratorTrait};
+use migration::{sea_orm::Database, ExtendedMigrator, MigratorTrait};
 use notifications::NotificationService;
 use std::sync::Arc;
 use tokio::net::TcpListener;
@@ -24,14 +23,12 @@ async fn start() -> anyhow::Result<()> {
         .with_env_filter(EnvFilter::from_default_env())
         .init();
 
-    dotenv().expect("Failed to load .env file");
-
     let s3 = S3::new().await?;
     let config = config::DatabaseConfig::new();
     let db = Database::connect(&config.url).await?;
     debug!("Connected to database with url: {}", config.url);
 
-    Migrator::up(&db, None).await?;
+    ExtendedMigrator::up(&db, None).await?;
     info!("Database migration complete");
 
     let db = Arc::new(db);

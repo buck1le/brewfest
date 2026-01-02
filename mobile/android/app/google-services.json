@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:827139422980:android:59a992bf8d2ed89d506e51",
+        "mobilesdk_app_id": "1:827139422980:android:bb077fb73a37a5b4506e51",
         "android_client_info": {
-          "package_name": "com.example.mobile"
+          "package_name": "com.brewfest.mobile"
         }
       },
       "oauth_client": [],

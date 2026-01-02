@@ -32,13 +32,17 @@ mod m20251230_144835_create_event_subscription_table;
 
 pub struct Migrator;
 
-mod seeds;
+// Seeds module (used by ExtendedMigrator)
+pub mod seeds;
+
+// Extended migrator with seed data support (safe from CLI overwrites)
+pub mod migrator_extended;
+pub use migrator_extended::ExtendedMigrator;
 
 #[async_trait::async_trait]
 impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
-        #[allow(unused_mut)]
-        let mut base_migrations: Vec<Box<dyn MigrationTrait>> = vec![
+        vec![
             Box::new(m20220101_000001_create_vendors::Migration),
             Box::new(m20240415_020214_create_schedule_items::Migration),
             Box::new(m20240415_223417_create_events::Migration),
@@ -68,17 +72,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20251221_160431_create_notification_table::Migration),
             Box::new(m20251221_160458_create_notification_delivery_table::Migration),
             Box::new(m20251230_144835_create_event_subscription_table::Migration),
-        ];
-
-        // Migrations for development database here
-        #[cfg(feature = "dev")]
-        {
-            base_migrations.push(Box::new(seeds::accounts::Migration));
-            base_migrations.push(Box::new(seeds::events::Migration));
-            base_migrations.push(Box::new(seeds::vendors::Migration));
-            base_migrations.push(Box::new(seeds::vendor_inventory::Migration));
-        }
-
-        base_migrations
+        ]
     }
 }

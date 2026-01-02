@@ -13,7 +13,7 @@ class NotificationsScreen extends StatefulWidget {
 class _NotificationsScreenState extends State<NotificationsScreen> {
   final NotificationService _notificationService = NotificationService();
   final NotificationRepository _repository = ApiNotificationRepository(
-    baseUrl: 'http://localhost:8080/api/v1',
+    baseUrl: 'https://brew-fest-api.fly.dev/api/v1',
   );
 
   bool _isSubscribed = false;

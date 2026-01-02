@@ -14,11 +14,28 @@ pub struct NotificationService {
 impl NotificationService {
     /// Create a new NotificationService
     ///
+    /// Reads FCM credentials from either:
+    /// 1. FCM_SERVICE_ACCOUNT env var (JSON string) - for production/fly.io
+    /// 2. service_account_path file - for local development
+    ///
     /// # Arguments
-    /// * `service_account_path` - Path to Firebase service account JSON file
+    /// * `service_account_path` - Path to Firebase service account JSON file (fallback)
     /// * `db` - Database connection
     pub async fn new(service_account_path: String, db: Arc<DatabaseConnection>) -> Result<Self> {
-        let fcm_service = FcmService::new(&service_account_path);
+        // Check if credentials are in environment variable (fly.io deployment)
+        let fcm_service = if let Ok(service_account_json) = std::env::var("FCM_SERVICE_ACCOUNT") {
+            // Write to temp file since fcm-service needs a file path
+            let temp_path = "/tmp/firebase-service-account.json";
+            std::fs::write(temp_path, service_account_json)
+                .context("Failed to write FCM credentials to temp file")?;
+
+            info!("Using FCM credentials from FCM_SERVICE_ACCOUNT env var");
+            FcmService::new(temp_path)
+        } else {
+            // Use file path (local development)
+            info!("Using FCM credentials from file: {}", service_account_path);
+            FcmService::new(&service_account_path)
+        };
 
         Ok(Self { fcm_service, db })
     }

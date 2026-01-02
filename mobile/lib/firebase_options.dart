@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '827139422980',
     projectId: 'brew-fest-dev-40ee6',
     storageBucket: 'brew-fest-dev-40ee6.firebasestorage.app',
-    iosBundleId: 'com.example.mobile',
+    iosBundleId: 'com.brewfest.mobile',
   );
 }
